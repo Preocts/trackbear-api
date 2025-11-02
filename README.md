@@ -12,4 +12,38 @@
 
 ---
 
+### Deveploment in progress
+
 Python library for using the Trackbear app API https://help.trackbear.app/api
+
+## Installation
+
+tbd
+
+## Example use
+
+### Defining a client
+
+The client allows you to communicate with TrackBear's API. It requires your API
+token and allows you to define a custom User-Agent header if desired.
+
+See the [.env.example](.env.example) file for which environment variables are
+supported.
+
+```python
+from trackbear_api import TrackBearClient
+
+# If TRACKBEAR_API_TOKEN is set in the environment
+client = TrackBearClient()
+
+# To provide the API token directly
+client = TrackBearClient(api_token="provide your token directly")
+
+# Default User-Agent header can be replaced directly or through the environment
+client = TrackBearClient(user_agent="My Custom App/1.0 (https://...)")
+```
+
+### Logging
+
+All loggers use the name `trackbear-api`. No handlers are defined by default in
+this library.
