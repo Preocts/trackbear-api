@@ -4,6 +4,8 @@ import importlib.metadata
 import logging
 import os
 
+import requests
+
 _TOKEN_ENVIRON = "TRACKBEAR_APP_TOKEN"
 _USER_AGENT_ENVIRON = "TRACKBEAR_USER_AGENT"
 _DEFAULT_USER_AGENT = f"trackbear-api/{importlib.metadata.version('trackbear-api')} (https://github.com/Preocts/trackbear-api) by Preocts"
@@ -37,8 +39,13 @@ class TrackBearClient:
             ValueError: If API token is not provided or an empty string.
         """
 
-        self.api_token = self._get_api_token(api_token)
-        self.user_agent = self._get_user_agent(user_agent)
+        api_token = self._get_api_token(api_token)
+        user_agent = self._get_user_agent(user_agent)
+
+        self.session = self._get_request_session(api_token, user_agent)
+
+        self.logger.debug("Initialized TrackBearClient with user-agent: %s", user_agent)
+        self.logger.debug("Initialized TrackBearClient with token: %s", api_token[-4:])
 
     def _get_api_token(self, api_token: str | None) -> str:
         """Get the api token, preference to arguement over environment. Raise if missing."""
@@ -63,3 +70,14 @@ class TrackBearClient:
             return environ_value
 
         return _DEFAULT_USER_AGENT
+
+    def _get_request_session(self, api_token: str, user_agent: str) -> requests.sessions.Session:
+        """Build a Session with required headers for API calls."""
+        session = requests.sessions.Session()
+
+        session.headers = {
+            "User-Agent": user_agent,
+            "Authorization": f"Bearer {api_token}",
+        }
+
+        return session
