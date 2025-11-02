@@ -6,9 +6,14 @@ import os
 
 import requests
 
+# Environment variable keys pulled for configuration if they exist
 _TOKEN_ENVIRON = "TRACKBEAR_APP_TOKEN"
 _USER_AGENT_ENVIRON = "TRACKBEAR_USER_AGENT"
+_URL_ENVIRON = "TRACKBEAR_API_URL"
+
+# Default values, can be overridden by user
 _DEFAULT_USER_AGENT = f"trackbear-api/{importlib.metadata.version('trackbear-api')} (https://github.com/Preocts/trackbear-api) by Preocts"
+_TRACKBEAR_API_URL = "https://trackbear.app/api/v1/"
 
 
 class TrackBearClient:
@@ -20,6 +25,7 @@ class TrackBearClient:
         self,
         *,
         api_token: str | None = None,
+        api_url: str | None = None,
         user_agent: str | None = None,
     ) -> None:
         """
@@ -30,6 +36,8 @@ class TrackBearClient:
         Args:
             api_token (str): The API token for TrackBear. If not provided then the token
                 is looked for in the loaded environment (TRACKBEAR_APP_TOKEN)
+            api_url (str): Defaults to "https://trackbear.app/api/v1/", can also be set
+                in environment (TRACKBEAR_API_URL)
             user_agent (str): By default the User-Agent header value points to the
                 trackbear-api repo. You can override this to identify your own app by
                 providing directly or fro the environment (TRACKBEAR_USER_AGENT).
@@ -42,10 +50,12 @@ class TrackBearClient:
         api_token = self._get_api_token(api_token)
         user_agent = self._get_user_agent(user_agent)
 
+        self.api_url = self._get_api_url(api_url)
         self.session = self._get_request_session(api_token, user_agent)
 
         self.logger.debug("Initialized TrackBearClient with user-agent: %s", user_agent)
         self.logger.debug("Initialized TrackBearClient with token: %s", api_token[-4:])
+        self.logger.debug("Initialized TrackBearClient with url: %s", self.api_url)
 
     def _get_api_token(self, api_token: str | None) -> str:
         """Get the api token, preference to arguement over environment. Raise if missing."""
@@ -58,6 +68,18 @@ class TrackBearClient:
             raise ValueError(msg)
 
         return api_token
+
+    def _get_api_url(self, api_url: str | None) -> str:
+        """Get the api url, preference to arguement over environment. Default if None."""
+        environ_value = os.getenv(_URL_ENVIRON, "")
+
+        if api_url:
+            return api_url
+
+        if environ_value:
+            return environ_value
+
+        return _TRACKBEAR_API_URL
 
     def _get_user_agent(self, user_agent: str | None) -> str:
         """Get the user agent, preference to arguement over environment. Default if None."""

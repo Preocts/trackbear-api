@@ -26,3 +26,10 @@ def add_environ_useragent() -> Generator[None, None, None]:
     """Add a mock TRACKBEAR_USER_AGENT value to environ."""
     with patch.dict(os.environ, {"TRACKBEAR_USER_AGENT": "environ_value"}):
         yield None
+
+
+@pytest.fixture()
+def add_environ_url() -> Generator[None, None, None]:
+    """Add a mock TRACKBEAR_API_URL value to environ."""
+    with patch.dict(os.environ, {"TRACKBEAR_API_URL": "environ_value"}):
+        yield None
