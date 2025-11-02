@@ -82,10 +82,15 @@ class TrackBearClient:
         """HTTP GET request to the TrackBear API."""
         return self._handle_request("GET", route, params=params)
 
+    def post(self, route: str, payload: dict[str, Any] | None = None) -> TrackBearResponse:
+        """HTTPS POST request to the TrackBear API."""
+        return self._handle_request("POST", route, payload=payload)
+
     def _handle_request(
         self,
         method: str,
         route: str,
+        *,
         params: dict[str, Any] | None = None,
         payload: dict[str, Any] | None = None,
     ) -> TrackBearResponse:

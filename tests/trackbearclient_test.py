@@ -11,6 +11,12 @@ from trackbear_api import TrackBearClient
 from trackbear_api import TrackBearResponse
 
 
+@pytest.fixture
+def client(add_environ_token: None, add_environ_useragent: None) -> TrackBearClient:
+    """Create a mock client."""
+    return TrackBearClient()
+
+
 def test_init_client_providing_no_token() -> None:
     """
     Initialize the client without a token. Expect an exception raised.
@@ -71,47 +77,22 @@ def test_init_client_default_values() -> None:
     assert client.session.headers["User-Agent"] == expected_user_agent
 
 
-@pytest.fixture
-def client(add_environ_token: None, add_environ_useragent: None) -> TrackBearClient:
-    """Create a mock client."""
-    return TrackBearClient()
-
-
-def mock_valid_response() -> str:
-    """Generate a mock valid response from the API."""
-    return json.dumps(
-        {
-            "success": True,
-            "data": "pong",
-        }
-    )
-
-
-def mock_invalid_response() -> str:
-    """Generate a mock invalid response from the API."""
-    return json.dumps(
-        {
-            "success": False,
-            "code": "SOME_ERROR_CODE",
-            "message": "A human-readable error message",
-        }
-    )
-
-
 @responses.activate(assert_all_requests_are_fired=True)
 def test_get_valid_response(client: TrackBearClient) -> None:
+    """GET request with expected valid response."""
     expected_headers = {
         "Authorization": "Bearer environ_value",
         "User-Agent": "environ_value",
     }
     expected_params = {"foo": "bar"}
+    mock_response = json.dumps({"success": True, "data": "pong"})
     headers_match = responses.matchers.header_matcher(expected_headers)
     parames_match = responses.matchers.query_param_matcher(expected_params)
 
     responses.add(
         method="GET",
         url="https://trackbear.app/api/v1/ping",
-        body=mock_valid_response(),
+        body=mock_response,
         match=[headers_match, parames_match],
     )
 
@@ -124,18 +105,26 @@ def test_get_valid_response(client: TrackBearClient) -> None:
 
 @responses.activate(assert_all_requests_are_fired=True)
 def test_get_invalid_response(client: TrackBearClient) -> None:
+    """GET request with expected invalid response."""
     expected_headers = {
         "Authorization": "Bearer environ_value",
         "User-Agent": "environ_value",
     }
     expected_params = {"foo": "bar"}
+    mock_response = json.dumps(
+        {
+            "success": False,
+            "code": "SOME_ERROR_CODE",
+            "message": "A human-readable error message",
+        }
+    )
     headers_match = responses.matchers.header_matcher(expected_headers)
     parames_match = responses.matchers.query_param_matcher(expected_params)
 
     responses.add(
         method="GET",
         url="https://trackbear.app/api/v1/ping",
-        body=mock_invalid_response(),
+        body=mock_response,
         status=409,
         match=[headers_match, parames_match],
     )
@@ -146,3 +135,48 @@ def test_get_invalid_response(client: TrackBearClient) -> None:
     assert response.success is False
     assert response.message == "A human-readable error message"
     assert response.code == "SOME_ERROR_CODE"
+
+
+@responses.activate(assert_all_requests_are_fired=True)
+def test_post_valid_response(client: TrackBearClient) -> None:
+    """POST request with expected valid response."""
+    mock_data = {
+        "id": 123,
+        "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+        "createdAt": "string",
+        "updatedAt": "string",
+        "state": "string",
+        "ownerId": 123,
+        "title": "string",
+        "description": "string",
+        "type": "string",
+        "parameters": {"threshold": {"measure": "string", "count": 0}},
+        "startDate": "string",
+        "endDate": "string",
+        "workIds": [123],
+        "tagIds": [123],
+        "starred": False,
+        "displayOnProfile": False,
+    }
+
+    expected_headers = {
+        "Authorization": "Bearer environ_value",
+        "User-Agent": "environ_value",
+    }
+    expected_payload = {"foo": "bar"}
+    mock_response = json.dumps({"success": True, "data": mock_data})
+    headers_match = responses.matchers.header_matcher(expected_headers)
+    body_match = responses.matchers.body_matcher(json.dumps(expected_payload))
+
+    responses.add(
+        method="POST",
+        url="https://trackbear.app/api/v1/goal",
+        body=mock_response,
+        match=[headers_match, body_match],
+    )
+
+    response = client.post("/goal", expected_payload)
+
+    assert isinstance(response, TrackBearResponse)
+    assert response.success is True
+    assert response.data == mock_data
