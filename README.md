@@ -41,6 +41,16 @@ client = TrackBearClient(api_token="provide your token directly")
 
 # Default User-Agent header can be replaced directly or through the environment
 client = TrackBearClient(user_agent="My Custom App/1.0 (https://...)")
+
+# GET a list of projects: https://help.trackbear.app/api/Projects_list
+# POST, PATCH, DELETE are also available with the same behaviors
+response = client.get("projects")
+
+if not response.success:
+    raise ValueError(f"Error: {response.code}: {response.message}")
+
+for project in response.data:
+    print(project["title"])
 ```
 
 ### Logging
