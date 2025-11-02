@@ -16,7 +16,7 @@ def test_init_client_providing_keyword_token() -> None:
     """
     client = TrackBearClient(api_token="keyword_value")
 
-    assert client.api_token == "keyword_value"
+    assert client.session.headers["Authorization"] == "Bearer keyword_value"
 
 
 @pytest.mark.usefixtures("add_environ_token")
@@ -26,7 +26,7 @@ def test_init_client_providing_environ_token() -> None:
     """
     client = TrackBearClient()
 
-    assert client.api_token == "environ_value"
+    assert client.session.headers["Authorization"] == "Bearer environ_value"
 
 
 def test_init_client_providing_no_token() -> None:
@@ -50,7 +50,7 @@ def test_init_client_user_agent_custom() -> None:
 
     client = TrackBearClient(user_agent=expected_value)
 
-    assert client.user_agent == expected_value
+    assert client.session.headers["User-Agent"] == expected_value
 
 
 @pytest.mark.usefixtures("add_environ_token", "add_environ_useragent")
@@ -62,7 +62,7 @@ def test_init_client_user_agent_environ() -> None:
 
     client = TrackBearClient()
 
-    assert client.user_agent == expected_value
+    assert client.session.headers["User-Agent"] == expected_value
 
 
 @pytest.mark.usefixtures("add_environ_token")
@@ -74,4 +74,4 @@ def test_init_client_user_agent_default() -> None:
 
     client = TrackBearClient()
 
-    assert client.user_agent == expected_value
+    assert client.session.headers["User-Agent"] == expected_value
