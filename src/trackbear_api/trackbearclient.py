@@ -3,6 +3,7 @@ from __future__ import annotations
 import logging
 import os
 
+_TOKEN_ENVIRON = "TRACKBEAR_APP_TOKEN"
 
 class TrackBearClient:
     """Primary CRUD client used to communite with the TrackBear API."""
@@ -24,7 +25,7 @@ class TrackBearClient:
         """
 
         if api_token is None:
-            api_token = os.getenv("TRACKBEAR_APP_TOKEN", "")
+            api_token = os.getenv(_TOKEN_ENVIRON, "")
 
         if not api_token:
             msg = "Missing api token. Either provide directly as a keyword arguement or as the environment variable 'TRACKBEAR_APP_TOKEN'."
