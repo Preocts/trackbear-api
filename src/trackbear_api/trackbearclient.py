@@ -47,51 +47,21 @@ class TrackBearClient:
             ValueError: If API token is not provided or an empty string.
         """
 
-        api_token = self._get_api_token(api_token)
-        user_agent = self._get_user_agent(user_agent)
-
-        self.api_url = self._get_api_url(api_url)
-        self.session = self._get_request_session(api_token, user_agent)
-
-        self.logger.debug("Initialized TrackBearClient with user-agent: %s", user_agent)
-        self.logger.debug("Initialized TrackBearClient with token: %s", api_token[-4:])
-        self.logger.debug("Initialized TrackBearClient with url: %s", self.api_url)
-
-    def _get_api_token(self, api_token: str | None) -> str:
-        """Get the api token, preference to arguement over environment. Raise if missing."""
-        if api_token is None:
-            api_token = os.getenv(_TOKEN_ENVIRON, "")
-
+        api_token = _pick_config_value(api_token, _TOKEN_ENVIRON, "")
         if not api_token:
             msg = "Missing api token. Either provide directly as a keyword arguement or as the environment variable 'TRACKBEAR_APP_TOKEN'."
             self.logger.error("%s", msg)
             raise ValueError(msg)
 
-        return api_token
+        user_agent = _pick_config_value(user_agent, _USER_AGENT_ENVIRON, _DEFAULT_USER_AGENT)
 
-    def _get_api_url(self, api_url: str | None) -> str:
-        """Get the api url, preference to arguement over environment. Default if None."""
-        environ_value = os.getenv(_URL_ENVIRON, "")
+        self.api_url = _pick_config_value(api_url, _URL_ENVIRON, _TRACKBEAR_API_URL)
 
-        if api_url:
-            return api_url
+        self.session = self._get_request_session(api_token, user_agent)
 
-        if environ_value:
-            return environ_value
-
-        return _TRACKBEAR_API_URL
-
-    def _get_user_agent(self, user_agent: str | None) -> str:
-        """Get the user agent, preference to arguement over environment. Default if None."""
-        environ_value = os.getenv(_USER_AGENT_ENVIRON, "")
-
-        if user_agent:
-            return user_agent
-
-        if environ_value:
-            return environ_value
-
-        return _DEFAULT_USER_AGENT
+        self.logger.debug("Initialized TrackBearClient with user-agent: %s", user_agent)
+        self.logger.debug("Initialized TrackBearClient with token: %s", api_token[-4:])
+        self.logger.debug("Initialized TrackBearClient with url: %s", self.api_url)
 
     def _get_request_session(self, api_token: str, user_agent: str) -> requests.sessions.Session:
         """Build a Session with required headers for API calls."""
@@ -103,3 +73,22 @@ class TrackBearClient:
         }
 
         return session
+
+
+def _pick_config_value(
+    provided_value: str | None,
+    environ_key: str,
+    default: str,
+) -> str:
+    """
+    Choose the preferred configuration value from the available values.
+
+    Preference of provided value -> environ value -> default value
+    """
+    if provided_value:
+        return provided_value
+
+    if os.getenv(environ_key):
+        return os.getenv(environ_key, "")
+
+    return default
