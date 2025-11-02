@@ -16,7 +16,7 @@ _URL_ENVIRON = "TRACKBEAR_API_URL"
 
 # Default values, can be overridden by user
 _DEFAULT_USER_AGENT = f"trackbear-api/{importlib.metadata.version('trackbear-api')} (https://github.com/Preocts/trackbear-api) by Preocts"
-_DEFAULT_API_URL = "https://trackbear.app/api/v1/"
+_DEFAULT_API_URL = "https://trackbear.app/api/v1"
 
 
 class TrackBearClient:
@@ -58,7 +58,8 @@ class TrackBearClient:
 
         user_agent = _pick_config_value(user_agent, _USER_AGENT_ENVIRON, _DEFAULT_USER_AGENT)
 
-        self.api_url = _pick_config_value(api_url, _URL_ENVIRON, _DEFAULT_API_URL)
+        api_url = _pick_config_value(api_url, _URL_ENVIRON, _DEFAULT_API_URL)
+        self.api_url = api_url.rstrip("/") if api_url.endswith("/") else api_url
 
         self.session = self._get_request_session(api_token, user_agent)
 
@@ -77,11 +78,25 @@ class TrackBearClient:
 
         return session
 
-    def get(self, route: str, params: dict[str, Any]) -> TrackBearResponse:
+    def get(self, route: str, params: dict[str, Any] | None = None) -> TrackBearResponse:
         """HTTP GET request to the TrackBear API."""
-        route = route.lstrip("/") if route.startswith("/") else route
+        return self._handle_request("GET", route, params=params)
 
-        response = self.session.get(f"{self.api_url}{route}", params=params)
+    def _handle_request(
+        self,
+        method: str,
+        route: str,
+        params: dict[str, Any] | None = None,
+        payload: dict[str, Any] | None = None,
+    ) -> TrackBearResponse:
+        """Internal logic for making all API requests."""
+        route = route.lstrip("/") if route.startswith("/") else route
+        url = f"{self.api_url}/{route}"
+
+        if params:
+            response = self.session.request(method, url, params=params)
+        else:
+            response = self.session.request(method, url, json=payload)
 
         log_body = f"Code: {response.status_code} Route: {route} Parames: {params} Text: {response.text} Headers: {response.headers}"
 
