@@ -62,7 +62,7 @@ def test_init_client_default_values() -> None:
     """
     Initialize the client, assert default values are used. Excludes API token.
     """
-    expected_url = "https://trackbear.app/api/v1/"
+    expected_url = "https://trackbear.app/api/v1"
     expected_user_agent = f"trackbear-api/{importlib.metadata.version('trackbear-api')} (https://github.com/Preocts/trackbear-api) by Preocts"
 
     client = TrackBearClient()
