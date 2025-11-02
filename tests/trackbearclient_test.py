@@ -180,3 +180,126 @@ def test_post_valid_response(client: TrackBearClient) -> None:
     assert isinstance(response, TrackBearResponse)
     assert response.success is True
     assert response.data == mock_data
+
+
+@responses.activate(assert_all_requests_are_fired=True)
+def test_patch_valid_response(client: TrackBearClient) -> None:
+    """PATCH request with expected valid response."""
+    mock_data = {
+        "id": 123,
+        "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+        "createdAt": "string",
+        "updatedAt": "string",
+        "state": "string",
+        "ownerId": 123,
+        "title": "string",
+        "description": "string",
+        "phase": "string",
+        "startingBalance": {"word": 0, "time": 0, "page": 0, "chapter": 0, "scene": 0, "line": 0},
+        "cover": "string",
+        "starred": False,
+        "displayOnProfile": False,
+    }
+
+    expected_headers = {
+        "Authorization": "Bearer environ_value",
+        "User-Agent": "environ_value",
+    }
+    expected_payload = {
+        "title": "string",
+        "description": "string",
+        "phase": "string",
+        "startingBalance": {"word": 0, "time": 0, "page": 0, "chapter": 0, "scene": 0, "line": 0},
+        "starred": False,
+        "displayOnProfile": False,
+    }
+
+    mock_response = json.dumps({"success": True, "data": mock_data})
+    headers_match = responses.matchers.header_matcher(expected_headers)
+    body_match = responses.matchers.body_matcher(json.dumps(expected_payload))
+
+    responses.add(
+        method="PATCH",
+        url="https://trackbear.app/api/v1/project/123",
+        body=mock_response,
+        match=[headers_match, body_match],
+    )
+
+    response = client.patch("/project/123", expected_payload)
+
+    assert isinstance(response, TrackBearResponse)
+    assert response.success is True
+    assert response.data == mock_data
+
+
+@responses.activate(assert_all_requests_are_fired=True)
+def test_delete_valid_response(client: TrackBearClient) -> None:
+    """DELETE request with expected valid response."""
+    mock_data = {
+        "id": 123,
+        "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+        "createdAt": "string",
+        "updatedAt": "string",
+        "state": "string",
+        "ownerId": 123,
+        "date": "2021-03-23",
+        "measure": "string",
+        "count": 0,
+        "note": "string",
+        "workId": 123,
+        "work": {
+            "id": 123,
+            "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+            "createdAt": "string",
+            "updatedAt": "string",
+            "state": "string",
+            "ownerId": 123,
+            "title": "string",
+            "description": "string",
+            "phase": "string",
+            "startingBalance": {
+                "word": 0,
+                "time": 0,
+                "page": 0,
+                "chapter": 0,
+                "scene": 0,
+                "line": 0,
+            },
+            "cover": "string",
+            "starred": False,
+            "displayOnProfile": False,
+        },
+        "tags": [
+            {
+                "id": 123,
+                "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+                "createdAt": "string",
+                "updatedAt": "string",
+                "state": "string",
+                "ownerId": 123,
+                "name": "string",
+                "color": "string",
+            }
+        ],
+    }
+
+    expected_headers = {
+        "Authorization": "Bearer environ_value",
+        "User-Agent": "environ_value",
+    }
+
+    mock_response = json.dumps({"success": True, "data": mock_data})
+    headers_match = responses.matchers.header_matcher(expected_headers)
+
+    responses.add(
+        method="DELETE",
+        url="https://trackbear.app/api/v1/tally/123",
+        body=mock_response,
+        match=[headers_match],
+    )
+
+    response = client.delete("/tally/123")
+
+    assert isinstance(response, TrackBearResponse)
+    assert response.success is True
+    assert response.data == mock_data
