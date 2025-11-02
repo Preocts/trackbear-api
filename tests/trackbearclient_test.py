@@ -75,3 +75,41 @@ def test_init_client_user_agent_default() -> None:
     client = TrackBearClient()
 
     assert client.session.headers["User-Agent"] == expected_value
+
+
+@pytest.mark.usefixtures("add_environ_token", "add_environ_useragent", "add_environ_url")
+def test_init_client_api_url_custom() -> None:
+    """
+    Initialize the client, providing a custom api url.
+
+    Expected to override the environ api url.
+    """
+    expected_value = "https://some.other.app"
+
+    client = TrackBearClient(api_url=expected_value)
+
+    assert client.api_url == expected_value
+
+
+@pytest.mark.usefixtures("add_environ_token", "add_environ_useragent", "add_environ_url")
+def test_init_client_api_url_environ() -> None:
+    """
+    Initialize the client, assert environment provided url is used.
+    """
+    expected_value = "environ_value"
+
+    client = TrackBearClient()
+
+    assert client.api_url == expected_value
+
+
+@pytest.mark.usefixtures("add_environ_token")
+def test_init_client_api_url_default() -> None:
+    """
+    Initialize the client, assert default url is used.
+    """
+    expected_value = "https://trackbear.app/api/v1/"
+
+    client = TrackBearClient()
+
+    assert client.api_url == expected_value
