@@ -1,0 +1,62 @@
+name: "Publish Python distribution to PyPI"
+# Uses:
+# https://github.com/actions/checkout : 11bd71901bbe5b1630ceea73d27597364c9af683
+# https://github.com/actions/download-artifact : d3f86a106a0bac45b974a628896c90dbdf5c8093
+# https://github.com/actions/upload-artifact : ea165f8d65b6e75b540449e92b4886f43607fa02
+# https://github.com/actions/pypa/gh-action-pypi-publish : 76f52bc884231f62b9a034ebfe128415bbaabdfc
+# https://github.com/astral-sh/setup-uv : v6.4.3 e92bafb6253dcd438e0484186d7669ea7a8ca1cc
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build:
+    name: "Build package"
+    runs-on: "ubuntu-latest"
+    outputs:
+      artifact-id: "${{ steps.upload-artifact.outputs.artifact-id }}"
+
+    steps:
+      - uses: "actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683"
+        with:
+          persist-credentials: false
+
+      - name: "Install the latest version of uv"
+        uses: "astral-sh/setup-uv@e92bafb6253dcd438e0484186d7669ea7a8ca1cc"
+        with:
+          version: "latest"
+          enable-cache: true
+
+      - name: "Build the package"
+        run: "uvx nox --session build"
+
+      - name: "Store the distribution packages"
+        id: "upload-artifact"
+        uses: "actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02"
+        with:
+          path: "./dist"
+
+  publish-to-pypi:
+    name: "Publish Python Distribution to PyPI"
+    needs: ["build"]
+    runs-on: "ubuntu-latest"
+    environment:
+      name: "pypi"
+      url: "https://pypi.org/project/eggviron/"
+    permissions:
+      id-token: "write"
+
+    steps:
+      - name: "Download all the dists"
+        uses: "actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093"
+        with:
+          artifact-ids: "${{ needs.build.outputs.artifact-id }}"
+          path: "./dist"
+          merge-multiple: true
+
+      - name: "Publish distribution to PyPI"
+        uses: "pypa/gh-action-pypi-publish@76f52bc884231f62b9a034ebfe128415bbaabdfc"
+        with:
+          repository-url: "https://upload.pypi.org/legacy/"
+          verbose: true
