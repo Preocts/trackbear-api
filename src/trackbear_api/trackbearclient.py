@@ -79,12 +79,20 @@ class TrackBearClient:
         return session
 
     def get(self, route: str, params: dict[str, Any] | None = None) -> TrackBearResponse:
-        """HTTP GET request to the TrackBear API."""
+        """GET request to the TrackBear API."""
         return self._handle_request("GET", route, params=params)
 
     def post(self, route: str, payload: dict[str, Any] | None = None) -> TrackBearResponse:
-        """HTTPS POST request to the TrackBear API."""
+        """POST request to the TrackBear API."""
         return self._handle_request("POST", route, payload=payload)
+
+    def patch(self, route: str, payload: dict[str, Any] | None = None) -> TrackBearResponse:
+        """PATCH request to the TrackBear API."""
+        return self._handle_request("PATCH", route, payload=payload)
+
+    def delete(self, route: str, payload: dict[str, Any] | None = None) -> TrackBearResponse:
+        """DELETE request to the TrackBear API."""
+        return self._handle_request("DELETE", route, payload=payload)
 
     def _handle_request(
         self,
