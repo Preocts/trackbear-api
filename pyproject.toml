@@ -39,6 +39,7 @@ dev = [
     "pytest-randomly",
     "coverage",
     "types-requests",
+    "responses>=0.25.8",
 ]
 
 [project.urls]
