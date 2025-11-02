@@ -37,6 +37,11 @@ class TrackBearClient:
             ValueError: If API token is not provided or an empty string.
         """
 
+        self.api_token = self._get_api_token(api_token)
+        self.user_agent = self._get_user_agent(user_agent)
+
+    def _get_api_token(self, api_token: str | None) -> str:
+        """Get the api token, preference to arguement over environment. Raise if missing."""
         if api_token is None:
             api_token = os.getenv(_TOKEN_ENVIRON, "")
 
@@ -45,8 +50,7 @@ class TrackBearClient:
             self.logger.error("%s", msg)
             raise ValueError(msg)
 
-        self.api_token = api_token
-        self.user_agent = self._get_user_agent(user_agent)
+        return api_token
 
     def _get_user_agent(self, user_agent: str | None) -> str:
         """Get the user agent, preference to arguement over environment. Default if None."""
