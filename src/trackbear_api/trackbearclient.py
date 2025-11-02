@@ -3,8 +3,11 @@ from __future__ import annotations
 import importlib.metadata
 import logging
 import os
+from typing import Any
 
 import requests
+
+from ._trackbearresponse import TrackBearResponse
 
 # Environment variable keys pulled for configuration if they exist
 _TOKEN_ENVIRON = "TRACKBEAR_APP_TOKEN"
@@ -13,7 +16,7 @@ _URL_ENVIRON = "TRACKBEAR_API_URL"
 
 # Default values, can be overridden by user
 _DEFAULT_USER_AGENT = f"trackbear-api/{importlib.metadata.version('trackbear-api')} (https://github.com/Preocts/trackbear-api) by Preocts"
-_TRACKBEAR_API_URL = "https://trackbear.app/api/v1/"
+_DEFAULT_API_URL = "https://trackbear.app/api/v1/"
 
 
 class TrackBearClient:
@@ -55,7 +58,7 @@ class TrackBearClient:
 
         user_agent = _pick_config_value(user_agent, _USER_AGENT_ENVIRON, _DEFAULT_USER_AGENT)
 
-        self.api_url = _pick_config_value(api_url, _URL_ENVIRON, _TRACKBEAR_API_URL)
+        self.api_url = _pick_config_value(api_url, _URL_ENVIRON, _DEFAULT_API_URL)
 
         self.session = self._get_request_session(api_token, user_agent)
 
@@ -73,6 +76,21 @@ class TrackBearClient:
         }
 
         return session
+
+    def get(self, route: str, params: dict[str, Any]) -> TrackBearResponse:
+        """HTTP GET request to the TrackBear API."""
+        route = route.lstrip("/") if route.startswith("/") else route
+
+        response = self.session.get(f"{self.api_url}{route}", params=params)
+
+        log_body = f"Code: {response.status_code} Route: {route} Parames: {params} Text: {response.text} Headers: {response.headers}"
+
+        if not response.ok:
+            self.logger.error("Bad API response. %s", log_body)
+        else:
+            self.logger.debug("Good API resposne. %s", log_body)
+
+        return TrackBearResponse(**response.json())
 
 
 def _pick_config_value(
