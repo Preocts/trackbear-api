@@ -16,23 +16,18 @@ __all__ = [
 ]
 
 
-@dataclasses.dataclass(frozen=True, slots=True)
-class _Model:
-    """Parent class of all models."""
+def _handle_build_error(exc: Exception, data: dict[str, Any], name: str) -> NoReturn:
+    """
+    Helpful bug reporting output for model building errors.
 
-    @staticmethod
-    def _handle_build_error(exc: Exception, data: dict[str, Any], name: str) -> NoReturn:
-        """
-        Helpful bug reporting output for model building errors.
-
-        Raises:
-            ModelBuildError
-        """
-        raise ModelBuildError(json.dumps(data), name) from exc
+    Raises:
+        ModelBuildError
+    """
+    raise ModelBuildError(json.dumps(data), name) from exc
 
 
 @dataclasses.dataclass(frozen=True, slots=True)
-class Balance(_Model):
+class Balance:
     """Balance values for Project models. These are **optional** values when building."""
 
     word: int
@@ -44,7 +39,7 @@ class Balance(_Model):
 
 
 @dataclasses.dataclass(frozen=True, slots=True)
-class Project(_Model):
+class Project:
     """Project model built from the API response."""
 
     id: int  # noqa: A003
@@ -108,4 +103,4 @@ class Project(_Model):
             )
 
         except KeyError as exc:
-            cls._handle_build_error(exc, data, cls.__name__)
+            _handle_build_error(exc, data, cls.__name__)
