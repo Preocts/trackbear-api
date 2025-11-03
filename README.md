@@ -4,6 +4,7 @@
 
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/Preocts/trackbear-api/main.svg)](https://results.pre-commit.ci/latest/github/Preocts/trackbear-api/main)
 [![Python tests](https://github.com/Preocts/trackbear-api/actions/workflows/python-tests.yml/badge.svg?branch=main)](https://github.com/Preocts/trackbear-api/actions/workflows/python-tests.yml)
+[![PyPI version](https://badge.fury.io/py/trackbear-api.svg)](https://badge.fury.io/py/trackbear-api)
 
 # trackbear-api
 
@@ -18,7 +19,9 @@ Python library for using the Trackbear app API https://help.trackbear.app/api
 
 ## Installation
 
-tbd
+```console
+python -m pip install trackbear-api
+```
 
 ## Example use
 
