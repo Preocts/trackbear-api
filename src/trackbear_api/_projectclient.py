@@ -30,3 +30,27 @@ class ProjectClient(APIClient):
             )
 
         return [Project.build(data) for data in response.data]
+
+    def get_by_id(self, project_id: str) -> Project:
+        """
+        Get Project by id.
+
+        Args:
+            project_id (str): Project ID to request from TrackBear
+
+        Returns:
+            Project model
+
+        Raises:
+            APIResponseError: On failure to retrieve requested model
+        """
+        response = self._handle_request("GET", f"/project/{project_id}")
+
+        if not response.success:
+            raise APIResponseError(
+                status_code=response.status_code,
+                code=response.error.code,
+                message=response.error.message,
+            )
+
+        return Project.build(response.data)
