@@ -122,8 +122,10 @@ def test_get_invalid_response(client: TrackBearClient) -> None:
     mock_response = json.dumps(
         {
             "success": False,
-            "code": "SOME_ERROR_CODE",
-            "message": "A human-readable error message",
+            "error": {
+                "code": "SOME_ERROR_CODE",
+                "message": "A human-readable error message",
+            },
         }
     )
     headers_match = responses.matchers.header_matcher(expected_headers)
@@ -141,8 +143,8 @@ def test_get_invalid_response(client: TrackBearClient) -> None:
 
     assert isinstance(response, TrackBearResponse)
     assert response.success is False
-    assert response.message == "A human-readable error message"
-    assert response.code == "SOME_ERROR_CODE"
+    assert response.error.message == "A human-readable error message"
+    assert response.error.code == "SOME_ERROR_CODE"
     assert response.remaining_requests == 0
     assert response.rate_reset == 0
     assert response.status_code == 409

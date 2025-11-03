@@ -119,14 +119,19 @@ class TrackBearClient:
             log_body = f"Code: {response.status_code} Route: {route} Parames: {params}"
             self.logger.debug("Good API resposne. %s", log_body)
 
-        rate_data = self.parse_response_rate_limit(response.headers.get("RateLimit", "Undefined"))
-        status_code = {"status_code": response.status_code}
+        rheaders = response.headers.get("RateLimit", "Undefined")
+        remaining, reset = self.parse_response_rate_limit(rheaders)
 
-        self.logger.debug("Rate Limit data: %s", rate_data)
+        self.logger.debug("%d requets remaining; resets in %s seconds", remaining, reset)
 
-        return TrackBearResponse(**(response.json() | rate_data | status_code))
+        return TrackBearResponse.build(
+            response=response.json(),
+            remaining_requests=remaining,
+            rate_reset=reset,
+            status_code=response.status_code,
+        )
 
-    def parse_response_rate_limit(self, rate_limit: str) -> dict[str, int]:
+    def parse_response_rate_limit(self, rate_limit: str) -> tuple[int, int]:
         """
         Process the RateLimit response header, returns Requests Remaining and Window Reset Time
 
@@ -134,21 +139,15 @@ class TrackBearClient:
 
         Args:
             rate_limit (str): The 'RateLimit' header of an API response.
-
-        Returns:
-            {"remaining_requests": 0, "rate_reset": 0}
         """
         remaining_search = re.search(r"r=(\d+)", rate_limit)
         reset_search = re.search(r"t=(\d+)", rate_limit)
 
         if remaining_search is None or reset_search is None:
             self.logger.error("Unexpected response header format, RateLimit:%s", rate_limit)
-            return {"remaining_requests": 0, "rate_reset": 0}
+            return 0, 0
 
-        remaining = int(remaining_search.group(1))
-        reset = int(reset_search.group(1))
-
-        return {"remaining_requests": remaining, "rate_reset": reset}
+        return int(remaining_search.group(1)), int(reset_search.group(1))
 
 
 def _pick_config_value(
