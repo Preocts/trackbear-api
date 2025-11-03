@@ -53,6 +53,25 @@ for project in response.data:
     print(project["title"])
 ```
 
+### TrackBearResponse object
+
+| Attribute          | Type | Description                                           |
+| ------------------ | ---- | ----------------------------------------------------- |
+| success            | bool | True or False if the request was succesful.           |
+| data               | Any  | API response if `success` is True                     |
+| code               | str  | Error code if `success` is False                      |
+| message            | str  | Error message if `success` is False                   |
+| remaining_requests | int  | Number of requests remaining before rate limits apply |
+| rate_reset         | int  | Number of seconds before `remaining_requests` resets  |
+
+### Rate Limiting
+
+Rate limiting is defined by the TrackBear API here:
+https://help.trackbear.app/api/rate-limits
+
+This library does **not** enforce the rate limits. It is on the client to
+monitor the returned rate limit information and act accordingly.
+
 ### Logging
 
 All loggers use the name `trackbear-api`. No handlers are defined by default in

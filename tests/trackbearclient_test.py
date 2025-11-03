@@ -86,6 +86,10 @@ def test_get_valid_response(client: TrackBearClient) -> None:
     }
     expected_params = {"foo": "bar"}
     mock_response = json.dumps({"success": True, "data": "pong"})
+    mock_headers = {
+        "RateLimit-Policy": '"100-in-1min"; q=100; w=60; pk=:Nzg5ZmNjZGRmNDBk:',
+        "RateLimit": '"100-in-1min"; r=98; t=58',
+    }
     headers_match = responses.matchers.header_matcher(expected_headers)
     parames_match = responses.matchers.query_param_matcher(expected_params)
 
@@ -93,6 +97,7 @@ def test_get_valid_response(client: TrackBearClient) -> None:
         method="GET",
         url="https://trackbear.app/api/v1/ping",
         body=mock_response,
+        headers=mock_headers,
         match=[headers_match, parames_match],
     )
 
@@ -101,6 +106,8 @@ def test_get_valid_response(client: TrackBearClient) -> None:
     assert isinstance(response, TrackBearResponse)
     assert response.success is True
     assert response.data == "pong"
+    assert response.remaining_requests == 98
+    assert response.rate_reset == 58
 
 
 @responses.activate(assert_all_requests_are_fired=True)
@@ -135,6 +142,8 @@ def test_get_invalid_response(client: TrackBearClient) -> None:
     assert response.success is False
     assert response.message == "A human-readable error message"
     assert response.code == "SOME_ERROR_CODE"
+    assert response.remaining_requests == 0
+    assert response.rate_reset == 0
 
 
 @responses.activate(assert_all_requests_are_fired=True)
@@ -163,8 +172,12 @@ def test_post_valid_response(client: TrackBearClient) -> None:
         "Authorization": "Bearer environ_value",
         "User-Agent": "environ_value",
     }
-    expected_payload = {"foo": "bar"}
     mock_response = json.dumps({"success": True, "data": mock_data})
+    mock_headers = {
+        "RateLimit-Policy": '"100-in-1min"; q=100; w=60; pk=:Nzg5ZmNjZGRmNDBk:',
+        "RateLimit": '"100-in-1min"; r=98; t=58',
+    }
+    expected_payload = {"foo": "bar"}
     headers_match = responses.matchers.header_matcher(expected_headers)
     body_match = responses.matchers.body_matcher(json.dumps(expected_payload))
 
@@ -172,6 +185,7 @@ def test_post_valid_response(client: TrackBearClient) -> None:
         method="POST",
         url="https://trackbear.app/api/v1/goal",
         body=mock_response,
+        headers=mock_headers,
         match=[headers_match, body_match],
     )
 
@@ -215,6 +229,10 @@ def test_patch_valid_response(client: TrackBearClient) -> None:
     }
 
     mock_response = json.dumps({"success": True, "data": mock_data})
+    mock_headers = {
+        "RateLimit-Policy": '"100-in-1min"; q=100; w=60; pk=:Nzg5ZmNjZGRmNDBk:',
+        "RateLimit": '"100-in-1min"; r=98; t=58',
+    }
     headers_match = responses.matchers.header_matcher(expected_headers)
     body_match = responses.matchers.body_matcher(json.dumps(expected_payload))
 
@@ -222,6 +240,7 @@ def test_patch_valid_response(client: TrackBearClient) -> None:
         method="PATCH",
         url="https://trackbear.app/api/v1/project/123",
         body=mock_response,
+        headers=mock_headers,
         match=[headers_match, body_match],
     )
 
@@ -289,12 +308,17 @@ def test_delete_valid_response(client: TrackBearClient) -> None:
     }
 
     mock_response = json.dumps({"success": True, "data": mock_data})
+    mock_headers = {
+        "RateLimit-Policy": '"100-in-1min"; q=100; w=60; pk=:Nzg5ZmNjZGRmNDBk:',
+        "RateLimit": '"100-in-1min"; r=98; t=58',
+    }
     headers_match = responses.matchers.header_matcher(expected_headers)
 
     responses.add(
         method="DELETE",
         url="https://trackbear.app/api/v1/tally/123",
         body=mock_response,
+        headers=mock_headers,
         match=[headers_match],
     )
 
