@@ -108,3 +108,46 @@ def test_project_list_failure(client: TrackBearClient) -> None:
 
     with pytest.raises(APIResponseError, match=pattern):
         client.project.list()
+
+
+@responses.activate(assert_all_requests_are_fired=True)
+def test_project_get_by_id_success(client: TrackBearClient) -> None:
+    """Assert the Project model is built correctly."""
+    mock_data = copy.deepcopy(PROJECT_RESPONSE)
+    mock_body = {"success": True, "data": mock_data}
+
+    responses.add(
+        method="GET",
+        status=200,
+        url="https://trackbear.app/api/v1/project/123",
+        body=json.dumps(mock_body),
+    )
+
+    project = client.project.get_by_id("123")
+
+    assert isinstance(project, Project)
+    assert isinstance(project.starting_balance, Balance)
+    assert isinstance(project.totals, Balance)
+
+
+@responses.activate(assert_all_requests_are_fired=True)
+def test_project_get_by_id_failure(client: TrackBearClient) -> None:
+    """Assert a failure on the API side will raise the expected exception."""
+    mock_body = {
+        "success": False,
+        "error": {
+            "code": "SOME_ERROR_CODE",
+            "message": "A human-readable error message",
+        },
+    }
+    pattern = r"TrackBear API Failure \(404\) SOME_ERROR_CODE - A human-readable error message"
+
+    responses.add(
+        method="GET",
+        status=404,
+        url="https://trackbear.app/api/v1/project/123",
+        body=json.dumps(mock_body),
+    )
+
+    with pytest.raises(APIResponseError, match=pattern):
+        client.project.get_by_id("123")
