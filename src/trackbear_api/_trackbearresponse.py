@@ -16,10 +16,38 @@ class TrackBearResponse:
     When `success` is False: `code` and `message` will be available for processing
     """
 
-    success: bool = False
-    data: Any = ""
-    code: str = ""
-    message: str = "Undefined Model"
-    status_code: int = 0
-    remaining_requests: int = 0
-    rate_reset: int = 0
+    success: bool
+    data: Any
+    error: Error
+    status_code: int
+    remaining_requests: int
+    rate_reset: int
+
+    @classmethod
+    def build(
+        cls,
+        response: dict[str, Any],
+        remaining_requests: int,
+        rate_reset: int,
+        status_code: int,
+    ) -> TrackBearResponse:
+        """Bulid a model from request response data."""
+        success = response["success"]
+
+        return cls(
+            success=success,
+            data=response["data"] if success else "",
+            error=Error(
+                code=response["error"]["code"] if not success else "",
+                message=response["error"]["message"] if not success else "",
+            ),
+            status_code=status_code,
+            remaining_requests=remaining_requests,
+            rate_reset=rate_reset,
+        )
+
+
+@dataclasses.dataclass(slots=True, frozen=True)
+class Error:
+    code: str
+    message: str
