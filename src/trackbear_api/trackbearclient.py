@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib.metadata
 import logging
 import os
+import re
 from typing import Any
 
 import requests
@@ -111,14 +112,42 @@ class TrackBearClient:
         else:
             response = self.session.request(method, url, json=payload)
 
-        log_body = f"Code: {response.status_code} Route: {route} Parames: {params} Text: {response.text} Headers: {response.headers}"
-
         if not response.ok:
+            log_body = f"Code: {response.status_code} Route: {route} Parames: {params} Text: {response.text} Headers: {response.headers}"
             self.logger.error("Bad API response. %s", log_body)
         else:
+            log_body = f"Code: {response.status_code} Route: {route} Parames: {params}"
             self.logger.debug("Good API resposne. %s", log_body)
 
-        return TrackBearResponse(**response.json())
+        rate_data = self.parse_response_rate_limit(response.headers.get("RateLimit", "Undefined"))
+
+        self.logger.debug("Rate Limit data: %s", rate_data)
+
+        return TrackBearResponse(**(response.json() | rate_data))
+
+    def parse_response_rate_limit(self, rate_limit: str) -> dict[str, int]:
+        """
+        Process the RateLimit response header, returns Requests Remaining and Window Reset Time
+
+        https://help.trackbear.app/api/rate-limits
+
+        Args:
+            rate_limit (str): The 'RateLimit' header of an API response.
+
+        Returns:
+            {"remaining_requests": 0, "rate_reset": 0}
+        """
+        remaining_search = re.search(r"r=(\d+)", rate_limit)
+        reset_search = re.search(r"t=(\d+)", rate_limit)
+
+        if remaining_search is None or reset_search is None:
+            self.logger.error("Unexpected response header format, RateLimit:%s", rate_limit)
+            return {"remaining_requests": 0, "rate_reset": 0}
+
+        remaining = int(remaining_search.group(1))
+        reset = int(reset_search.group(1))
+
+        return {"remaining_requests": remaining, "rate_reset": reset}
 
 
 def _pick_config_value(
