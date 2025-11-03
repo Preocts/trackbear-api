@@ -120,10 +120,11 @@ class TrackBearClient:
             self.logger.debug("Good API resposne. %s", log_body)
 
         rate_data = self.parse_response_rate_limit(response.headers.get("RateLimit", "Undefined"))
+        status_code = {"status_code": response.status_code}
 
         self.logger.debug("Rate Limit data: %s", rate_data)
 
-        return TrackBearResponse(**(response.json() | rate_data))
+        return TrackBearResponse(**(response.json() | rate_data | status_code))
 
     def parse_response_rate_limit(self, rate_limit: str) -> dict[str, int]:
         """

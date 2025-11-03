@@ -108,6 +108,7 @@ def test_get_valid_response(client: TrackBearClient) -> None:
     assert response.data == "pong"
     assert response.remaining_requests == 98
     assert response.rate_reset == 58
+    assert response.status_code == 200
 
 
 @responses.activate(assert_all_requests_are_fired=True)
@@ -144,6 +145,7 @@ def test_get_invalid_response(client: TrackBearClient) -> None:
     assert response.code == "SOME_ERROR_CODE"
     assert response.remaining_requests == 0
     assert response.rate_reset == 0
+    assert response.status_code == 409
 
 
 @responses.activate(assert_all_requests_are_fired=True)

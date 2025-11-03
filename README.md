@@ -44,7 +44,7 @@ client = TrackBearClient(user_agent="My Custom App/1.0 (https://...)")
 
 # GET a list of projects: https://help.trackbear.app/api/Projects_list
 # POST, PATCH, DELETE are also available with the same behaviors
-response = client.get("projects")
+response = client.get("project")
 
 if not response.success:
     raise ValueError(f"Error: {response.code}: {response.message}")
@@ -61,6 +61,7 @@ for project in response.data:
 | data               | Any  | API response if `success` is True                     |
 | code               | str  | Error code if `success` is False                      |
 | message            | str  | Error message if `success` is False                   |
+| status_code        | int  | The HTTP status code of the response                  |
 | remaining_requests | int  | Number of requests remaining before rate limits apply |
 | rate_reset         | int  | Number of seconds before `remaining_requests` resets  |
 

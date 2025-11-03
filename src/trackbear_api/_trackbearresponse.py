@@ -20,5 +20,6 @@ class TrackBearResponse:
     data: Any = ""
     code: str = ""
     message: str = "Undefined Model"
+    status_code: int = 0
     remaining_requests: int = 0
     rate_reset: int = 0
