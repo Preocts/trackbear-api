@@ -11,8 +11,8 @@ import requests
 from ._trackbearresponse import TrackBearResponse
 
 # Environment variable keys pulled for configuration if they exist
-_TOKEN_ENVIRON = "TRACKBEAR_APP_TOKEN"
-_USER_AGENT_ENVIRON = "TRACKBEAR_USER_AGENT"
+_TOKEN_ENVIRON = "TRACKBEAR_API_TOKEN"
+_USER_AGENT_ENVIRON = "TRACKBEAR_API_AGENT"
 _URL_ENVIRON = "TRACKBEAR_API_URL"
 
 # Default values, can be overridden by user

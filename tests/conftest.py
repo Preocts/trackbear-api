@@ -16,15 +16,15 @@ def clear_environ() -> Generator[None, None, None]:
 
 @pytest.fixture()
 def add_environ_token() -> Generator[None, None, None]:
-    """Add a mock TRACKBEAR_APP_TOKEN value to environ."""
-    with patch.dict(os.environ, {"TRACKBEAR_APP_TOKEN": "environ_value"}):
+    """Add a mock TRACKBEAR_API_TOKEN value to environ."""
+    with patch.dict(os.environ, {"TRACKBEAR_API_TOKEN": "environ_value"}):
         yield None
 
 
 @pytest.fixture()
 def add_environ_useragent() -> Generator[None, None, None]:
-    """Add a mock TRACKBEAR_USER_AGENT value to environ."""
-    with patch.dict(os.environ, {"TRACKBEAR_USER_AGENT": "environ_value"}):
+    """Add a mock TRACKBEAR_API_AGENT value to environ."""
+    with patch.dict(os.environ, {"TRACKBEAR_API_AGENT": "environ_value"}):
         yield None
 
 
