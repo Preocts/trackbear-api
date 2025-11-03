@@ -30,9 +30,6 @@ python -m pip install trackbear-api
 The client allows you to communicate with TrackBear's API. It requires your API
 token and allows you to define a custom User-Agent header if desired.
 
-See the [.env.example](.env.example) file for which environment variables are
-supported.
-
 ```python
 from trackbear_api import TrackBearClient
 
@@ -42,18 +39,17 @@ client = TrackBearClient()
 # To provide the API token directly
 client = TrackBearClient(api_token="provide your token directly")
 
-# Default User-Agent header can be replaced directly or through the environment
-client = TrackBearClient(user_agent="My Custom App/1.0 (https://...)")
-
 # GET a list of projects: https://help.trackbear.app/api/Projects_list
 # POST, PATCH, DELETE are also available with the same behaviors
 response = client.get("/project")
 
 if not response.success:
-    raise ValueError(f"Error: {response.code}: {response.message}")
+    raise ValueError(f"Error: {response.error.code}: {response.error.message}")
 
-for project in response.data:
-    print(project["title"])
+print(f"| {'Project Id':^12} | {'Title':^30} | {'Word Count':^12} |")
+print("-" * 64)
+for project in projects:
+    print(f'| {project["id"]:<12} | {project["title"]:<30} | {project["totals"]["word"]:<12} |')
 ```
 
 ### TrackBearResponse object
@@ -80,3 +76,15 @@ monitor the returned rate limit information and act accordingly.
 
 All loggers use the name `trackbear-api`. No handlers are defined by default in
 this library.
+
+### Environment Variables
+
+The following environment variables allow you to configure the TrackBearClient
+outside of code. All variables listed below can also be set during the
+initialization of the `TrackBearClient` as well.
+
+| Variable            | Description                              | Has Default | Default                                                                   |
+| ------------------- | ---------------------------------------- | ----------- | ------------------------------------------------------------------------- |
+| TRACKBEAR_API_TOKEN | Your secret API token                    | False       |                                                                           |
+| TRACKBEAR_API_URL   | The URL of the TrackBear API             | True        | https://trackbear.app/api/v1/                                             |
+| TRACKBEAR_API_AGENT | The User-Agent header sent with requests | True        | trackbear-api/0.x.x (https://github.com/Preocts/trackbear-api) by Preocts |
