@@ -7,6 +7,7 @@ import os
 import requests
 
 from ._apiclient import APIClient
+from ._projectclient import ProjectClient
 
 # Environment variable keys pulled for configuration if they exist
 _TOKEN_ENVIRON = "TRACKBEAR_API_TOKEN"
@@ -67,6 +68,9 @@ class TrackBearClient(APIClient):
         self.logger.debug("Initialized TrackBearClient with url: %s", self.api_url)
 
         super().__init__(self.session, self.api_url)
+
+        # Define all client providers
+        self.project = ProjectClient(self.session, self.api_url)
 
     def _pick_config_value(
         self,
