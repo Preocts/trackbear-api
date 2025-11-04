@@ -23,34 +23,77 @@ Python library for using the Trackbear app API https://help.trackbear.app/api
 python -m pip install trackbear-api
 ```
 
+## Environment Variables
+
+The following environment variables allow you to configure the TrackBearClient
+outside of code. All variables listed below can also be set during the
+initialization of the `TrackBearClient` as well.
+
+| Variable            | Description                              | Has Default | Default                                                                   |
+| ------------------- | ---------------------------------------- | ----------- | ------------------------------------------------------------------------- |
+| TRACKBEAR_API_TOKEN | Your secret API token                    | False       |                                                                           |
+| TRACKBEAR_API_URL   | The URL of the TrackBear API             | True        | https://trackbear.app/api/v1/                                             |
+| TRACKBEAR_API_AGENT | The User-Agent header sent with requests | True        | trackbear-api/0.x.x (https://github.com/Preocts/trackbear-api) by Preocts |
+
 ## Example use
 
-### Defining a client
+### Defining a TrackBearClient
 
-The client allows you to communicate with TrackBear's API. It requires your API
-token and allows you to define a custom User-Agent header if desired.
+The `TrackBearClient` give you all of the access to the TrackBear API. Various
+routes of the API, such as Projects, are available through the `TrackBearClient`
+from their respective attribute.
 
 ```python
 from trackbear_api import TrackBearClient
 
-# If TRACKBEAR_API_TOKEN is set in the environment
+# Assumes TRACKBEAR_API_TOKEN is set in the environment
 client = TrackBearClient()
 
-# To provide the API token directly
-client = TrackBearClient(api_token="provide your token directly")
+```
 
-# GET a list of projects: https://help.trackbear.app/api/Projects_list
-# POST, PATCH, DELETE are also available with the same behaviors
-response = client.get("/project")
+### Projects
 
-if not response.success:
-    raise ValueError(f"Error: {response.error.code}: {response.error.message}")
+```python
+from trackbear_api import TrackBearClient
+from trackbear_api.exceptions import APIResponseError
+
+client = TrackBearClient()
+
+try:
+    projects = client.project.list()
+
+except APIResponseError:
+    print("Failed to get projects")
+    raise SystemExit(1)
 
 print(f"| {'Project Id':^12} | {'Title':^30} | {'Word Count':^12} |")
 print("-" * 64)
 for project in projects:
-    print(f'| {project["id"]:<12} | {project["title"]:<30} | {project["totals"]["word"]:<12} |')
+    print(f"| {project.id:<12} | {project.title:<30} | {project.totals.word:<12} |")
 ```
+
+| Provider Method           | Description                                            |
+| ------------------------- | ------------------------------------------------------ |
+| `TrackBearClient.project` | Contains helper methods for all Project related routes |
+
+| Method          | Description                  |
+| --------------- | ---------------------------- |
+| `.list`         | Get all projects             |
+| `.get_by_id`    | Get a project by specific id |
+| `.save`         | Create or update projects    |
+| `.delete_by_id` | Delete a project by its id   |
+
+### Raw Access
+
+Raw access to the API is available through the following methods of
+`TrackBearClient`. These methods return a `TrackBearResponse` object.
+
+| Method    | Description                      |
+| --------- | -------------------------------- |
+| `.get`    | HTTP GET to the TrackBear API    |
+| `.post`   | HTTP POST to the TrackBear API   |
+| `.patch`  | HTTP PATCH to the TrackBear API  |
+| `.delete` | HTTP DELETE to the TrackBear API |
 
 ### TrackBearResponse object
 
@@ -69,22 +112,9 @@ for project in projects:
 Rate limiting is defined by the TrackBear API here:
 https://help.trackbear.app/api/rate-limits
 
-This library does **not** enforce the rate limits. It is on the client to
-monitor the returned rate limit information and act accordingly.
+This library does **not** presently enforce the rate limits.
 
 ### Logging
 
 All loggers use the name `trackbear-api`. No handlers are defined by default in
 this library.
-
-### Environment Variables
-
-The following environment variables allow you to configure the TrackBearClient
-outside of code. All variables listed below can also be set during the
-initialization of the `TrackBearClient` as well.
-
-| Variable            | Description                              | Has Default | Default                                                                   |
-| ------------------- | ---------------------------------------- | ----------- | ------------------------------------------------------------------------- |
-| TRACKBEAR_API_TOKEN | Your secret API token                    | False       |                                                                           |
-| TRACKBEAR_API_URL   | The URL of the TrackBear API             | True        | https://trackbear.app/api/v1/                                             |
-| TRACKBEAR_API_AGENT | The User-Agent header sent with requests | True        | trackbear-api/0.x.x (https://github.com/Preocts/trackbear-api) by Preocts |
