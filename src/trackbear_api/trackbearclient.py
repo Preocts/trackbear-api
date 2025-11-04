@@ -9,6 +9,8 @@ import requests
 from ._apiclient import APIClient
 from ._projectclient import ProjectClient
 
+__all__ = ["TrackBearClient"]
+
 # Environment variable keys pulled for configuration if they exist
 _TOKEN_ENVIRON = "TRACKBEAR_API_TOKEN"
 _USER_AGENT_ENVIRON = "TRACKBEAR_API_AGENT"
@@ -19,7 +21,7 @@ _DEFAULT_USER_AGENT = f"trackbear-api/{importlib.metadata.version('trackbear-api
 _DEFAULT_API_URL = "https://trackbear.app/api/v1"
 
 
-class TrackBearClient(APIClient):
+class TrackBearClient:
     """Client used to communite with the TrackBear API."""
 
     logger = logging.getLogger("trackbear-api")
@@ -59,18 +61,18 @@ class TrackBearClient(APIClient):
         user_agent = self._pick_config_value(user_agent, _USER_AGENT_ENVIRON, _DEFAULT_USER_AGENT)
 
         api_url = self._pick_config_value(api_url, _URL_ENVIRON, _DEFAULT_API_URL)
-        self.api_url = api_url.rstrip("/") if api_url.endswith("/") else api_url
-
-        self.session = self._get_request_session(api_token, user_agent)
+        api_url = api_url.rstrip("/") if api_url.endswith("/") else api_url
 
         self.logger.debug("Initialized TrackBearClient with user-agent: %s", user_agent)
         self.logger.debug("Initialized TrackBearClient with token: ***%s", api_token[-4:])
-        self.logger.debug("Initialized TrackBearClient with url: %s", self.api_url)
+        self.logger.debug("Initialized TrackBearClient with url: %s", api_url)
 
-        super().__init__(self.session, self.api_url)
+        session = self._get_request_session(api_token, user_agent)
+        self._api_client = APIClient(session, api_url)
 
         # Define all client providers
-        self.project = ProjectClient(self.session, self.api_url)
+        self.bare = self._api_client
+        self.project = ProjectClient(self._api_client)
 
     def _pick_config_value(
         self,

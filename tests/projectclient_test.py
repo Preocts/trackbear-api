@@ -93,7 +93,7 @@ def test_project_list_failure(client: TrackBearClient) -> None:
 
 
 @responses.activate(assert_all_requests_are_fired=True)
-def test_project_get_by_id_success(client: TrackBearClient) -> None:
+def test_project_get_success(client: TrackBearClient) -> None:
     """Assert the Project model is built correctly."""
     mock_data = copy.deepcopy(PROJECT_RESPONSE)
     mock_body = {"success": True, "data": mock_data}
@@ -105,7 +105,7 @@ def test_project_get_by_id_success(client: TrackBearClient) -> None:
         body=json.dumps(mock_body),
     )
 
-    project = client.project.get_by_id(123)
+    project = client.project.get(123)
 
     assert isinstance(project, Project)
     assert isinstance(project.starting_balance, Balance)
@@ -113,7 +113,7 @@ def test_project_get_by_id_success(client: TrackBearClient) -> None:
 
 
 @responses.activate(assert_all_requests_are_fired=True)
-def test_project_get_by_id_failure(client: TrackBearClient) -> None:
+def test_project_get_failure(client: TrackBearClient) -> None:
     """Assert a failure on the API side will raise the expected exception."""
     mock_body = {
         "success": False,
@@ -132,7 +132,7 @@ def test_project_get_by_id_failure(client: TrackBearClient) -> None:
     )
 
     with pytest.raises(APIResponseError, match=pattern):
-        client.project.get_by_id(123)
+        client.project.get(123)
 
 
 @responses.activate(assert_all_requests_are_fired=True)
@@ -262,7 +262,7 @@ def test_project_create_failure(client: TrackBearClient) -> None:
 
 
 @responses.activate(assert_all_requests_are_fired=True)
-def test_project_remove_by_id_success(client: TrackBearClient) -> None:
+def test_project_delete_success(client: TrackBearClient) -> None:
     """
     Assert a remove request returns the expected ProjectStub
     """
@@ -273,13 +273,13 @@ def test_project_remove_by_id_success(client: TrackBearClient) -> None:
         body=json.dumps({"success": True, "data": PROJECT_RESPONSE}),
     )
 
-    project = client.project.delete_by_id(project_id=123)
+    project = client.project.delete(project_id=123)
 
     assert isinstance(project, ProjectStub)
 
 
 @responses.activate(assert_all_requests_are_fired=True)
-def test_project_remove_by_id_failure(client: TrackBearClient) -> None:
+def test_project_delete_failure(client: TrackBearClient) -> None:
     """Assert a failure on the API side will raise the expected exception."""
     mock_body = {
         "success": False,
@@ -298,4 +298,4 @@ def test_project_remove_by_id_failure(client: TrackBearClient) -> None:
     )
 
     with pytest.raises(APIResponseError, match=pattern):
-        client.project.delete_by_id(project_id=123)
+        client.project.delete(project_id=123)
