@@ -12,7 +12,7 @@ from .models import ProjectStub
 class ProjectClient(APIClient):
     """Provides methods and models for Project API routes."""
 
-    def list(self) -> Sequence[Project]:  # noqa: A003
+    def list(self) -> Sequence[Project]:
         """
         List all projects
 
