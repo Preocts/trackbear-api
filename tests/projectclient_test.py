@@ -259,3 +259,43 @@ def test_project_create_failure(client: TrackBearClient) -> None:
             chapter=1,
             scene=3,
         )
+
+
+@responses.activate(assert_all_requests_are_fired=True)
+def test_project_remove_by_id_success(client: TrackBearClient) -> None:
+    """
+    Assert a remove request returns the expected ProjectStub
+    """
+    responses.add(
+        method="DELETE",
+        url="https://trackbear.app/api/v1/project/123",
+        status=200,
+        body=json.dumps({"success": True, "data": PROJECT_RESPONSE}),
+    )
+
+    project = client.project.delete_by_id(project_id="123")
+
+    assert isinstance(project, ProjectStub)
+
+
+@responses.activate(assert_all_requests_are_fired=True)
+def test_project_remove_by_id_failure(client: TrackBearClient) -> None:
+    """Assert a failure on the API side will raise the expected exception."""
+    mock_body = {
+        "success": False,
+        "error": {
+            "code": "SOME_ERROR_CODE",
+            "message": "A human-readable error message",
+        },
+    }
+    pattern = r"TrackBear API Failure \(400\) SOME_ERROR_CODE - A human-readable error message"
+
+    responses.add(
+        method="DELETE",
+        status=400,
+        url="https://trackbear.app/api/v1/project/123",
+        body=json.dumps(mock_body),
+    )
+
+    with pytest.raises(APIResponseError, match=pattern):
+        client.project.delete_by_id(project_id="123")
