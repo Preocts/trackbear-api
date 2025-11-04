@@ -70,7 +70,7 @@ class TrackBearClient:
         session = self._get_request_session(api_token, user_agent)
         self._api_client = APIClient(session, api_url)
 
-        # Define all client providers
+        # Define all client provider references
         self.bare = self._api_client
         self.project = ProjectClient(self._api_client)
 

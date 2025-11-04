@@ -42,18 +42,28 @@ The `TrackBearClient` give you all of the access to the TrackBear API. Various
 routes of the API, such as Projects, are available through the `TrackBearClient`
 from their respective attribute.
 
+Error handling removed for brevity.
+
 ```python
+from trackbear_api import Phase
 from trackbear_api import TrackBearClient
 
 # Assumes TRACKBEAR_API_TOKEN is set in the environment
 client = TrackBearClient()
 
-try:
-    projects = client.project.list()
+# Create a new Project
+new_project = client.project.save(
+    title="My new TrackBear project",
+    description="This will be an amazing story!",
+    phase=Phase.OUTLINING,
+    starred=True,
+    word=1667,
+)
 
-except APIResponseError:
-    print("Failed to get projects")
-    raise SystemExit(1)
+print(f"New Project created ({new_project.id}) '{new_project.title}'")
+
+# List all projects
+projects = client.project.list()
 
 print(f"| {'Project Id':^12} | {'Title':^30} | {'Word Count':^12} |")
 print("-" * 64)

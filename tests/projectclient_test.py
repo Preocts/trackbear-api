@@ -15,6 +15,7 @@ import pytest
 import responses
 import responses.matchers
 
+from trackbear_api import Phase
 from trackbear_api import TrackBearClient
 from trackbear_api.exceptions import APIResponseError
 from trackbear_api.models import Balance
@@ -26,11 +27,11 @@ PROJECT_RESPONSE = {
     "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
     "createdAt": "string",
     "updatedAt": "string",
-    "state": "string",
+    "state": "active",
     "ownerId": 123,
     "title": "string",
     "description": "string",
-    "phase": "string",
+    "phase": "planning",
     "startingBalance": {"word": 0, "time": 0, "page": 0, "chapter": 0, "scene": 0, "line": 0},
     "cover": "string",
     "starred": False,
@@ -140,6 +141,8 @@ def test_project_save_create_success(client: TrackBearClient) -> None:
     """
     Assert a new create returns the expected model (mocked) while asserting
     the payload is generated for the request correctly.
+
+    Accepts a Phase enum in the parameters
     """
     expected_payload = {
         "title": "Mock Title",
@@ -169,7 +172,7 @@ def test_project_save_create_success(client: TrackBearClient) -> None:
     project = client.project.save(
         title="Mock Title",
         description="Some Description.",
-        phase="drafting",
+        phase=Phase.DRAFTING,
         starred=True,
         display_on_profile=True,
         word=1000,
@@ -186,6 +189,8 @@ def test_project_save_update_success(client: TrackBearClient) -> None:
     """
     Assert an update returns the expected model (mocked) while asserting
     the payload is generated for the request correctly.
+
+    Accepts a string in place of a Phase enum in parameters
     """
     expected_payload = {
         "title": "Mock Title",
@@ -251,7 +256,7 @@ def test_project_create_failure(client: TrackBearClient) -> None:
         client.project.save(
             title="Mock Title",
             description="Some Description.",
-            phase="drafting",
+            phase=Phase.DRAFTING,
             starred=True,
             display_on_profile=True,
             word=1000,
