@@ -33,12 +33,12 @@ class ProjectClient(APIClient):
 
         return [Project.build(data) for data in response.data]
 
-    def get_by_id(self, project_id: str) -> Project:
+    def get_by_id(self, project_id: int) -> Project:
         """
         Get Project by id.
 
         Args:
-            project_id (str): Project ID to request from TrackBear
+            project_id (int): Project ID to request from TrackBear
 
         Returns:
             Project model
@@ -79,7 +79,7 @@ class ProjectClient(APIClient):
         chapter: int = 0,
         scene: int = 0,
         line: int = 0,
-        project_id: str | None = None,
+        project_id: int | None = None,
     ) -> ProjectStub:
         """
         Save a Project.
@@ -102,7 +102,7 @@ class ProjectClient(APIClient):
             chapter (int): Starting balance of chapters (default: 0)
             scene (int): Starting balance of scenes (default: 0)
             line (int): Starting balance of lines (default: 0)
-            project_id (str): Existing project id if request is to update existing projects
+            project_id (int): Existing project id if request is to update existing projects
 
         Returns:
             ProjectStub object on success
@@ -140,12 +140,12 @@ class ProjectClient(APIClient):
 
         return ProjectStub.build(response.data)
 
-    def delete_by_id(self, project_id: str) -> ProjectStub:
+    def delete_by_id(self, project_id: int) -> ProjectStub:
         """
         Delete an existing project.
 
         Args:
-            project_id (str): Existing project id if request is to update existing projects
+            project_id (int): Existing project id if request is to update existing projects
 
         Returns:
             ProjectStub object on success

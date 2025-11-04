@@ -105,7 +105,7 @@ def test_project_get_by_id_success(client: TrackBearClient) -> None:
         body=json.dumps(mock_body),
     )
 
-    project = client.project.get_by_id("123")
+    project = client.project.get_by_id(123)
 
     assert isinstance(project, Project)
     assert isinstance(project.starting_balance, Balance)
@@ -132,7 +132,7 @@ def test_project_get_by_id_failure(client: TrackBearClient) -> None:
     )
 
     with pytest.raises(APIResponseError, match=pattern):
-        client.project.get_by_id("123")
+        client.project.get_by_id(123)
 
 
 @responses.activate(assert_all_requests_are_fired=True)
@@ -222,7 +222,7 @@ def test_project_save_update_success(client: TrackBearClient) -> None:
         page=10,
         chapter=1,
         scene=3,
-        project_id="123",
+        project_id=123,
     )
 
     assert isinstance(project, ProjectStub)
@@ -273,7 +273,7 @@ def test_project_remove_by_id_success(client: TrackBearClient) -> None:
         body=json.dumps({"success": True, "data": PROJECT_RESPONSE}),
     )
 
-    project = client.project.delete_by_id(project_id="123")
+    project = client.project.delete_by_id(project_id=123)
 
     assert isinstance(project, ProjectStub)
 
@@ -298,4 +298,4 @@ def test_project_remove_by_id_failure(client: TrackBearClient) -> None:
     )
 
     with pytest.raises(APIResponseError, match=pattern):
-        client.project.delete_by_id(project_id="123")
+        client.project.delete_by_id(project_id=123)
