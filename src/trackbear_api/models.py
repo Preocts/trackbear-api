@@ -7,6 +7,7 @@ import json
 from typing import Any
 from typing import NoReturn
 
+from .enums import Color
 from .enums import Phase
 from .enums import State
 from .exceptions import ModelBuildError
@@ -14,6 +15,7 @@ from .exceptions import ModelBuildError
 __all__ = [
     "Balance",
     "Project",
+    "Tag",
 ]
 
 
@@ -142,6 +144,38 @@ class ProjectStub:
                 cover=data["cover"],
                 starred=data.get("starred", False),
                 display_on_profile=data.get("displayOnProfile", False),
+            )
+
+        except (KeyError, ValueError) as exc:
+            _handle_build_error(exc, data, cls.__name__)
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class Tag:
+    """Tag model build from API response."""
+
+    id: int
+    uuid: str
+    created_at: str
+    updated_at: str
+    state: State
+    owner_id: int
+    name: str
+    color: Color
+
+    @classmethod
+    def build(cls, data: dict[str, Any]) -> Tag:
+        """Build a Tag model from the API response data."""
+        try:
+            return cls(
+                id=data["id"],
+                uuid=data["uuid"],
+                created_at=data["createdAt"],
+                updated_at=data["updatedAt"],
+                state=State(data["state"]),
+                owner_id=data["ownerId"],
+                name=data["name"],
+                color=Color(data["color"]),
             )
 
         except (KeyError, ValueError) as exc:
