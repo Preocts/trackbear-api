@@ -42,7 +42,7 @@ class Balance:
 class Project:
     """Project model built from the API response."""
 
-    id: int  # noqa: A003
+    id: int
     uuid: str
     created_at: str
     updated_at: str
@@ -110,7 +110,7 @@ class Project:
 class ProjectStub:
     """ProjectStub model built from the API response."""
 
-    id: int  # noqa: A003
+    id: int
     uuid: str
     created_at: str
     updated_at: str
