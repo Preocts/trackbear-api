@@ -155,7 +155,7 @@ def test_project_get_by_id_failure(client: TrackBearClient) -> None:
 
 
 @responses.activate(assert_all_requests_are_fired=True)
-def test_project_create_success(client: TrackBearClient) -> None:
+def test_project_save_create_success(client: TrackBearClient) -> None:
     """
     Assert a new create returns the expected model (mocked) while asserting
     the payload is generated for the request correctly.
@@ -185,7 +185,7 @@ def test_project_create_success(client: TrackBearClient) -> None:
         body=json.dumps({"success": True, "data": PROJECT_RESPONSE}),
     )
 
-    project = client.project.create(
+    project = client.project.save(
         title="Mock Title",
         description="Some Description.",
         phase="drafting",
@@ -195,6 +195,53 @@ def test_project_create_success(client: TrackBearClient) -> None:
         page=10,
         chapter=1,
         scene=3,
+    )
+
+    assert isinstance(project, Project)
+
+
+@responses.activate(assert_all_requests_are_fired=True)
+def test_project_save_update_success(client: TrackBearClient) -> None:
+    """
+    Assert an update returns the expected model (mocked) while asserting
+    the payload is generated for the request correctly.
+    """
+    expected_payload = {
+        "title": "Mock Title",
+        "description": "Some Description.",
+        "phase": "drafting",
+        "startingBalance": {
+            "word": 1000,
+            "time": 0,
+            "page": 10,
+            "chapter": 1,
+            "scene": 3,
+            "line": 0,
+        },
+        "starred": True,
+        "displayOnProfile": True,
+    }
+    body_match = responses.matchers.body_matcher(json.dumps(expected_payload))
+
+    responses.add(
+        method="PATCH",
+        url="https://trackbear.app/api/v1/project/123",
+        status=200,
+        match=[body_match],
+        body=json.dumps({"success": True, "data": PROJECT_RESPONSE}),
+    )
+
+    project = client.project.save(
+        title="Mock Title",
+        description="Some Description.",
+        phase="drafting",
+        starred=True,
+        display_on_profile=True,
+        word=1000,
+        page=10,
+        chapter=1,
+        scene=3,
+        project_id="123",
     )
 
     assert isinstance(project, Project)
@@ -220,7 +267,7 @@ def test_project_create_failure(client: TrackBearClient) -> None:
     )
 
     with pytest.raises(APIResponseError, match=pattern):
-        client.project.create(
+        client.project.save(
             title="Mock Title",
             description="Some Description.",
             phase="drafting",
