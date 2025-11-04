@@ -26,6 +26,7 @@ class Color(str, enum.Enum):
     ORANGE = "orange"
     YELLOW = "yellow"
     GREEN = "green"
+    BLUE = "blue"
     PURPLE = "purple"
     BROWN = "brown"
     WHITE = "white"
