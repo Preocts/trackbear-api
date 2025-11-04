@@ -18,3 +18,16 @@ class Phase(str, enum.Enum):
 class State(str, enum.Enum):
     ACTIVE = "active"
     DELETED = "deleted"
+
+
+class Color(str, enum.Enum):
+    DEFAULT = "default"
+    RED = "red"
+    ORANGE = "orange"
+    YELLOW = "yellow"
+    GREEN = "green"
+    PURPLE = "purple"
+    BROWN = "brown"
+    WHITE = "white"
+    BLACK = "black"
+    GRAY = "gray"
