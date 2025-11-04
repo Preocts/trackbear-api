@@ -18,6 +18,26 @@ Python library for synchronous HTTP calls to the Trackbear API (https://help.tra
 
 **Deveploment in progress, expect breaking changes frequently until version 0.1.0**
 
+Implemented routes:
+
+- Projects
+- Tags
+
+Routes pending implementation:
+
+- Tallies
+- Goals
+- Leaderboards
+- Leaderboard Teams
+- Leaderboard Members
+- Leaderboard Participation
+- Stats
+- Other
+
+Features pending implementation:
+
+- Rate limit exceptions
+
 ## Installation
 
 ```console
