@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "trackbear-api"
 requires-python = ">=3.10"
-description = "Python library for using the Trackbear app API https://help.trackbear.app/api"
+description = "Python library for synchronous HTTP calls to the Trackbear API (https://help.trackbear.app/api)"
 readme = "README.md"
 license = "MIT"
 authors = [
