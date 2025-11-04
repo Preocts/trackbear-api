@@ -44,9 +44,9 @@ def test_init_client_custom_values() -> None:
         user_agent=expected_user_agent,
     )
 
-    assert client.session.headers["Authorization"] == f"Bearer {expected_api_token}"
-    assert client.api_url == expected_url
-    assert client.session.headers["User-Agent"] == expected_user_agent
+    assert client.bare.session.headers["Authorization"] == f"Bearer {expected_api_token}"
+    assert client.bare.api_url == expected_url
+    assert client.bare.session.headers["User-Agent"] == expected_user_agent
 
 
 @pytest.mark.usefixtures("add_environ_token", "add_environ_useragent", "add_environ_url")
@@ -58,9 +58,9 @@ def test_init_client_environ_values() -> None:
 
     client = TrackBearClient()
 
-    assert client.session.headers["Authorization"] == f"Bearer {expected_value}"
-    assert client.api_url == expected_value
-    assert client.session.headers["User-Agent"] == expected_value
+    assert client.bare.session.headers["Authorization"] == f"Bearer {expected_value}"
+    assert client.bare.api_url == expected_value
+    assert client.bare.session.headers["User-Agent"] == expected_value
 
 
 @pytest.mark.usefixtures("add_environ_token")
@@ -73,8 +73,8 @@ def test_init_client_default_values() -> None:
 
     client = TrackBearClient()
 
-    assert client.api_url == expected_url
-    assert client.session.headers["User-Agent"] == expected_user_agent
+    assert client.bare.api_url == expected_url
+    assert client.bare.session.headers["User-Agent"] == expected_user_agent
 
 
 @responses.activate(assert_all_requests_are_fired=True)
@@ -101,7 +101,7 @@ def test_get_valid_response(client: TrackBearClient) -> None:
         match=[headers_match, parames_match],
     )
 
-    response = client.get("/ping", params=expected_params)
+    response = client.bare.get("/ping", params=expected_params)
 
     assert isinstance(response, TrackBearResponse)
     assert response.success is True
@@ -139,7 +139,7 @@ def test_get_invalid_response(client: TrackBearClient) -> None:
         match=[headers_match, parames_match],
     )
 
-    response = client.get("/ping", params=expected_params)
+    response = client.bare.get("/ping", params=expected_params)
 
     assert isinstance(response, TrackBearResponse)
     assert response.success is False
@@ -193,7 +193,7 @@ def test_post_valid_response(client: TrackBearClient) -> None:
         match=[headers_match, body_match],
     )
 
-    response = client.post("/goal", expected_payload)
+    response = client.bare.post("/goal", expected_payload)
 
     assert isinstance(response, TrackBearResponse)
     assert response.success is True
@@ -248,7 +248,7 @@ def test_patch_valid_response(client: TrackBearClient) -> None:
         match=[headers_match, body_match],
     )
 
-    response = client.patch("/project/123", expected_payload)
+    response = client.bare.patch("/project/123", expected_payload)
 
     assert isinstance(response, TrackBearResponse)
     assert response.success is True
@@ -326,7 +326,7 @@ def test_delete_valid_response(client: TrackBearClient) -> None:
         match=[headers_match],
     )
 
-    response = client.delete("/tally/123")
+    response = client.bare.delete("/tally/123")
 
     assert isinstance(response, TrackBearResponse)
     assert response.success is True

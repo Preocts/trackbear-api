@@ -9,8 +9,12 @@ from .models import Project
 from .models import ProjectStub
 
 
-class ProjectClient(APIClient):
+class ProjectClient:
     """Provides methods and models for Project API routes."""
+
+    def __init__(self, api_client: APIClient) -> None:
+        """Initialize client by providing defined APIClient."""
+        self._api_client = api_client
 
     def list(self) -> Sequence[Project]:
         """
@@ -22,7 +26,7 @@ class ProjectClient(APIClient):
         Raises:
             APIResponseError: On any failure message returned from TrackBear API
         """
-        response = self._handle_request("GET", "/project")
+        response = self._api_client.get("/project")
 
         if not response.success:
             raise APIResponseError(
@@ -33,7 +37,7 @@ class ProjectClient(APIClient):
 
         return [Project.build(data) for data in response.data]
 
-    def get_by_id(self, project_id: int) -> Project:
+    def get(self, project_id: int) -> Project:
         """
         Get Project by id.
 
@@ -46,7 +50,7 @@ class ProjectClient(APIClient):
         Raises:
             APIResponseError: On failure to retrieve requested model
         """
-        response = self._handle_request("GET", f"/project/{project_id}")
+        response = self._api_client.get(f"/project/{project_id}")
 
         if not response.success:
             raise APIResponseError(
@@ -127,9 +131,9 @@ class ProjectClient(APIClient):
         }
 
         if project_id is None:
-            response = self.post("/project", payload)
+            response = self._api_client.post("/project", payload)
         else:
-            response = self.patch(f"/project/{project_id}", payload)
+            response = self._api_client.patch(f"/project/{project_id}", payload)
 
         if not response.success:
             raise APIResponseError(
@@ -140,7 +144,7 @@ class ProjectClient(APIClient):
 
         return ProjectStub.build(response.data)
 
-    def delete_by_id(self, project_id: int) -> ProjectStub:
+    def delete(self, project_id: int) -> ProjectStub:
         """
         Delete an existing project.
 
@@ -153,7 +157,7 @@ class ProjectClient(APIClient):
         Raises:
             APIResponseError: On any failure message returned from TrackBear API
         """
-        response = self.delete(f"/project/{project_id}")
+        response = self._api_client.delete(f"/project/{project_id}")
 
         if not response.success:
             raise APIResponseError(
