@@ -105,7 +105,7 @@ class ProjectClient(APIClient):
             project_id (str): Existing project id if request is to update existing projects
 
         Returns:
-            Project object on success
+            ProjectStub object on success
 
         Raises:
             APIResponseError: On any failure message returned from TrackBear API
@@ -130,6 +130,30 @@ class ProjectClient(APIClient):
             response = self.post("/project", payload)
         else:
             response = self.patch(f"/project/{project_id}", payload)
+
+        if not response.success:
+            raise APIResponseError(
+                status_code=response.status_code,
+                code=response.error.code,
+                message=response.error.message,
+            )
+
+        return ProjectStub.build(response.data)
+
+    def delete_by_id(self, project_id: str) -> ProjectStub:
+        """
+        Delete an existing project.
+
+        Args:
+            project_id (str): Existing project id if request is to update existing projects
+
+        Returns:
+            ProjectStub object on success
+
+        Raises:
+            APIResponseError: On any failure message returned from TrackBear API
+        """
+        response = self.delete(f"/project/{project_id}")
 
         if not response.success:
             raise APIResponseError(
