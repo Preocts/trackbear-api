@@ -114,8 +114,21 @@ https://help.trackbear.app/api/
 | ----------- | ---------------------------- |
 | `.list()`   | Get all projects             |
 | `.get()`    | Get a project by specific id |
-| `.save()`   | Create or update projects    |
+| `.save()`   | Create or update project     |
 | `.delete()` | Delete a project by its id   |
+
+### Tags
+
+| Provider Method       | Description                                        |
+| --------------------- | -------------------------------------------------- |
+| `TrackBearClient.tag` | Contains helper methods for all Tag related routes |
+
+| Method      | Description              |
+| ----------- | ------------------------ |
+| `.list()`   | Get all tags             |
+| `.get()`    | Get a tag by specific id |
+| `.save()`   | Create or update tag     |
+| `.delete()` | Delete a tag by its id   |
 
 ### Bare Access
 
