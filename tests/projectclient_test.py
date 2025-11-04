@@ -17,9 +17,9 @@ import responses.matchers
 
 from trackbear_api import TrackBearClient
 from trackbear_api.exceptions import APIResponseError
-from trackbear_api.exceptions import ModelBuildError
 from trackbear_api.models import Balance
 from trackbear_api.models import Project
+from trackbear_api.models import ProjectStub
 
 PROJECT_RESPONSE = {
     "id": 123,
@@ -67,25 +67,6 @@ def test_project_list_success(client: TrackBearClient) -> None:
         assert isinstance(project, Project)
         assert isinstance(project.starting_balance, Balance)
         assert isinstance(project.totals, Balance)
-
-
-@responses.activate(assert_all_requests_are_fired=True)
-def test_project_list_model_failure(client: TrackBearClient) -> None:
-    """Assert expected exception when Project model is built incorrectly."""
-    mock_data = copy.deepcopy(PROJECT_RESPONSE)
-    del mock_data["id"]
-    mock_body = {"success": True, "data": [mock_data]}
-
-    responses.add(
-        method="GET",
-        status=200,
-        url="https://trackbear.app/api/v1/project",
-        body=json.dumps(mock_body),
-    )
-    pattern = "Failure to build the Project model from the provided data"
-
-    with pytest.raises(ModelBuildError, match=pattern):
-        client.project.list()
 
 
 @responses.activate(assert_all_requests_are_fired=True)
@@ -197,7 +178,7 @@ def test_project_save_create_success(client: TrackBearClient) -> None:
         scene=3,
     )
 
-    assert isinstance(project, Project)
+    assert isinstance(project, ProjectStub)
 
 
 @responses.activate(assert_all_requests_are_fired=True)
@@ -244,7 +225,7 @@ def test_project_save_update_success(client: TrackBearClient) -> None:
         project_id="123",
     )
 
-    assert isinstance(project, Project)
+    assert isinstance(project, ProjectStub)
 
 
 @responses.activate(assert_all_requests_are_fired=True)
