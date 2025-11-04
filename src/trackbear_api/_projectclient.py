@@ -6,6 +6,7 @@ from typing import Literal
 from ._apiclient import APIClient
 from .exceptions import APIResponseError
 from .models import Project
+from .models import ProjectStub
 
 
 class ProjectClient(APIClient):
@@ -79,7 +80,7 @@ class ProjectClient(APIClient):
         scene: int = 0,
         line: int = 0,
         project_id: str | None = None,
-    ) -> Project:
+    ) -> ProjectStub:
         """
         Save a Project.
 
@@ -137,4 +138,4 @@ class ProjectClient(APIClient):
                 message=response.error.message,
             )
 
-        return Project.build(response.data)
+        return ProjectStub.build(response.data)
