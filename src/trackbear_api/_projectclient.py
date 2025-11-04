@@ -149,7 +149,7 @@ class ProjectClient:
         Delete an existing project.
 
         Args:
-            project_id (int): Existing project id if request is to update existing projects
+            project_id (int): Existing project id
 
         Returns:
             ProjectStub object on success

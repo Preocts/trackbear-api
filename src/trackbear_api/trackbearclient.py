@@ -8,6 +8,7 @@ import requests
 
 from ._apiclient import APIClient
 from ._projectclient import ProjectClient
+from ._tagclient import TagClient
 
 __all__ = ["TrackBearClient"]
 
@@ -73,6 +74,7 @@ class TrackBearClient:
         # Define all client provider references
         self.bare = self._api_client
         self.project = ProjectClient(self._api_client)
+        self.tag = TagClient(self._api_client)
 
     def _pick_config_value(
         self,
