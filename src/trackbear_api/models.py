@@ -5,9 +5,10 @@ from __future__ import annotations
 import dataclasses
 import json
 from typing import Any
-from typing import Literal
 from typing import NoReturn
 
+from .enums import Phase
+from .enums import State
 from .exceptions import ModelBuildError
 
 __all__ = [
@@ -46,19 +47,11 @@ class Project:
     uuid: str
     created_at: str
     updated_at: str
-    state: Literal["active", "deleted"]
+    state: State
     owner_id: int
     title: str
     description: str
-    phase: Literal[
-        "planning",
-        "outlining",
-        "drafting",
-        "revising",
-        "on hold",
-        "finished",
-        "abandoned",
-    ]
+    phase: Phase
     starting_balance: Balance
     cover: str | None
     starred: bool
@@ -75,11 +68,11 @@ class Project:
                 uuid=data["uuid"],
                 created_at=data["createdAt"],
                 updated_at=data["updatedAt"],
-                state=data["state"],
+                state=State(data["state"]),
                 owner_id=data["ownerId"],
                 title=data["title"],
                 description=data["description"],
-                phase=data["phase"],
+                phase=Phase(data["phase"]),
                 starting_balance=Balance(
                     word=data["startingBalance"].get("word", 0),
                     time=data["startingBalance"].get("time", 0),
@@ -102,7 +95,7 @@ class Project:
                 last_updated=data["lastUpdated"],
             )
 
-        except KeyError as exc:
+        except (KeyError, ValueError) as exc:
             _handle_build_error(exc, data, cls.__name__)
 
 
@@ -114,19 +107,11 @@ class ProjectStub:
     uuid: str
     created_at: str
     updated_at: str
-    state: Literal["active", "deleted"]
+    state: State
     owner_id: int
     title: str
     description: str
-    phase: Literal[
-        "planning",
-        "outlining",
-        "drafting",
-        "revising",
-        "on hold",
-        "finished",
-        "abandoned",
-    ]
+    phase: Phase
     starting_balance: Balance
     cover: str | None
     starred: bool
@@ -141,11 +126,11 @@ class ProjectStub:
                 uuid=data["uuid"],
                 created_at=data["createdAt"],
                 updated_at=data["updatedAt"],
-                state=data["state"],
+                state=State(data["state"]),
                 owner_id=data["ownerId"],
                 title=data["title"],
                 description=data["description"],
-                phase=data["phase"],
+                phase=Phase(data["phase"]),
                 starting_balance=Balance(
                     word=data["startingBalance"].get("word", 0),
                     time=data["startingBalance"].get("time", 0),
@@ -159,5 +144,5 @@ class ProjectStub:
                 display_on_profile=data.get("displayOnProfile", False),
             )
 
-        except KeyError as exc:
+        except (KeyError, ValueError) as exc:
             _handle_build_error(exc, data, cls.__name__)

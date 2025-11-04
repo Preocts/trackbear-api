@@ -1,9 +1,9 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
-from typing import Literal
 
 from ._apiclient import APIClient
+from .enums import Phase
 from .exceptions import APIResponseError
 from .models import Project
 from .models import ProjectStub
@@ -65,15 +65,7 @@ class ProjectClient:
         self,
         title: str,
         description: str,
-        phase: Literal[
-            "planning",
-            "outlining",
-            "drafting",
-            "revising",
-            "on hold",
-            "finished",
-            "abandoned",
-        ],
+        phase: Phase | str,
         *,
         starred: bool = False,
         display_on_profile: bool = False,
@@ -96,8 +88,8 @@ class ProjectClient:
         Args:
             title (str): Title of the Project
             description (str): Description of the Project
-            phase (str): On of the following: `planning`, `outlining`, `drafting`,
-                `revising`, `on hold`, `finished`, or `abandoned`.
+            phase (enum | str): Phase enum of the following: `planning`, `outlining`,
+                `drafting`, `revising`, `on hold`, `finished`, or `abandoned`.
             starred (bool): Star the project (default: False)
             display_on_profile (bool): Display project on public profile (default: False)
             word (int): Starting balance of words (default: 0)
@@ -113,11 +105,19 @@ class ProjectClient:
 
         Raises:
             APIResponseError: On any failure message returned from TrackBear API
+            ValueError: When `phase` is not a valid value
         """
+        # Forcing the use of the Enum here allows for fast failures at runtime if the
+        # incorrect string is provided.
+        if isinstance(phase, Phase):
+            _phase = phase
+        else:
+            _phase = Phase(phase)
+
         payload = {
             "title": title,
             "description": description,
-            "phase": phase,
+            "phase": _phase.value,
             "startingBalance": {
                 "word": word,
                 "time": time,
