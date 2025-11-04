@@ -75,10 +75,6 @@ for project in projects:
 
 The library defines a handful of useful custom exceptions.
 
-```python
-import trackbear_api.exceptions
-```
-
 #### ModelBuildError(Exception)
 
 Raised when building a dataclass model from the API response fails. This can
