@@ -56,7 +56,7 @@ class ProjectClient(APIClient):
 
         return Project.build(response.data)
 
-    def create(
+    def save(
         self,
         title: str,
         description: str,
@@ -78,9 +78,15 @@ class ProjectClient(APIClient):
         chapter: int = 0,
         scene: int = 0,
         line: int = 0,
+        project_id: str | None = None,
     ) -> Project:
         """
-        Create a new project.
+        Save a Project.
+
+        If `project_id` is provided, then the existing project is updated. Otherwise,
+        a new projec is created.
+
+        NOTE: While updating an existing project, be mindful of default values.
 
         Args:
             title (str): Title of the Project
@@ -95,6 +101,7 @@ class ProjectClient(APIClient):
             chapter (int): Starting balance of chapters (default: 0)
             scene (int): Starting balance of scenes (default: 0)
             line (int): Starting balance of lines (default: 0)
+            project_id (str): Existing project id if request is to update existing projects
 
         Returns:
             Project object on success
@@ -118,7 +125,10 @@ class ProjectClient(APIClient):
             "displayOnProfile": display_on_profile,
         }
 
-        response = self.post("/project", payload)
+        if project_id is None:
+            response = self.post("/project", payload)
+        else:
+            response = self.patch(f"/project/{project_id}", payload)
 
         if not response.success:
             raise APIResponseError(
