@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Sequence
+from typing import Literal
 
 from ._apiclient import APIClient
 from .exceptions import APIResponseError
@@ -45,6 +46,79 @@ class ProjectClient(APIClient):
             APIResponseError: On failure to retrieve requested model
         """
         response = self._handle_request("GET", f"/project/{project_id}")
+
+        if not response.success:
+            raise APIResponseError(
+                status_code=response.status_code,
+                code=response.error.code,
+                message=response.error.message,
+            )
+
+        return Project.build(response.data)
+
+    def create(
+        self,
+        title: str,
+        description: str,
+        phase: Literal[
+            "planning",
+            "outlining",
+            "drafting",
+            "revising",
+            "on hold",
+            "finished",
+            "abandoned",
+        ],
+        *,
+        starred: bool = False,
+        display_on_profile: bool = False,
+        word: int = 0,
+        time: int = 0,
+        page: int = 0,
+        chapter: int = 0,
+        scene: int = 0,
+        line: int = 0,
+    ) -> Project:
+        """
+        Create a new project.
+
+        Args:
+            title (str): Title of the Project
+            description (str): Description of the Project
+            phase (str): On of the following: `planning`, `outlining`, `drafting`,
+                `revising`, `on hold`, `finished`, or `abandoned`.
+            starred (bool): Star the project (default: False)
+            display_on_profile (bool): Display project on public profile (default: False)
+            word (int): Starting balance of words (default: 0)
+            time (int): Starting balance of time (default: 0)
+            page (int): Starting balance of pages (default: 0)
+            chapter (int): Starting balance of chapters (default: 0)
+            scene (int): Starting balance of scenes (default: 0)
+            line (int): Starting balance of lines (default: 0)
+
+        Returns:
+            Project object on success
+
+        Raises:
+            APIResponseError: On any failure message returned from TrackBear API
+        """
+        payload = {
+            "title": title,
+            "description": description,
+            "phase": phase,
+            "startingBalance": {
+                "word": word,
+                "time": time,
+                "page": page,
+                "chapter": chapter,
+                "scene": scene,
+                "line": line,
+            },
+            "starred": starred,
+            "displayOnProfile": display_on_profile,
+        }
+
+        response = self.post("/project", payload)
 
         if not response.success:
             raise APIResponseError(

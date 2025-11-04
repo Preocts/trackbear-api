@@ -13,6 +13,7 @@ import json
 
 import pytest
 import responses
+import responses.matchers
 
 from trackbear_api import TrackBearClient
 from trackbear_api.exceptions import APIResponseError
@@ -151,3 +152,82 @@ def test_project_get_by_id_failure(client: TrackBearClient) -> None:
 
     with pytest.raises(APIResponseError, match=pattern):
         client.project.get_by_id("123")
+
+
+@responses.activate(assert_all_requests_are_fired=True)
+def test_project_create_success(client: TrackBearClient) -> None:
+    """
+    Assert a new create returns the expected model (mocked) while asserting
+    the payload is generated for the request correctly.
+    """
+    expected_payload = {
+        "title": "Mock Title",
+        "description": "Some Description.",
+        "phase": "drafting",
+        "startingBalance": {
+            "word": 1000,
+            "time": 0,
+            "page": 10,
+            "chapter": 1,
+            "scene": 3,
+            "line": 0,
+        },
+        "starred": True,
+        "displayOnProfile": True,
+    }
+    body_match = responses.matchers.body_matcher(json.dumps(expected_payload))
+
+    responses.add(
+        method="POST",
+        url="https://trackbear.app/api/v1/project",
+        status=200,
+        match=[body_match],
+        body=json.dumps({"success": True, "data": PROJECT_RESPONSE}),
+    )
+
+    project = client.project.create(
+        title="Mock Title",
+        description="Some Description.",
+        phase="drafting",
+        starred=True,
+        display_on_profile=True,
+        word=1000,
+        page=10,
+        chapter=1,
+        scene=3,
+    )
+
+    assert isinstance(project, Project)
+
+
+@responses.activate(assert_all_requests_are_fired=True)
+def test_project_create_failure(client: TrackBearClient) -> None:
+    """Assert a failure on the API side will raise the expected exception."""
+    mock_body = {
+        "success": False,
+        "error": {
+            "code": "SOME_ERROR_CODE",
+            "message": "A human-readable error message",
+        },
+    }
+    pattern = r"TrackBear API Failure \(400\) SOME_ERROR_CODE - A human-readable error message"
+
+    responses.add(
+        method="POST",
+        status=400,
+        url="https://trackbear.app/api/v1/project",
+        body=json.dumps(mock_body),
+    )
+
+    with pytest.raises(APIResponseError, match=pattern):
+        client.project.create(
+            title="Mock Title",
+            description="Some Description.",
+            phase="drafting",
+            starred=True,
+            display_on_profile=True,
+            word=1000,
+            page=10,
+            chapter=1,
+            scene=3,
+        )
