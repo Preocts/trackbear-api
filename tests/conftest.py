@@ -33,3 +33,10 @@ def add_environ_url() -> Generator[None, None, None]:
     """Add a mock TRACKBEAR_API_URL value to environ."""
     with patch.dict(os.environ, {"TRACKBEAR_API_URL": "environ_value"}):
         yield None
+
+
+@pytest.fixture()
+def add_environ_timeout() -> Generator[None, None, None]:
+    """Add a mock TRACKBEAR_API_TIMEOUT_SECONDS value to environ."""
+    with patch.dict(os.environ, {"TRACKBEAR_API_TIMEOUT_SECONDS": "3"}):
+        yield None
