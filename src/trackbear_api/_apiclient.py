@@ -14,10 +14,18 @@ class APIClient:
 
     logger = logging.getLogger("trackbear-api")
 
-    def __init__(self, session: requests.sessions.Session, api_url: str) -> None:
-        """Initialize client with session built from TrackBearClient."""
+    def __init__(self, session: requests.sessions.Session, api_url: str, timeout: int) -> None:
+        """
+        Initialize client with session built from TrackBearClient.
+
+        Args:
+            session (requests.sessions.Session): Configured requests Session
+            api_url (str): Base url for the TrackBear API
+            timeout (int): HTTP Timeout in seconds
+        """
         self.session = session
         self.api_url = api_url
+        self.timeout = timeout
 
     def get(self, route: str, params: dict[str, Any] | None = None) -> TrackBearResponse:
         """GET request to the TrackBear API."""
@@ -48,9 +56,9 @@ class APIClient:
         url = f"{self.api_url}/{route}"
 
         if params:
-            response = self.session.request(method, url, params=params)
+            response = self.session.request(method, url, params=params, timeout=self.timeout)
         else:
-            response = self.session.request(method, url, json=payload)
+            response = self.session.request(method, url, json=payload, timeout=self.timeout)
 
         if not response.ok:
             log_body = f"Code: {response.status_code} Route: {route} Parames: {params} Text: {response.text} Headers: {response.headers}"

@@ -27,7 +27,12 @@ def test_init_client_providing_no_token() -> None:
         TrackBearClient()
 
 
-@pytest.mark.usefixtures("add_environ_token", "add_environ_useragent", "add_environ_url")
+@pytest.mark.usefixtures(
+    "add_environ_token",
+    "add_environ_useragent",
+    "add_environ_url",
+    "add_environ_timeout",
+)
 def test_init_client_custom_values() -> None:
     """
     Initialize the client, providing a custom keyword values
@@ -37,19 +42,27 @@ def test_init_client_custom_values() -> None:
     expected_api_token = "mock_api_key"
     expected_url = "https://some.other.app"
     expected_user_agent = "my custom app/1.0"
+    expected_timeout = 5
 
     client = TrackBearClient(
         api_token=expected_api_token,
         api_url=expected_url,
         user_agent=expected_user_agent,
+        timeout_seconds=expected_timeout,
     )
 
     assert client.bare.session.headers["Authorization"] == f"Bearer {expected_api_token}"
     assert client.bare.api_url == expected_url
     assert client.bare.session.headers["User-Agent"] == expected_user_agent
+    assert client.bare.timeout == expected_timeout
 
 
-@pytest.mark.usefixtures("add_environ_token", "add_environ_useragent", "add_environ_url")
+@pytest.mark.usefixtures(
+    "add_environ_token",
+    "add_environ_useragent",
+    "add_environ_url",
+    "add_environ_timeout",
+)
 def test_init_client_environ_values() -> None:
     """
     Initialize the client, assert environment values provided are used
@@ -61,6 +74,7 @@ def test_init_client_environ_values() -> None:
     assert client.bare.session.headers["Authorization"] == f"Bearer {expected_value}"
     assert client.bare.api_url == expected_value
     assert client.bare.session.headers["User-Agent"] == expected_value
+    assert client.bare.timeout == 3
 
 
 @pytest.mark.usefixtures("add_environ_token")
@@ -75,6 +89,7 @@ def test_init_client_default_values() -> None:
 
     assert client.bare.api_url == expected_url
     assert client.bare.session.headers["User-Agent"] == expected_user_agent
+    assert client.bare.timeout == 10
 
 
 @responses.activate(assert_all_requests_are_fired=True)

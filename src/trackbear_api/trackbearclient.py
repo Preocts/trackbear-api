@@ -16,10 +16,12 @@ __all__ = ["TrackBearClient"]
 _TOKEN_ENVIRON = "TRACKBEAR_API_TOKEN"
 _USER_AGENT_ENVIRON = "TRACKBEAR_API_AGENT"
 _URL_ENVIRON = "TRACKBEAR_API_URL"
+_TIMEOUT_SECONDS = "TRACKBEAR_API_TIMEOUT_SECONDS"
 
 # Default values, can be overridden by user
 _DEFAULT_USER_AGENT = f"trackbear-api/{importlib.metadata.version('trackbear-api')} (https://github.com/Preocts/trackbear-api) by Preocts"
 _DEFAULT_API_URL = "https://trackbear.app/api/v1"
+_DEFAULT_TIMEOUT_SECONDS = 10
 
 
 class TrackBearClient:
@@ -33,6 +35,7 @@ class TrackBearClient:
         api_token: str | None = None,
         api_url: str | None = None,
         user_agent: str | None = None,
+        timeout_seconds: int | None = None,
     ) -> None:
         """
         Initialize the client.
@@ -48,6 +51,8 @@ class TrackBearClient:
                 trackbear-api repo. You can override this to identify your own app by
                 providing directly or fro the environment (TRACKBEAR_USER_AGENT).
                 https://help.trackbear.app/api/authentication#identifying-your-app
+            timeout_seconds (int): Number of seconds to wait for a response from the API
+                before raising an exception.
 
         Raises:
             ValueError: If API token is not provided or an empty string.
@@ -64,12 +69,19 @@ class TrackBearClient:
         api_url = self._pick_config_value(api_url, _URL_ENVIRON, _DEFAULT_API_URL)
         api_url = api_url.rstrip("/") if api_url.endswith("/") else api_url
 
+        timeout = self._pick_config_value(
+            provided_value=timeout_seconds,
+            environ_key=_TIMEOUT_SECONDS,
+            default=_DEFAULT_TIMEOUT_SECONDS,
+        )
+
         self.logger.debug("Initialized TrackBearClient with user-agent: %s", user_agent)
         self.logger.debug("Initialized TrackBearClient with token: ***%s", api_token[-4:])
         self.logger.debug("Initialized TrackBearClient with url: %s", api_url)
+        self.logger.debug("Initialized TrackBearClient with timeout: %d seconds", timeout_seconds)
 
         session = self._get_request_session(api_token, user_agent)
-        self._api_client = APIClient(session, api_url)
+        self._api_client = APIClient(session, api_url, int(timeout))
 
         # Define all client provider references
         self.bare = self._api_client
@@ -78,9 +90,9 @@ class TrackBearClient:
 
     def _pick_config_value(
         self,
-        provided_value: str | None,
+        provided_value: str | int | None,
         environ_key: str,
-        default: str,
+        default: str | int,
     ) -> str:
         """
         Choose the preferred configuration value from the available values.
@@ -89,14 +101,14 @@ class TrackBearClient:
         """
         if provided_value:
             self.logger.debug("Using provided value for %s", environ_key)
-            return provided_value
+            return str(provided_value)
 
         if os.getenv(environ_key):
             self.logger.debug("Using environment value for %s", environ_key)
             return os.getenv(environ_key, "")
 
         self.logger.debug("Using default value for %s", environ_key)
-        return default
+        return str(default)
 
     def _get_request_session(self, api_token: str, user_agent: str) -> requests.sessions.Session:
         """Build a Session with required headers for API calls."""
