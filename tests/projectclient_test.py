@@ -41,12 +41,6 @@ PROJECT_RESPONSE = {
 }
 
 
-@pytest.fixture
-def client(add_environ_token: None) -> TrackBearClient:
-    """Create a mock client."""
-    return TrackBearClient()
-
-
 @responses.activate(assert_all_requests_are_fired=True)
 def test_project_list_success(client: TrackBearClient) -> None:
     """Assert the Project model is built correctly."""

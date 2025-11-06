@@ -13,12 +13,6 @@ from trackbear_api import TrackBearResponse
 from trackbear_api.exceptions import APITimeoutError
 
 
-@pytest.fixture
-def client(add_environ_token: None, add_environ_useragent: None) -> TrackBearClient:
-    """Create a mock client."""
-    return TrackBearClient()
-
-
 def test_init_client_providing_no_token() -> None:
     """
     Initialize the client without a token. Expect an exception raised.
@@ -29,12 +23,7 @@ def test_init_client_providing_no_token() -> None:
         TrackBearClient()
 
 
-@pytest.mark.usefixtures(
-    "add_environ_token",
-    "add_environ_useragent",
-    "add_environ_url",
-    "add_environ_timeout",
-)
+@pytest.mark.usefixtures("add_environs")
 def test_init_client_custom_values() -> None:
     """
     Initialize the client, providing a custom keyword values
@@ -59,12 +48,7 @@ def test_init_client_custom_values() -> None:
     assert client.bare.timeout == expected_timeout
 
 
-@pytest.mark.usefixtures(
-    "add_environ_token",
-    "add_environ_useragent",
-    "add_environ_url",
-    "add_environ_timeout",
-)
+@pytest.mark.usefixtures("add_environs")
 def test_init_client_environ_values() -> None:
     """
     Initialize the client, assert environment values provided are used
@@ -74,12 +58,12 @@ def test_init_client_environ_values() -> None:
     client = TrackBearClient()
 
     assert client.bare.session.headers["Authorization"] == f"Bearer {expected_value}"
-    assert client.bare.api_url == expected_value
+    assert client.bare.api_url == "https://trackbear.app/api/v1"
     assert client.bare.session.headers["User-Agent"] == expected_value
     assert client.bare.timeout == 3
 
 
-@pytest.mark.usefixtures("add_environ_token")
+@pytest.mark.usefixtures("add_token")
 def test_init_client_default_values() -> None:
     """
     Initialize the client, assert default values are used. Excludes API token.
@@ -354,7 +338,7 @@ def test_delete_valid_response(client: TrackBearClient) -> None:
 def test_get_with_timeout_exception(client: TrackBearClient) -> None:
     """GET request which results in a timeout exception must raise TimeoutError."""
     pattern = (
-        "HTTP GET timed out after 10 seconds. 'https://trackbear.app/api/v1/ping' - A Mock Timeout"
+        "HTTP GET timed out after 3 seconds. 'https://trackbear.app/api/v1/ping' - A Mock Timeout"
     )
     responses.add(
         method="GET",
