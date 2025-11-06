@@ -4,11 +4,13 @@ import importlib.metadata
 import json
 
 import pytest
+import requests
 import responses
 import responses.matchers
 
 from trackbear_api import TrackBearClient
 from trackbear_api import TrackBearResponse
+from trackbear_api.exceptions import APITimeoutError
 
 
 @pytest.fixture
@@ -346,3 +348,19 @@ def test_delete_valid_response(client: TrackBearClient) -> None:
     assert isinstance(response, TrackBearResponse)
     assert response.success is True
     assert response.data == mock_data
+
+
+@responses.activate(assert_all_requests_are_fired=True)
+def test_get_with_timeout_exception(client: TrackBearClient) -> None:
+    """GET request which results in a timeout exception must raise TimeoutError."""
+    pattern = (
+        "HTTP GET timed out after 10 seconds. 'https://trackbear.app/api/v1/ping' - A Mock Timeout"
+    )
+    responses.add(
+        method="GET",
+        url="https://trackbear.app/api/v1/ping",
+        body=requests.exceptions.Timeout("A Mock Timeout"),
+    )
+
+    with pytest.raises(APITimeoutError, match=pattern):
+        client.bare.get("/ping")

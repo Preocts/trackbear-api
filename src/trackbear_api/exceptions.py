@@ -35,3 +35,24 @@ class APIResponseError(Exception):
 
     def __str__(self) -> str:
         return f"TrackBear API Failure ({self.status_code}) {self.code} - {self.message}"
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class APITimeoutError(Exception):
+    """
+    Raised when the TrackBear API request, read, or connection times out.
+
+    Attributes:
+        exception (Exception): Exception raised by internal HTTP library
+        method (str): HTTP method
+        url (str): Target URL
+        timeout (int): Timeout length in seconds
+    """
+
+    exception: Exception
+    method: str
+    url: str
+    timeout: int
+
+    def __str__(self) -> str:
+        return f"HTTP {self.method} timed out after {self.timeout} seconds. '{self.url}' - {self.exception}"
