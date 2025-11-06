@@ -16,6 +16,9 @@
 
 Python library for synchronous HTTP calls to the Trackbear API (https://help.trackbear.app/api)
 
+- [TrackBear app](https://trackbear.app)
+- [TrackBear API documentation](https://help.trackbear.app/api)
+
 **Deveploment in progress, expect breaking changes frequently until version 0.1.0**
 
 Implemented routes:
@@ -50,11 +53,12 @@ The following environment variables allow you to configure the TrackBearClient
 outside of code. All variables listed below can also be set during the
 initialization of the `TrackBearClient` as well.
 
-| Variable            | Description                              | Has Default | Default                                                                   |
-| ------------------- | ---------------------------------------- | ----------- | ------------------------------------------------------------------------- |
-| TRACKBEAR_API_TOKEN | Your secret API token                    | False       |                                                                           |
-| TRACKBEAR_API_URL   | The URL of the TrackBear API             | True        | https://trackbear.app/api/v1/                                             |
-| TRACKBEAR_API_AGENT | The User-Agent header sent with requests | True        | trackbear-api/0.x.x (https://github.com/Preocts/trackbear-api) by Preocts |
+| Variable                      | Description                              | Has Default | Default                                                                   |
+| ----------------------------- | ---------------------------------------- | ----------- | ------------------------------------------------------------------------- |
+| TRACKBEAR_API_TOKEN           | Your secret API token                    | False       |                                                                           |
+| TRACKBEAR_API_URL             | The URL of the TrackBear API             | True        | https://trackbear.app/api/v1/                                             |
+| TRACKBEAR_API_AGENT           | The User-Agent header sent with requests | True        | trackbear-api/0.x.x (https://github.com/Preocts/trackbear-api) by Preocts |
+| TRACKBEAR_API_TIMEOUT_SECONDS | Seconds before HTTPS reqeusts timeout    | True        | 10                                                                        |
 
 ## Example Use
 
@@ -90,33 +94,6 @@ print("-" * 64)
 for project in projects:
     print(f"| {project.id:<12} | {project.title:<30} | {project.totals.word:<12} |")
 ```
-
-## Exceptions
-
-The library defines a handful of useful custom exceptions.
-
-#### ModelBuildError(Exception)
-
-Raised when building a dataclass model from the API response fails. This can
-indicate the expected response has changed from the observed response. The
-exception contains the model name that failed and the data the model attempted
-to build with. Both are vital for bug reports.
-
-| Attribute     | Type | Description                                   |
-| ------------- | ---- | --------------------------------------------- |
-| `data_string` | str  | The data which caused the model build to fail |
-| `model_name`  | str  | The name of the model that failed             |
-
-#### APIResponseError(Exception)
-
-The base class for all API response errors. Raised by all provider methods when
-the API returns an unsuccessful response.
-
-| Attribute     | Type | Description                                      |
-| ------------- | ---- | ------------------------------------------------ |
-| `status_code` | int  | HTTP status code returned by the API             |
-| `code`        | str  | Error code provided by the API                   |
-| `message`     | str  | Human readable error message provided by the API |
 
 ## Library API
 
@@ -177,6 +154,45 @@ and call routes directly. These methods return a `TrackBearResponse` object.
 | `.status_code`        | int  | The HTTP status code of the response                  |
 | `.remaining_requests` | int  | Number of requests remaining before rate limits apply |
 | `.rate_reset`         | int  | Number of seconds before `remaining_requests` resets  |
+
+## Exceptions
+
+The library defines a handful of useful custom exceptions.
+
+#### ModelBuildError(Exception)
+
+Raised when building a dataclass model from the API response fails. This can
+indicate the expected response has changed from the observed response. The
+exception contains the model name that failed and the data the model attempted
+to build with. Both are vital for bug reports.
+
+| Attribute     | Type | Description                                   |
+| ------------- | ---- | --------------------------------------------- |
+| `data_string` | str  | The data which caused the model build to fail |
+| `model_name`  | str  | The name of the model that failed             |
+
+#### APIResponseError(Exception)
+
+Raised by all provider methods when the API returns an unsuccessful response.
+
+| Attribute     | Type | Description                                      |
+| ------------- | ---- | ------------------------------------------------ |
+| `status_code` | int  | HTTP status code returned by the API             |
+| `code`        | str  | Error code provided by the API                   |
+| `message`     | str  | Human readable error message provided by the API |
+
+#### APITimeoutError(Exception)
+
+Raised when the TrackBear API request, read, or connection times out.
+
+| Attribute   | Type      | Description                               |
+| ----------- | --------- | ----------------------------------------- |
+| `exception` | Exception | Exception raised by internal HTTP library |
+| `method`    | str       | HTTP method                               |
+| `url`       | str       | Target URL                                |
+| `timeout`   | int       | Timeout length in seconds                 |
+
+---
 
 ### Rate Limiting
 
