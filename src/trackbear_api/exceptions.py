@@ -11,7 +11,13 @@ __all__ = [
 
 @dataclasses.dataclass(frozen=True, slots=True)
 class ModelBuildError(Exception):
-    """Raised when a model fails to build from API data."""
+    """
+    Raised when a model fails to build from API data.
+
+    Args:
+        data_string (str): The data which caused the model build to fail
+        model_name (str): The name of the model that failed
+    """
 
     data_string: str
     model_name: str
@@ -27,7 +33,14 @@ class ModelBuildError(Exception):
 
 @dataclasses.dataclass(frozen=True, slots=True)
 class APIResponseError(Exception):
-    """Raised when the TrackBear API returns an unsuccessful response."""
+    """
+    Raised when the TrackBear API returns an unsuccessful response.
+
+    Args:
+        status_code (int): HTTP status code turned by the API
+        code (str): Error code provided by the API
+        message (str): Human readable error message provided by the API
+    """
 
     status_code: int
     code: str
@@ -42,7 +55,7 @@ class APITimeoutError(Exception):
     """
     Raised when the TrackBear API request, read, or connection times out.
 
-    Attributes:
+    Args:
         exception (Exception): Exception raised by internal HTTP library
         method (str): HTTP method
         url (str): Target URL
