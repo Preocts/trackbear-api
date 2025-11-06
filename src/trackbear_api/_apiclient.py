@@ -7,6 +7,7 @@ from typing import Any
 import requests
 
 from ._trackbearresponse import TrackBearResponse
+from .exceptions import APITimeoutError
 
 
 class APIClient:
@@ -55,10 +56,16 @@ class APIClient:
         route = route.lstrip("/") if route.startswith("/") else route
         url = f"{self.api_url}/{route}"
 
-        if params:
-            response = self.session.request(method, url, params=params, timeout=self.timeout)
-        else:
-            response = self.session.request(method, url, json=payload, timeout=self.timeout)
+        try:
+            if params:
+                response = self.session.request(method, url, params=params, timeout=self.timeout)
+            else:
+                response = self.session.request(method, url, json=payload, timeout=self.timeout)
+
+        except requests.exceptions.Timeout as err:
+            exc = APITimeoutError(err, method, url, self.timeout)
+            self.logger.error("%s", exc)
+            raise exc from err
 
         if not response.ok:
             log_body = f"Code: {response.status_code} Route: {route} Parames: {params} Text: {response.text} Headers: {response.headers}"
