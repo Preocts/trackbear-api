@@ -180,3 +180,30 @@ class Tag:
 
         except (KeyError, ValueError) as exc:
             _handle_build_error(exc, data, cls.__name__)
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class Stat:
+    """Stat model build from API response."""
+
+    date: str
+    counts: Balance
+
+    @classmethod
+    def build(cls, data: dict[str, Any]) -> Stat:
+        """Build a Stat model from the API response data."""
+        try:
+            return cls(
+                date=data["date"],
+                counts=Balance(
+                    word=data["counts"].get("word", 0),
+                    time=data["counts"].get("time", 0),
+                    page=data["counts"].get("page", 0),
+                    chapter=data["counts"].get("chapter", 0),
+                    scene=data["counts"].get("scene", 0),
+                    line=data["counts"].get("line", 0),
+                ),
+            )
+
+        except (KeyError, ValueError) as exc:
+            _handle_build_error(exc, data, cls.__name__)
