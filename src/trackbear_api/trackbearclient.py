@@ -8,6 +8,7 @@ import requests
 
 from ._apiclient import APIClient
 from ._projectclient import ProjectClient
+from ._statclient import StatClient
 from ._tagclient import TagClient
 
 __all__ = ["TrackBearClient"]
@@ -78,7 +79,7 @@ class TrackBearClient:
         self.logger.debug("Initialized TrackBearClient with user-agent: %s", user_agent)
         self.logger.debug("Initialized TrackBearClient with token: ***%s", api_token[-4:])
         self.logger.debug("Initialized TrackBearClient with url: %s", api_url)
-        self.logger.debug("Initialized TrackBearClient with timeout: %d seconds", timeout_seconds)
+        self.logger.debug("Initialized TrackBearClient with timeout: %s seconds", timeout)
 
         session = self._get_request_session(api_token, user_agent)
         self._api_client = APIClient(session, api_url, int(timeout))
@@ -87,6 +88,7 @@ class TrackBearClient:
         self.bare = self._api_client
         self.project = ProjectClient(self._api_client)
         self.tag = TagClient(self._api_client)
+        self.stat = StatClient(self._api_client)
 
     def _pick_config_value(
         self,
