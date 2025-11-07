@@ -25,6 +25,7 @@ Implemented routes:
 
 - Projects
 - Tags
+- Stats
 
 Routes pending implementation:
 
@@ -34,7 +35,6 @@ Routes pending implementation:
 - Leaderboard Teams
 - Leaderboard Members
 - Leaderboard Participation
-- Stats
 - Other
 
 Features pending implementation:
@@ -126,6 +126,16 @@ https://help.trackbear.app/api/
 | `.get()`    | Get a tag by specific id |
 | `.save()`   | Create or update tag     |
 | `.delete()` | Delete a tag by its id   |
+
+### Stats
+
+| Provider Method        | Description                                         |
+| ---------------------- | --------------------------------------------------- |
+| `TrackBearClient.stat` | Contains helper methods for all Stat related routes |
+
+| Method    | Description                              |
+| --------- | ---------------------------------------- |
+| `.list()` | Get stats. By default returns all stats. |
 
 ### Bare Access
 
