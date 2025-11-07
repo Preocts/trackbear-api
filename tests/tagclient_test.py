@@ -20,7 +20,7 @@ from trackbear_api import TrackBearClient
 from trackbear_api.exceptions import APIResponseError
 from trackbear_api.models import Tag
 
-PROJECT_RESPONSE = {
+TAG_RESPONSE = {
     "id": 123,
     "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
     "createdAt": "string",
@@ -35,7 +35,7 @@ PROJECT_RESPONSE = {
 @responses.activate(assert_all_requests_are_fired=True)
 def test_tag_list_success(client: TrackBearClient) -> None:
     """Assert the Tag model is built correctly."""
-    mock_data = [copy.deepcopy(PROJECT_RESPONSE)] * 3
+    mock_data = [copy.deepcopy(TAG_RESPONSE)] * 3
     mock_body = {"success": True, "data": mock_data}
 
     responses.add(
@@ -78,8 +78,8 @@ def test_tag_list_failure(client: TrackBearClient) -> None:
 
 @responses.activate(assert_all_requests_are_fired=True)
 def test_tag_get_success(client: TrackBearClient) -> None:
-    """Assert the Project model is built correctly."""
-    mock_data = copy.deepcopy(PROJECT_RESPONSE)
+    """Assert the Tag model is built correctly."""
+    mock_data = copy.deepcopy(TAG_RESPONSE)
     mock_body = {"success": True, "data": mock_data}
 
     responses.add(
@@ -133,7 +133,7 @@ def test_tag_save_create_success(client: TrackBearClient) -> None:
         url="https://trackbear.app/api/v1/tag",
         status=200,
         match=[body_match],
-        body=json.dumps({"success": True, "data": PROJECT_RESPONSE}),
+        body=json.dumps({"success": True, "data": TAG_RESPONSE}),
     )
 
     project = client.tag.save("Mock Tag", Color.DEFAULT)
@@ -157,7 +157,7 @@ def test_tag_save_update_success(client: TrackBearClient) -> None:
         url="https://trackbear.app/api/v1/tag/123",
         status=200,
         match=[body_match],
-        body=json.dumps({"success": True, "data": PROJECT_RESPONSE}),
+        body=json.dumps({"success": True, "data": TAG_RESPONSE}),
     )
 
     project = client.tag.save("Mock Tag", "default", 123)
@@ -197,7 +197,7 @@ def test_tag_delete_success(client: TrackBearClient) -> None:
         method="DELETE",
         url="https://trackbear.app/api/v1/tag/123",
         status=200,
-        body=json.dumps({"success": True, "data": PROJECT_RESPONSE}),
+        body=json.dumps({"success": True, "data": TAG_RESPONSE}),
     )
 
     project = client.tag.delete(tag_id=123)
