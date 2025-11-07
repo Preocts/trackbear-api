@@ -5,6 +5,7 @@ import pytest
 from trackbear_api.exceptions import ModelBuildError
 from trackbear_api.models import Project
 from trackbear_api.models import ProjectStub
+from trackbear_api.models import Stat
 from trackbear_api.models import Tag
 
 
@@ -119,3 +120,32 @@ def test_tag_model_failure() -> None:
 
     with pytest.raises(ModelBuildError, match=pattern):
         Tag.build(mock_data)
+
+
+def test_stat_model_optionals() -> None:
+    """Assert optional fields are not required to build model."""
+    mock_data = {"date": "2021-03-23", "counts": {}}
+
+    model = Stat.build(mock_data)
+
+    assert model.date == "2021-03-23"
+    assert model.counts.word == 0
+
+
+def test_stat_model_failure() -> None:
+    """Assert expected exception when Stat model is built incorrectly."""
+    mock_data = {
+        "counts": {
+            "word": 0,
+            "time": 0,
+            "page": 0,
+            "chapter": 0,
+            "scene": 0,
+            "line": 0,
+        },
+    }
+
+    pattern = "Failure to build the Stat model from the provided data"
+
+    with pytest.raises(ModelBuildError, match=pattern):
+        Stat.build(mock_data)
