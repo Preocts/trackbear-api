@@ -23,13 +23,13 @@ Python library for synchronous HTTP calls to the Trackbear API (https://help.tra
 
 Implemented routes:
 
+- Tallies
 - Projects
 - Tags
 - Stats
 
 Routes pending implementation:
 
-- Tallies
 - Goals
 - Leaderboards
 - Leaderboard Teams
@@ -100,6 +100,19 @@ for project in projects:
 The library's API is build to match TrackBear's API general structure.
 
 https://help.trackbear.app/api/
+
+### Tallies
+
+| Provider Method         | Description                                          |
+| ----------------------- | ---------------------------------------------------- |
+| `TrackBearClient.tally` | Contains helper methods for all Tally related routes |
+
+| Method      | Description                              |
+| ----------- | ---------------------------------------- |
+| `.list()`   | Get all tallies, or filter by parameters |
+| `.get()`    | Get a tally by specific id               |
+| `.save()`   | Create or update tally                   |
+| `.delete()` | Delete a tally by its id                 |
 
 ### Projects
 
