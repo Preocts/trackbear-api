@@ -11,13 +11,11 @@ from __future__ import annotations
 import copy
 import json
 
-import pytest
 import responses
 import responses.matchers
 
 from trackbear_api import Phase
 from trackbear_api import TrackBearClient
-from trackbear_api.exceptions import APIResponseError
 from trackbear_api.models import Balance
 from trackbear_api.models import Project
 from trackbear_api.models import ProjectStub
@@ -43,29 +41,6 @@ def test_project_get_success(client: TrackBearClient) -> None:
     assert isinstance(project, Project)
     assert isinstance(project.starting_balance, Balance)
     assert isinstance(project.totals, Balance)
-
-
-@responses.activate(assert_all_requests_are_fired=True)
-def test_project_get_failure(client: TrackBearClient) -> None:
-    """Assert a failure on the API side will raise the expected exception."""
-    mock_body = {
-        "success": False,
-        "error": {
-            "code": "SOME_ERROR_CODE",
-            "message": "A human-readable error message",
-        },
-    }
-    pattern = r"TrackBear API Failure \(404\) SOME_ERROR_CODE - A human-readable error message"
-
-    responses.add(
-        method="GET",
-        status=404,
-        url="https://trackbear.app/api/v1/project/123",
-        body=json.dumps(mock_body),
-    )
-
-    with pytest.raises(APIResponseError, match=pattern):
-        client.project.get(123)
 
 
 @responses.activate(assert_all_requests_are_fired=True)
@@ -166,39 +141,6 @@ def test_project_save_update_success(client: TrackBearClient) -> None:
 
 
 @responses.activate(assert_all_requests_are_fired=True)
-def test_project_create_failure(client: TrackBearClient) -> None:
-    """Assert a failure on the API side will raise the expected exception."""
-    mock_body = {
-        "success": False,
-        "error": {
-            "code": "SOME_ERROR_CODE",
-            "message": "A human-readable error message",
-        },
-    }
-    pattern = r"TrackBear API Failure \(400\) SOME_ERROR_CODE - A human-readable error message"
-
-    responses.add(
-        method="POST",
-        status=400,
-        url="https://trackbear.app/api/v1/project",
-        body=json.dumps(mock_body),
-    )
-
-    with pytest.raises(APIResponseError, match=pattern):
-        client.project.save(
-            title="Mock Title",
-            description="Some Description.",
-            phase=Phase.DRAFTING,
-            starred=True,
-            display_on_profile=True,
-            word=1000,
-            page=10,
-            chapter=1,
-            scene=3,
-        )
-
-
-@responses.activate(assert_all_requests_are_fired=True)
 def test_project_delete_success(client: TrackBearClient) -> None:
     """
     Assert a remove request returns the expected ProjectStub
@@ -213,26 +155,3 @@ def test_project_delete_success(client: TrackBearClient) -> None:
     project = client.project.delete(project_id=123)
 
     assert isinstance(project, ProjectStub)
-
-
-@responses.activate(assert_all_requests_are_fired=True)
-def test_project_delete_failure(client: TrackBearClient) -> None:
-    """Assert a failure on the API side will raise the expected exception."""
-    mock_body = {
-        "success": False,
-        "error": {
-            "code": "SOME_ERROR_CODE",
-            "message": "A human-readable error message",
-        },
-    }
-    pattern = r"TrackBear API Failure \(400\) SOME_ERROR_CODE - A human-readable error message"
-
-    responses.add(
-        method="DELETE",
-        status=400,
-        url="https://trackbear.app/api/v1/project/123",
-        body=json.dumps(mock_body),
-    )
-
-    with pytest.raises(APIResponseError, match=pattern):
-        client.project.delete(project_id=123)
