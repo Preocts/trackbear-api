@@ -22,69 +22,7 @@ from trackbear_api.models import Balance
 from trackbear_api.models import Project
 from trackbear_api.models import ProjectStub
 
-PROJECT_RESPONSE = {
-    "id": 123,
-    "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
-    "createdAt": "string",
-    "updatedAt": "string",
-    "state": "active",
-    "ownerId": 123,
-    "title": "string",
-    "description": "string",
-    "phase": "planning",
-    "startingBalance": {"word": 0, "time": 0, "page": 0, "chapter": 0, "scene": 0, "line": 0},
-    "cover": "string",
-    "starred": False,
-    "displayOnProfile": False,
-    "totals": {"word": 0, "time": 0, "page": 0, "chapter": 0, "scene": 0, "line": 0},
-    "lastUpdated": "string",
-}
-
-
-@responses.activate(assert_all_requests_are_fired=True)
-def test_project_list_success(client: TrackBearClient) -> None:
-    """Assert the Project model is built correctly."""
-    mock_data = [copy.deepcopy(PROJECT_RESPONSE)] * 3
-    mock_body = {"success": True, "data": mock_data}
-
-    responses.add(
-        method="GET",
-        status=200,
-        url="https://trackbear.app/api/v1/project",
-        body=json.dumps(mock_body),
-    )
-
-    projects = client.project.list()
-
-    assert len(projects) == len(mock_data)
-
-    for project in projects:
-        assert isinstance(project, Project)
-        assert isinstance(project.starting_balance, Balance)
-        assert isinstance(project.totals, Balance)
-
-
-@responses.activate(assert_all_requests_are_fired=True)
-def test_project_list_failure(client: TrackBearClient) -> None:
-    """Assert a failure on the API side will raise the expected exception."""
-    mock_body = {
-        "success": False,
-        "error": {
-            "code": "SOME_ERROR_CODE",
-            "message": "A human-readable error message",
-        },
-    }
-    pattern = r"TrackBear API Failure \(409\) SOME_ERROR_CODE - A human-readable error message"
-
-    responses.add(
-        method="GET",
-        status=409,
-        url="https://trackbear.app/api/v1/project",
-        body=json.dumps(mock_body),
-    )
-
-    with pytest.raises(APIResponseError, match=pattern):
-        client.project.list()
+from .api_responses import PROJECT_RESPONSE
 
 
 @responses.activate(assert_all_requests_are_fired=True)
