@@ -18,9 +18,9 @@ import responses.matchers
 from trackbear_api import TrackBearClient
 from trackbear_api.enums import Measure
 from trackbear_api.exceptions import APIResponseError
-from trackbear_api.models import Tally
-from trackbear_api.models import Tag
 from trackbear_api.models import ProjectStub
+from trackbear_api.models import Tag
+from trackbear_api.models import Tally
 
 TALLY_RESPONSE = {
     "id": 123,
@@ -334,3 +334,43 @@ def test_tally_create_failure(client: TrackBearClient) -> None:
 
     with pytest.raises(APIResponseError, match=pattern):
         client.tally.save(123, "2025-01-01", "scene", 69, "", [])
+
+
+@responses.activate(assert_all_requests_are_fired=True)
+def test_tally_delete_success(client: TrackBearClient) -> None:
+    """
+    Assert a remove request returns the expected Tally
+    """
+    responses.add(
+        method="DELETE",
+        url="https://trackbear.app/api/v1/tally/123",
+        status=200,
+        body=json.dumps({"success": True, "data": TALLY_RESPONSE}),
+    )
+
+    project = client.tally.delete(tally_id=123)
+
+    assert isinstance(project, Tally)
+
+
+@responses.activate(assert_all_requests_are_fired=True)
+def test_tally_delete_failure(client: TrackBearClient) -> None:
+    """Assert a failure on the API side will raise the expected exception."""
+    mock_body = {
+        "success": False,
+        "error": {
+            "code": "SOME_ERROR_CODE",
+            "message": "A human-readable error message",
+        },
+    }
+    pattern = r"TrackBear API Failure \(400\) SOME_ERROR_CODE - A human-readable error message"
+
+    responses.add(
+        method="DELETE",
+        status=400,
+        url="https://trackbear.app/api/v1/tally/123",
+        body=json.dumps(mock_body),
+    )
+
+    with pytest.raises(APIResponseError, match=pattern):
+        client.tally.delete(tally_id=123)

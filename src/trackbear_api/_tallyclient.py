@@ -164,3 +164,27 @@ class TallyClient:
             )
 
         return Tally.build(response.data)
+
+    def delete(self, tally_id: int) -> Tally:
+        """
+        Delete an existing tally.
+
+        Args:
+            tally_id (int): Existing tally id
+
+        Returns:
+            Tally object on success
+
+        Raises:
+            APIResponseError: On any failure message returned from TrackBear API
+        """
+        response = self._api_client.delete(f"/tally/{tally_id}")
+
+        if not response.success:
+            raise APIResponseError(
+                status_code=response.status_code,
+                code=response.error.code,
+                message=response.error.message,
+            )
+
+        return Tally.build(response.data)
