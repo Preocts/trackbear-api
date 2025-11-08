@@ -15,6 +15,7 @@ from .exceptions import ModelBuildError
 __all__ = [
     "Balance",
     "Project",
+    "Stat",
     "Tag",
 ]
 
