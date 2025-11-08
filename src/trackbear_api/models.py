@@ -4,10 +4,12 @@ from __future__ import annotations
 
 import dataclasses
 import json
+from collections.abc import Sequence
 from typing import Any
 from typing import NoReturn
 
 from .enums import Color
+from .enums import Measure
 from .enums import Phase
 from .enums import State
 from .exceptions import ModelBuildError
@@ -17,6 +19,7 @@ __all__ = [
     "Project",
     "Stat",
     "Tag",
+    "Tally",
 ]
 
 
@@ -45,6 +48,48 @@ class Balance:
     chapter: int
     scene: int
     line: int
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class Tally:
+    """Tally model built from the API response."""
+
+    id: int
+    uuid: int
+    created_at: str
+    updated_at: str
+    state: State
+    owner_id: str
+    date: str
+    measure: Measure
+    count: int
+    note: str
+    work_id: int
+    work: ProjectStub
+    tags: Sequence[Tag]
+
+    @classmethod
+    def build(cls, data: dict[str, Any]) -> Tally:
+        """Build a Project model from the API response data."""
+        try:
+            return cls(
+                id=data["id"],
+                uuid=data["uuid"],
+                created_at=data["createdAt"],
+                updated_at=data["updatedAt"],
+                state=State(data["state"]),
+                owner_id=data["ownerId"],
+                date=data["date"],
+                measure=Measure(data["measure"]),
+                count=data["count"],
+                note=data["note"],
+                work_id=data["workId"],
+                work=ProjectStub.build(data["work"]),
+                tags=[Tag.build(tag) for tag in data["tags"]],
+            )
+
+        except (KeyError, ValueError) as exc:
+            _handle_build_error(exc, data, cls.__name__)
 
 
 @dataclasses.dataclass(frozen=True, slots=True)
