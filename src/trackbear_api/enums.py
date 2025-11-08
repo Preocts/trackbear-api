@@ -8,6 +8,7 @@ __all__ = [
     "Phase",
     "State",
     "Color",
+    "Measure",
 ]
 
 
@@ -38,3 +39,12 @@ class Color(str, enum.Enum):
     WHITE = "white"
     BLACK = "black"
     GRAY = "gray"
+
+
+class Measure(str, enum.Enum):
+    WORD = "word"
+    TIME = "time"
+    PAGE = "page"
+    CHAPTER = "chapter"
+    SCENE = "scene"
+    LINE = "line"

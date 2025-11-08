@@ -7,6 +7,7 @@ from trackbear_api.models import Project
 from trackbear_api.models import ProjectStub
 from trackbear_api.models import Stat
 from trackbear_api.models import Tag
+from trackbear_api.models import Tally
 
 
 def test_project_model_optionals() -> None:
@@ -149,3 +150,59 @@ def test_stat_model_failure() -> None:
 
     with pytest.raises(ModelBuildError, match=pattern):
         Stat.build(mock_data)
+
+
+def test_tally_model_failure() -> None:
+    """Assert expected exception when Project model is built incorrectly."""
+    mock_data = {
+        "id": 123,
+        "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+        "createdAt": "string",
+        "updatedAt": "string",
+        "state": "string",
+        "ownerId": 123,
+        "date": "2021-03-23",
+        "measure": "word",
+        "count": 0,
+        "note": "string",
+        "workId": 123,
+        "work": {
+            "id": 123,
+            "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+            "createdAt": "string",
+            "updatedAt": "string",
+            "state": "string",
+            "ownerId": 123,
+            "title": "string",
+            "description": "string",
+            "phase": "string",
+            "startingBalance": {
+                "word": 0,
+                "time": 0,
+                "page": 0,
+                "chapter": 0,
+                "scene": 0,
+                "line": 0,
+            },
+            "cover": "string",
+            "starred": False,
+            "displayOnProfile": False,
+        },
+        "tags": [
+            {
+                "id": 123,
+                "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+                "createdAt": "string",
+                "updatedAt": "string",
+                "state": "string",
+                "ownerId": 123,
+                "name": "string",
+                "color": "string",
+            }
+        ],
+    }
+
+    pattern = "Failure to build the Tally model from the provided data"
+
+    with pytest.raises(ModelBuildError, match=pattern):
+        Tally.build(mock_data)
