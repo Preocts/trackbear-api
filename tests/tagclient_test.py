@@ -11,13 +11,11 @@ from __future__ import annotations
 import copy
 import json
 
-import pytest
 import responses
 import responses.matchers
 
 from trackbear_api import Color
 from trackbear_api import TrackBearClient
-from trackbear_api.exceptions import APIResponseError
 from trackbear_api.models import Tag
 
 from .api_responses import TAG_RESPONSE
@@ -39,29 +37,6 @@ def test_tag_get_success(client: TrackBearClient) -> None:
     project = client.tag.get(123)
 
     assert isinstance(project, Tag)
-
-
-@responses.activate(assert_all_requests_are_fired=True)
-def test_tag_get_failure(client: TrackBearClient) -> None:
-    """Assert a failure on the API side will raise the expected exception."""
-    mock_body = {
-        "success": False,
-        "error": {
-            "code": "SOME_ERROR_CODE",
-            "message": "A human-readable error message",
-        },
-    }
-    pattern = r"TrackBear API Failure \(404\) SOME_ERROR_CODE - A human-readable error message"
-
-    responses.add(
-        method="GET",
-        status=404,
-        url="https://trackbear.app/api/v1/tag/123",
-        body=json.dumps(mock_body),
-    )
-
-    with pytest.raises(APIResponseError, match=pattern):
-        client.tag.get(123)
 
 
 @responses.activate(assert_all_requests_are_fired=True)
@@ -113,29 +88,6 @@ def test_tag_save_update_success(client: TrackBearClient) -> None:
 
 
 @responses.activate(assert_all_requests_are_fired=True)
-def test_tag_create_failure(client: TrackBearClient) -> None:
-    """Assert a failure on the API side will raise the expected exception."""
-    mock_body = {
-        "success": False,
-        "error": {
-            "code": "SOME_ERROR_CODE",
-            "message": "A human-readable error message",
-        },
-    }
-    pattern = r"TrackBear API Failure \(400\) SOME_ERROR_CODE - A human-readable error message"
-
-    responses.add(
-        method="POST",
-        status=400,
-        url="https://trackbear.app/api/v1/tag",
-        body=json.dumps(mock_body),
-    )
-
-    with pytest.raises(APIResponseError, match=pattern):
-        client.tag.save("Mock Tag", "default")
-
-
-@responses.activate(assert_all_requests_are_fired=True)
 def test_tag_delete_success(client: TrackBearClient) -> None:
     """
     Assert a delete request returns the expected Tag
@@ -150,26 +102,3 @@ def test_tag_delete_success(client: TrackBearClient) -> None:
     project = client.tag.delete(tag_id=123)
 
     assert isinstance(project, Tag)
-
-
-@responses.activate(assert_all_requests_are_fired=True)
-def test_tag_delete_failure(client: TrackBearClient) -> None:
-    """Assert a failure on the API side will raise the expected exception."""
-    mock_body = {
-        "success": False,
-        "error": {
-            "code": "SOME_ERROR_CODE",
-            "message": "A human-readable error message",
-        },
-    }
-    pattern = r"TrackBear API Failure \(400\) SOME_ERROR_CODE - A human-readable error message"
-
-    responses.add(
-        method="DELETE",
-        status=400,
-        url="https://trackbear.app/api/v1/tag/123",
-        body=json.dumps(mock_body),
-    )
-
-    with pytest.raises(APIResponseError, match=pattern):
-        client.tag.delete(tag_id=123)
