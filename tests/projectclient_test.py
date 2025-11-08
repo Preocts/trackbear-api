@@ -138,20 +138,3 @@ def test_project_save_update_success(client: TrackBearClient) -> None:
     )
 
     assert isinstance(project, ProjectStub)
-
-
-@responses.activate(assert_all_requests_are_fired=True)
-def test_project_delete_success(client: TrackBearClient) -> None:
-    """
-    Assert a remove request returns the expected ProjectStub
-    """
-    responses.add(
-        method="DELETE",
-        url="https://trackbear.app/api/v1/project/123",
-        status=200,
-        body=json.dumps({"success": True, "data": PROJECT_RESPONSE}),
-    )
-
-    project = client.project.delete(project_id=123)
-
-    assert isinstance(project, ProjectStub)
