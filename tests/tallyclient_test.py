@@ -19,6 +19,8 @@ from trackbear_api import TrackBearClient
 from trackbear_api.enums import Measure
 from trackbear_api.exceptions import APIResponseError
 from trackbear_api.models import Tally
+from trackbear_api.models import Tag
+from trackbear_api.models import ProjectStub
 
 TALLY_RESPONSE = {
     "id": 123,
@@ -184,3 +186,47 @@ def test_tally_list_raises_with_bad_end_date(client: TrackBearClient) -> None:
 
     with pytest.raises(ValueError, match=pattern):
         client.tally.list(end_date="bar")
+
+
+@responses.activate(assert_all_requests_are_fired=True)
+def test_tally_get_success(client: TrackBearClient) -> None:
+    """Assert the Project model is built correctly."""
+    mock_data = copy.deepcopy(TALLY_RESPONSE)
+    mock_body = {"success": True, "data": mock_data}
+
+    responses.add(
+        method="GET",
+        status=200,
+        url="https://trackbear.app/api/v1/tally/123",
+        body=json.dumps(mock_body),
+    )
+
+    project = client.tally.get(123)
+
+    assert isinstance(project, Tally)
+    assert isinstance(project.work, ProjectStub)
+    for tag in project.tags:
+        assert isinstance(tag, Tag)
+
+
+@responses.activate(assert_all_requests_are_fired=True)
+def test_tally_get_failure(client: TrackBearClient) -> None:
+    """Assert a failure on the API side will raise the expected exception."""
+    mock_body = {
+        "success": False,
+        "error": {
+            "code": "SOME_ERROR_CODE",
+            "message": "A human-readable error message",
+        },
+    }
+    pattern = r"TrackBear API Failure \(404\) SOME_ERROR_CODE - A human-readable error message"
+
+    responses.add(
+        method="GET",
+        status=404,
+        url="https://trackbear.app/api/v1/tally/123",
+        body=json.dumps(mock_body),
+    )
+
+    with pytest.raises(APIResponseError, match=pattern):
+        client.tally.get(123)
