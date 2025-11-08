@@ -85,20 +85,3 @@ def test_tag_save_update_success(client: TrackBearClient) -> None:
     project = client.tag.save("Mock Tag", "default", 123)
 
     assert isinstance(project, Tag)
-
-
-@responses.activate(assert_all_requests_are_fired=True)
-def test_tag_delete_success(client: TrackBearClient) -> None:
-    """
-    Assert a delete request returns the expected Tag
-    """
-    responses.add(
-        method="DELETE",
-        url="https://trackbear.app/api/v1/tag/123",
-        status=200,
-        body=json.dumps({"success": True, "data": TAG_RESPONSE}),
-    )
-
-    project = client.tag.delete(tag_id=123)
-
-    assert isinstance(project, Tag)

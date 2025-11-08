@@ -48,6 +48,22 @@ PROJECT_RESPONSE = {
     "lastUpdated": "2025-02-02",
 }
 
+PROJECTSTUB_RESPONSE = {
+    "id": 123,
+    "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+    "createdAt": "2025-01-01",
+    "updatedAt": "2025-02-02",
+    "state": "active",
+    "ownerId": 123,
+    "title": "New Project",
+    "description": "This is a mock project for some tests.",
+    "phase": "planning",
+    "startingBalance": {"word": 1667, "time": 0, "page": 2, "chapter": 0, "scene": 0, "line": 0},
+    "cover": "string",
+    "starred": True,
+    "displayOnProfile": True,
+}
+
 STAT_RESPONSE = {
     "date": "2021-03-23",
     "counts": {"word": 1000, "time": 0, "page": 0, "chapter": 0, "scene": 0, "line": 0},

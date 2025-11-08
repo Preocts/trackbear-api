@@ -1,5 +1,5 @@
 """
-Happy path tests of the .list() method for all clients that support the operation.
+Happy path tests for all client methods.
 
 All tests are run through the TrackBearClient which is the public API for the library.
 
@@ -30,7 +30,7 @@ ModelType = TypeVar("ModelType")
 
 
 @pytest.mark.parametrize(
-    "client_attribute,kwargs,url,api_response,query_string,model_type",
+    "provider,kwargs,url,api_response,query_string,model_type",
     (
         (
             "project",
@@ -77,7 +77,7 @@ ModelType = TypeVar("ModelType")
 @responses.activate(assert_all_requests_are_fired=True)
 def test_client_list_success(
     client: TrackBearClient,
-    client_attribute: str,
+    provider: str,
     kwargs: dict[str, Any],
     api_response: dict[str, Any],
     query_string: str,
@@ -98,7 +98,7 @@ def test_client_list_success(
         match=[query_matcher],
     )
 
-    results = getattr(client, client_attribute).list(**kwargs)
+    results = getattr(client, provider).list(**kwargs)
 
     assert len(results) == len(mock_data)
 
@@ -107,3 +107,50 @@ def test_client_list_success(
         assert dataclasses.is_dataclass(result)
         assert not isinstance(result, type)
         assert dataclasses.asdict(result) == api_responses.keys_to_snake_case(api_response)
+
+
+@pytest.mark.parametrize(
+    "provider,kwargs,url,api_response,model_type",
+    (
+        (
+            "project",
+            {"project_id": 123},
+            "https://trackbear.app/api/v1/project/123",
+            api_responses.PROJECTSTUB_RESPONSE,
+            models.ProjectStub,
+        ),
+        (
+            "tag",
+            {"tag_id": 123},
+            "https://trackbear.app/api/v1/tag/123",
+            api_responses.TAG_RESPONSE,
+            models.Tag,
+        ),
+        (
+            "tally",
+            {"tally_id": 123},
+            "https://trackbear.app/api/v1/tally/123",
+            api_responses.TALLY_RESPONSE,
+            models.Tally,
+        ),
+    ),
+)
+@responses.activate(assert_all_requests_are_fired=True)
+def test_client_delete_success(
+    client: TrackBearClient,
+    provider: str,
+    kwargs: dict[str, Any],
+    url: str,
+    api_response: dict[str, Any],
+    model_type: type[ModelType],
+) -> None:
+    """Assert a delete request returns the expected model."""
+    body = json.dumps({"success": True, "data": api_response})
+    responses.add(method="DELETE", url=url, status=200, body=body)
+
+    result = getattr(client, provider).delete(**kwargs)
+
+    assert isinstance(result, model_type)
+    assert dataclasses.is_dataclass(result)
+    assert not isinstance(result, type)
+    assert dataclasses.asdict(result) == api_responses.keys_to_snake_case(api_response)

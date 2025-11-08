@@ -123,20 +123,3 @@ def test_tally_save_update_success(client: TrackBearClient) -> None:
     )
 
     assert isinstance(tally, Tally)
-
-
-@responses.activate(assert_all_requests_are_fired=True)
-def test_tally_delete_success(client: TrackBearClient) -> None:
-    """
-    Assert a remove request returns the expected Tally
-    """
-    responses.add(
-        method="DELETE",
-        url="https://trackbear.app/api/v1/tally/123",
-        status=200,
-        body=json.dumps({"success": True, "data": TALLY_RESPONSE}),
-    )
-
-    project = client.tally.delete(tally_id=123)
-
-    assert isinstance(project, Tally)
