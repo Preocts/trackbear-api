@@ -10,6 +10,7 @@ from ._apiclient import APIClient
 from ._projectclient import ProjectClient
 from ._statclient import StatClient
 from ._tagclient import TagClient
+from ._tallyclient import TallyClient
 
 __all__ = ["TrackBearClient"]
 
@@ -89,6 +90,7 @@ class TrackBearClient:
         self.project = ProjectClient(self._api_client)
         self.tag = TagClient(self._api_client)
         self.stat = StatClient(self._api_client)
+        self.tally = TallyClient(self._api_client)
 
     def _pick_config_value(
         self,
