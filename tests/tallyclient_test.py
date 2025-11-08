@@ -230,3 +230,107 @@ def test_tally_get_failure(client: TrackBearClient) -> None:
 
     with pytest.raises(APIResponseError, match=pattern):
         client.tally.get(123)
+
+
+@responses.activate(assert_all_requests_are_fired=True)
+def test_tally_save_create_success(client: TrackBearClient) -> None:
+    """
+    Assert a new create returns the expected model (mocked) while asserting
+    the payload is generated for the request correctly.
+
+    Accepts a Measure enum in the parameters
+    """
+    expected_payload = {
+        "date": "2025-01-01",
+        "measure": "scene",
+        "count": 69,
+        "note": "Some Note",
+        "workId": 123,
+        "setTotal": True,
+        "tags": ["New Tag"],
+    }
+    body_match = responses.matchers.body_matcher(json.dumps(expected_payload))
+
+    responses.add(
+        method="POST",
+        url="https://trackbear.app/api/v1/tally",
+        status=200,
+        match=[body_match],
+        body=json.dumps({"success": True, "data": TALLY_RESPONSE}),
+    )
+
+    tally = client.tally.save(
+        work_id=123,
+        date="2025-01-01",
+        measure=Measure.SCENE,
+        count=69,
+        note="Some Note",
+        tags=["New Tag"],
+        set_total=True,
+    )
+
+    assert isinstance(tally, Tally)
+
+
+@responses.activate(assert_all_requests_are_fired=True)
+def test_tally_save_update_success(client: TrackBearClient) -> None:
+    """
+    Assert an update returns the expected model (mocked) while asserting
+    the payload is generated for the request correctly.
+
+    Accepts a string in place of a Measure enum in parameters
+    """
+    expected_payload = {
+        "date": "2025-01-01",
+        "measure": "scene",
+        "count": 69,
+        "note": "Some Note",
+        "workId": 123,
+        "setTotal": True,
+        "tags": ["New Tag"],
+    }
+    body_match = responses.matchers.body_matcher(json.dumps(expected_payload))
+
+    responses.add(
+        method="PATCH",
+        url="https://trackbear.app/api/v1/tally/456",
+        status=200,
+        match=[body_match],
+        body=json.dumps({"success": True, "data": TALLY_RESPONSE}),
+    )
+
+    tally = client.tally.save(
+        work_id=123,
+        date="2025-01-01",
+        measure="scene",
+        count=69,
+        note="Some Note",
+        tags=["New Tag"],
+        tally_id=456,
+        set_total=True,
+    )
+
+    assert isinstance(tally, Tally)
+
+
+@responses.activate(assert_all_requests_are_fired=True)
+def test_tally_create_failure(client: TrackBearClient) -> None:
+    """Assert a failure on the API side will raise the expected exception."""
+    mock_body = {
+        "success": False,
+        "error": {
+            "code": "SOME_ERROR_CODE",
+            "message": "A human-readable error message",
+        },
+    }
+    pattern = r"TrackBear API Failure \(400\) SOME_ERROR_CODE - A human-readable error message"
+
+    responses.add(
+        method="POST",
+        status=400,
+        url="https://trackbear.app/api/v1/tally",
+        body=json.dumps(mock_body),
+    )
+
+    with pytest.raises(APIResponseError, match=pattern):
+        client.tally.save(123, "2025-01-01", "scene", 69, "", [])
