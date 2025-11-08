@@ -20,60 +20,7 @@ from trackbear_api import TrackBearClient
 from trackbear_api.exceptions import APIResponseError
 from trackbear_api.models import Tag
 
-TAG_RESPONSE = {
-    "id": 123,
-    "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
-    "createdAt": "string",
-    "updatedAt": "string",
-    "state": "active",
-    "ownerId": 123,
-    "name": "string",
-    "color": "red",
-}
-
-
-@responses.activate(assert_all_requests_are_fired=True)
-def test_tag_list_success(client: TrackBearClient) -> None:
-    """Assert the Tag model is built correctly."""
-    mock_data = [copy.deepcopy(TAG_RESPONSE)] * 3
-    mock_body = {"success": True, "data": mock_data}
-
-    responses.add(
-        method="GET",
-        status=200,
-        url="https://trackbear.app/api/v1/tag",
-        body=json.dumps(mock_body),
-    )
-
-    projects = client.tag.list()
-
-    assert len(projects) == len(mock_data)
-
-    for project in projects:
-        assert isinstance(project, Tag)
-
-
-@responses.activate(assert_all_requests_are_fired=True)
-def test_tag_list_failure(client: TrackBearClient) -> None:
-    """Assert a failure on the API side will raise the expected exception."""
-    mock_body = {
-        "success": False,
-        "error": {
-            "code": "SOME_ERROR_CODE",
-            "message": "A human-readable error message",
-        },
-    }
-    pattern = r"TrackBear API Failure \(409\) SOME_ERROR_CODE - A human-readable error message"
-
-    responses.add(
-        method="GET",
-        status=409,
-        url="https://trackbear.app/api/v1/tag",
-        body=json.dumps(mock_body),
-    )
-
-    with pytest.raises(APIResponseError, match=pattern):
-        client.tag.list()
+from .api_responses import TAG_RESPONSE
 
 
 @responses.activate(assert_all_requests_are_fired=True)
