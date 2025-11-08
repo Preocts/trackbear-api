@@ -75,3 +75,27 @@ class TallyClient:
             )
 
         return [Tally.build(data) for data in response.data]
+
+    def get(self, tally_id: int) -> Tally:
+        """
+        Get Tally by id.
+
+        Args:
+            tally_id (int): Tally ID to request from TrackBear
+
+        Returns:
+            Tally model
+
+        Raises:
+            APIResponseError: On failure to retrieve requested model
+        """
+        response = self._api_client.get(f"/tally/{tally_id}")
+
+        if not response.success:
+            raise APIResponseError(
+                status_code=response.status_code,
+                code=response.error.code,
+                message=response.error.message,
+            )
+
+        return Tally.build(response.data)
