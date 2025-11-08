@@ -21,10 +21,14 @@ class ModelBuildError(Exception):
 
     data_string: str
     model_name: str
+    exception_type: str
+    exception_str: str
 
     def __str__(self) -> str:
         msg = (
             f"Failure to build the {self.model_name} model from the provided data.\n\n"
+            f"Exception type: {self.exception_type}\n"
+            f"Exception __str__: {self.exception_str}\n\n"
             "Please provide the full stacktrace, with any preceding ERROR logs in a bug report.\n\n"
             f"{self.data_string=}"
         )

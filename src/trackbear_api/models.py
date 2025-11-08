@@ -26,7 +26,12 @@ def _handle_build_error(exc: Exception, data: dict[str, Any], name: str) -> NoRe
     Raises:
         ModelBuildError
     """
-    raise ModelBuildError(json.dumps(data), name) from exc
+    raise ModelBuildError(
+        data_string=json.dumps(data),
+        model_name=name,
+        exception_type=str(type(exc)),
+        exception_str=str(exc),
+    ) from exc
 
 
 @dataclasses.dataclass(frozen=True, slots=True)
