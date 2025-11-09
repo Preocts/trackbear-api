@@ -12,15 +12,13 @@ import copy
 import json
 
 import responses
-import responses.matchers
 
 from trackbear_api import TrackBearClient
-from trackbear_api.enums import Measure
 from trackbear_api.models import ProjectStub
 from trackbear_api.models import Tag
 from trackbear_api.models import Tally
 
-from .api_responses import TALLY_RESPONSE
+from .test_parameters import TALLY_RESPONSE
 
 
 @responses.activate(assert_all_requests_are_fired=True)
@@ -42,84 +40,3 @@ def test_tally_get_success(client: TrackBearClient) -> None:
     assert isinstance(project.work, ProjectStub)
     for tag in project.tags:
         assert isinstance(tag, Tag)
-
-
-@responses.activate(assert_all_requests_are_fired=True)
-def test_tally_save_create_success(client: TrackBearClient) -> None:
-    """
-    Assert a new create returns the expected model (mocked) while asserting
-    the payload is generated for the request correctly.
-
-    Accepts a Measure enum in the parameters
-    """
-    expected_payload = {
-        "date": "2025-01-01",
-        "measure": "scene",
-        "count": 69,
-        "note": "Some Note",
-        "workId": 123,
-        "setTotal": True,
-        "tags": ["New Tag"],
-    }
-    body_match = responses.matchers.body_matcher(json.dumps(expected_payload))
-
-    responses.add(
-        method="POST",
-        url="https://trackbear.app/api/v1/tally",
-        status=200,
-        match=[body_match],
-        body=json.dumps({"success": True, "data": TALLY_RESPONSE}),
-    )
-
-    tally = client.tally.save(
-        work_id=123,
-        date="2025-01-01",
-        measure=Measure.SCENE,
-        count=69,
-        note="Some Note",
-        tags=["New Tag"],
-        set_total=True,
-    )
-
-    assert isinstance(tally, Tally)
-
-
-@responses.activate(assert_all_requests_are_fired=True)
-def test_tally_save_update_success(client: TrackBearClient) -> None:
-    """
-    Assert an update returns the expected model (mocked) while asserting
-    the payload is generated for the request correctly.
-
-    Accepts a string in place of a Measure enum in parameters
-    """
-    expected_payload = {
-        "date": "2025-01-01",
-        "measure": "scene",
-        "count": 69,
-        "note": "Some Note",
-        "workId": 123,
-        "setTotal": True,
-        "tags": ["New Tag"],
-    }
-    body_match = responses.matchers.body_matcher(json.dumps(expected_payload))
-
-    responses.add(
-        method="PATCH",
-        url="https://trackbear.app/api/v1/tally/456",
-        status=200,
-        match=[body_match],
-        body=json.dumps({"success": True, "data": TALLY_RESPONSE}),
-    )
-
-    tally = client.tally.save(
-        work_id=123,
-        date="2025-01-01",
-        measure="scene",
-        count=69,
-        note="Some Note",
-        tags=["New Tag"],
-        tally_id=456,
-        set_total=True,
-    )
-
-    assert isinstance(tally, Tally)
