@@ -133,6 +133,56 @@ def test_client_list_success(
 
 
 @pytest.mark.parametrize(
+    "provider,url,api_response,model_type",
+    (
+        (
+            "project",
+            "https://trackbear.app/api/v1/project/123",
+            test_parameters.PROJECT_RESPONSE,
+            models.Project,
+        ),
+        (
+            "tag",
+            "https://trackbear.app/api/v1/tag/123",
+            test_parameters.TAG_RESPONSE,
+            models.Tag,
+        ),
+        (
+            "tally",
+            "https://trackbear.app/api/v1/tally/123",
+            test_parameters.TALLY_RESPONSE,
+            models.Tally,
+        ),
+    ),
+)
+@responses.activate(assert_all_requests_are_fired=True)
+def test_client_get_success(
+    client: TrackBearClient,
+    provider: str,
+    url: str,
+    api_response: dict[str, Any],
+    model_type: type[ModelType],
+) -> None:
+    """Assert the Project model is built correctly."""
+    mock_data = copy.deepcopy(api_response)
+    mock_body = {"success": True, "data": mock_data}
+
+    responses.add(
+        method="GET",
+        status=200,
+        url=url,
+        body=json.dumps(mock_body),
+    )
+
+    result = getattr(client, provider).get(123)
+
+    assert isinstance(result, model_type)
+    assert dataclasses.is_dataclass(result)
+    assert not isinstance(result, type)
+    assert dataclasses.asdict(result) == keys_to_snake_case(api_response)
+
+
+@pytest.mark.parametrize(
     "provider,kwargs,expected_payload,url,api_response,model_type",
     (
         (
