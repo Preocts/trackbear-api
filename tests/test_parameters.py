@@ -4,31 +4,7 @@ All of the mock API repsonses by route type and helper functions. Shared across 
 
 from __future__ import annotations
 
-import re
-from typing import Any
-
-
-def keys_to_snake_case(response: dict[str, Any]) -> dict[str, Any]:
-    """Translate camelCase keys of response into snake_case."""
-    result = {}
-    new_value: Any
-
-    for key, value in response.items():
-        new_key = re.sub("([A-Z])", r"_\1", key).lower()
-
-        if isinstance(value, list):
-            new_value = [keys_to_snake_case(val) for val in value]
-
-        elif isinstance(value, dict):
-            new_value = keys_to_snake_case(value)
-
-        else:
-            new_value = value
-
-        result[new_key] = new_value
-
-    return result
-
+from trackbear_api import enums
 
 PROJECT_RESPONSE = {
     "id": 123,
@@ -46,6 +22,32 @@ PROJECT_RESPONSE = {
     "displayOnProfile": True,
     "totals": {"word": 1667, "time": 0, "page": 2, "chapter": 0, "scene": 0, "line": 0},
     "lastUpdated": "2025-02-02",
+}
+PROJECT_SAVE_KWARGS = {
+    "title": "Mock Title",
+    "description": "Some description.",
+    "phase": enums.Phase.DRAFTING,
+    "starred": True,
+    "display_on_profile": True,
+    "word": 1000,
+    "page": 10,
+    "chapter": 1,
+    "scene": 3,
+}
+PROJECT_SAVE_PAYLOAD = {
+    "title": "Mock Title",
+    "description": "Some description.",
+    "phase": "drafting",
+    "startingBalance": {
+        "word": 1000,
+        "time": 0,
+        "page": 10,
+        "chapter": 1,
+        "scene": 3,
+        "line": 0,
+    },
+    "starred": True,
+    "displayOnProfile": True,
 }
 
 PROJECTSTUB_RESPONSE = {
@@ -78,6 +80,14 @@ TAG_RESPONSE = {
     "ownerId": 678,
     "name": "Pure Awesome",
     "color": "red",
+}
+TAG_SAVE_KWARGS = {
+    "name": "Mock Tag",
+    "color": enums.Color.BLUE,
+}
+TAG_SAVE_PAYLOAD = {
+    "name": "Mock Tag",
+    "color": "blue",
 }
 
 TALLY_RESPONSE = {
@@ -119,4 +129,22 @@ TALLY_RESPONSE = {
             "color": "blue",
         }
     ],
+}
+TALLY_SAVE_KWARGS = {
+    "work_id": 123,
+    "date": "2025-01-01",
+    "measure": enums.Measure.SCENE,
+    "count": 69,
+    "note": "Some Note",
+    "tags": ["New Tag"],
+    "set_total": True,
+}
+TALLY_SAVE_PAYLOAD = {
+    "date": "2025-01-01",
+    "measure": "scene",
+    "count": 69,
+    "note": "Some Note",
+    "workId": 123,
+    "setTotal": True,
+    "tags": ["New Tag"],
 }
