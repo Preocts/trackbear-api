@@ -4,7 +4,33 @@ All of the mock API repsonses by route type and helper functions. Shared across 
 
 from __future__ import annotations
 
+import re
+from typing import Any
+
 from trackbear_api import enums
+
+
+def keys_to_snake_case(response: dict[str, Any]) -> dict[str, Any]:
+    """Translate camelCase keys of response into snake_case."""
+    result = {}
+    new_value: Any
+
+    for key, value in response.items():
+        new_key = re.sub("([A-Z])", r"_\1", key).lower()
+
+        if isinstance(value, list):
+            new_value = [keys_to_snake_case(val) for val in value]
+
+        elif isinstance(value, dict):
+            new_value = keys_to_snake_case(value)
+
+        else:
+            new_value = value
+
+        result[new_key] = new_value
+
+    return result
+
 
 PROJECT_RESPONSE = {
     "id": 123,

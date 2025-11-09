@@ -13,7 +13,6 @@ from __future__ import annotations
 import copy
 import dataclasses
 import json
-import re
 from typing import Any
 from typing import TypeVar
 
@@ -28,28 +27,6 @@ from trackbear_api import models
 from . import test_parameters
 
 ModelType = TypeVar("ModelType")
-
-
-def keys_to_snake_case(response: dict[str, Any]) -> dict[str, Any]:
-    """Translate camelCase keys of response into snake_case."""
-    result = {}
-    new_value: Any
-
-    for key, value in response.items():
-        new_key = re.sub("([A-Z])", r"_\1", key).lower()
-
-        if isinstance(value, list):
-            new_value = [keys_to_snake_case(val) for val in value]
-
-        elif isinstance(value, dict):
-            new_value = keys_to_snake_case(value)
-
-        else:
-            new_value = value
-
-        result[new_key] = new_value
-
-    return result
 
 
 @pytest.mark.parametrize(
@@ -129,7 +106,7 @@ def test_client_list_success(
         assert isinstance(result, model_type)
         assert dataclasses.is_dataclass(result)
         assert not isinstance(result, type)
-        assert dataclasses.asdict(result) == keys_to_snake_case(api_response)
+        assert dataclasses.asdict(result) == test_parameters.keys_to_snake_case(api_response)
 
 
 @pytest.mark.parametrize(
@@ -179,7 +156,7 @@ def test_client_get_success(
     assert isinstance(result, model_type)
     assert dataclasses.is_dataclass(result)
     assert not isinstance(result, type)
-    assert dataclasses.asdict(result) == keys_to_snake_case(api_response)
+    assert dataclasses.asdict(result) == test_parameters.keys_to_snake_case(api_response)
 
 
 @pytest.mark.parametrize(
@@ -271,7 +248,7 @@ def test_client_save_success(
     assert isinstance(result, model_type)
     assert dataclasses.is_dataclass(result)
     assert not isinstance(result, type)
-    assert dataclasses.asdict(result) == keys_to_snake_case(api_response)
+    assert dataclasses.asdict(result) == test_parameters.keys_to_snake_case(api_response)
 
 
 @pytest.mark.parametrize(
@@ -318,4 +295,4 @@ def test_client_delete_success(
     assert isinstance(result, model_type)
     assert dataclasses.is_dataclass(result)
     assert not isinstance(result, type)
-    assert dataclasses.asdict(result) == keys_to_snake_case(api_response)
+    assert dataclasses.asdict(result) == test_parameters.keys_to_snake_case(api_response)
