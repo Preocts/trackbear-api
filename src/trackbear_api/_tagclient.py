@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
+from . import enums
+from . import exceptions
+from . import models
 from ._apiclient import APIClient
-from .enums import Color
-from .exceptions import APIResponseError
-from .models import Tag
 
 
 class TagClient:
@@ -15,28 +15,28 @@ class TagClient:
         """Initialize client by providing defined APIClient."""
         self._api_client = api_client
 
-    def list(self) -> Sequence[Tag]:
+    def list(self) -> Sequence[models.Tag]:
         """
         List all tags
 
         Returns:
-            A sequence of Tag models, can be empty
+            A sequence of trackbear_api.models.Tag
 
         Raises:
-            APIResponseError: On any failure message returned from TrackBear API
+            exceptions.APIResponseError: On any failure message returned from TrackBear API
         """
         response = self._api_client.get("/tag")
 
         if not response.success:
-            raise APIResponseError(
+            raise exceptions.APIResponseError(
                 status_code=response.status_code,
                 code=response.error.code,
                 message=response.error.message,
             )
 
-        return [Tag.build(data) for data in response.data]
+        return [models.Tag.build(data) for data in response.data]
 
-    def get(self, tag_id: int) -> Tag:
+    def get(self, tag_id: int) -> models.Tag:
         """
         Get Tag by id.
 
@@ -47,27 +47,27 @@ class TagClient:
             Tag model
 
         Raises:
-            APIResponseError: On failure to retrieve requested model
+            exceptions.APIResponseError: On failure to retrieve requested model
         """
         response = self._api_client.get(f"/tag/{tag_id}")
 
         if not response.success:
-            raise APIResponseError(
+            raise exceptions.APIResponseError(
                 status_code=response.status_code,
                 code=response.error.code,
                 message=response.error.message,
             )
 
-        return Tag.build(response.data)
+        return models.Tag.build(response.data)
 
     def save(
         self,
         name: str,
-        color: Color | str,
+        color: enums.Color | str,
         tag_id: int | None = None,
-    ) -> Tag:
+    ) -> models.Tag:
         """
-        Save a Tag.
+        Save a models.Tag.
 
         If `tag_id` is provided, then the existing tag is updated. Otherwise,
         a new tag is created.
@@ -79,18 +79,18 @@ class TagClient:
             tag_id (int): Existing tag id if request is to update existing tag
 
         Returns:
-            Tag object on success
+            trackbear_api.models.Tag
 
         Raises:
-            APIResponseError: On any failure message returned from TrackBear API
+            exceptions.APIResponseError: On any failure message returned from TrackBear API
             ValueError: When `color` is not a valid value
         """
         # Forcing the use of the Enum here allows for fast failures at runtime if the
         # incorrect string is provided.
-        if isinstance(color, Color):
+        if isinstance(color, enums.Color):
             _color = color
         else:
-            _color = Color(color)
+            _color = enums.Color(color)
 
         payload = {
             "name": name,
@@ -103,17 +103,17 @@ class TagClient:
             response = self._api_client.patch(f"/tag/{tag_id}", payload)
 
         if not response.success:
-            raise APIResponseError(
+            raise exceptions.APIResponseError(
                 status_code=response.status_code,
                 code=response.error.code,
                 message=response.error.message,
             )
 
-        return Tag.build(response.data)
+        return models.Tag.build(response.data)
 
-    def delete(self, tag_id: int) -> Tag:
+    def delete(self, tag_id: int) -> models.Tag:
         """
-        Delete an existing tag.
+        Delete an existing models.tag.
 
         Args:
             tag_id (int): Existing tag id
@@ -122,15 +122,15 @@ class TagClient:
             Tag object on success
 
         Raises:
-            APIResponseError: On any failure message returned from TrackBear API
+            exceptions.APIResponseError: On any failure message returned from TrackBear API
         """
         response = self._api_client.delete(f"/tag/{tag_id}")
 
         if not response.success:
-            raise APIResponseError(
+            raise exceptions.APIResponseError(
                 status_code=response.status_code,
                 code=response.error.code,
                 message=response.error.message,
             )
 
-        return Tag.build(response.data)
+        return models.Tag.build(response.data)

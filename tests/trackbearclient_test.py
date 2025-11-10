@@ -9,8 +9,8 @@ import responses
 import responses.matchers
 
 from trackbear_api import TrackBearClient
-from trackbear_api import TrackBearResponse
 from trackbear_api.exceptions import APITimeoutError
+from trackbear_api.models import TrackBearResponse
 
 
 def test_init_client_providing_no_token() -> None:

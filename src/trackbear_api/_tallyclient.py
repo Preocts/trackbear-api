@@ -3,10 +3,10 @@ from __future__ import annotations
 import re
 from collections.abc import Sequence
 
+from . import enums
+from . import exceptions
+from . import models
 from ._apiclient import APIClient
-from .enums import Measure
-from .exceptions import APIResponseError
-from .models import Tally
 
 _DATE_PATTERN = re.compile(r"[\d]{4}-[\d]{2}-[\d]{2}")
 
@@ -22,10 +22,10 @@ class TallyClient:
         self,
         works: Sequence[int] | None = None,
         tags: Sequence[int] | None = None,
-        measure: Measure | str | None = None,
+        measure: enums.Measure | str | None = None,
         start_date: str | None = None,
         end_date: str | None = None,
-    ) -> Sequence[Tally]:
+    ) -> Sequence[models.Tally]:
         """
         List all tallies by default or use provided filters.
 
@@ -38,16 +38,16 @@ class TallyClient:
             end_date (str): Ending date to pull (YYYY-MM-DD)
 
         Returns:
-            A sequence of Tally models, can be empty
+            A sequence of trackbear_api.models.Tally
 
         Raises:
-            APIResponseError: On any failure message returned from TrackBear API
+            exceptions.APIResponseError: On any failure message returned from TrackBear API
             ValueError: When a given parameter is an invalid value.
         """
         # Forcing the use of the Enum here allows for fast failures at runtime if the
         # incorrect string is provided.
         if measure is not None:
-            measure = measure if isinstance(measure, Measure) else Measure(measure)
+            measure = measure if isinstance(measure, enums.Measure) else enums.Measure(measure)
 
         if start_date is not None:
             if _DATE_PATTERN.match(start_date) is None:
@@ -69,15 +69,15 @@ class TallyClient:
         response = self._api_client.get("/tally", params=params)
 
         if not response.success:
-            raise APIResponseError(
+            raise exceptions.APIResponseError(
                 status_code=response.status_code,
                 code=response.error.code,
                 message=response.error.message,
             )
 
-        return [Tally.build(data) for data in response.data]
+        return [models.Tally.build(data) for data in response.data]
 
-    def get(self, tally_id: int) -> Tally:
+    def get(self, tally_id: int) -> models.Tally:
         """
         Get Tally by id.
 
@@ -85,36 +85,36 @@ class TallyClient:
             tally_id (int): Tally ID to request from TrackBear
 
         Returns:
-            Tally model
+            trackbear_api.models.Tally
 
         Raises:
-            APIResponseError: On failure to retrieve requested model
+            exceptions.APIResponseError: On failure to retrieve requested model
         """
         response = self._api_client.get(f"/tally/{tally_id}")
 
         if not response.success:
-            raise APIResponseError(
+            raise exceptions.APIResponseError(
                 status_code=response.status_code,
                 code=response.error.code,
                 message=response.error.message,
             )
 
-        return Tally.build(response.data)
+        return models.Tally.build(response.data)
 
     def save(
         self,
         work_id: int,
         date: str,
-        measure: Measure | str,
+        measure: enums.Measure | str,
         count: int,
         note: str = "",
         tags: Sequence[str] | None = None,
         tally_id: int | None = None,
         *,
         set_total: bool = False,
-    ) -> Tally:
+    ) -> models.Tally:
         """
-        Save a Tally.
+        Save a models.Tally.
 
         If `tally_id` is provided, then the existing tally is updated. Otherwise,
         a new tally is created.
@@ -131,15 +131,15 @@ class TallyClient:
             set_total (bool): If true, the provided count will be set as the project total.
 
         Returns:
-            Tally object on success
+            trackbear_api.models.Tally
 
         Raises:
-            APIResponseError: On any failure message returned from TrackBear API
+            exceptions.APIResponseError: On any failure message returned from TrackBear API
             ValueError: When a given parameter is an invalid value.
         """
         # Forcing the use of the Enum here allows for fast failures at runtime if the
         # incorrect string is provided.
-        measure = measure if isinstance(measure, Measure) else Measure(measure)
+        measure = measure if isinstance(measure, enums.Measure) else enums.Measure(measure)
 
         payload = {
             "date": date,
@@ -157,17 +157,17 @@ class TallyClient:
             response = self._api_client.patch(f"/tally/{tally_id}", payload)
 
         if not response.success:
-            raise APIResponseError(
+            raise exceptions.APIResponseError(
                 status_code=response.status_code,
                 code=response.error.code,
                 message=response.error.message,
             )
 
-        return Tally.build(response.data)
+        return models.Tally.build(response.data)
 
-    def delete(self, tally_id: int) -> Tally:
+    def delete(self, tally_id: int) -> models.Tally:
         """
-        Delete an existing tally.
+        Delete an existing models.tally.
 
         Args:
             tally_id (int): Existing tally id
@@ -176,15 +176,15 @@ class TallyClient:
             Tally object on success
 
         Raises:
-            APIResponseError: On any failure message returned from TrackBear API
+            exceptions.APIResponseError: On any failure message returned from TrackBear API
         """
         response = self._api_client.delete(f"/tally/{tally_id}")
 
         if not response.success:
-            raise APIResponseError(
+            raise exceptions.APIResponseError(
                 status_code=response.status_code,
                 code=response.error.code,
                 message=response.error.message,
             )
 
-        return Tally.build(response.data)
+        return models.Tally.build(response.data)
