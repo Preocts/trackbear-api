@@ -8,11 +8,8 @@ from collections.abc import Sequence
 from typing import Any
 from typing import NoReturn
 
-from .enums import Color
-from .enums import Measure
-from .enums import Phase
-from .enums import State
-from .exceptions import ModelBuildError
+from . import enums
+from . import exceptions
 
 __all__ = [
     "Balance",
@@ -30,7 +27,7 @@ def _handle_build_error(exc: Exception, data: dict[str, Any], name: str) -> NoRe
     Raises:
         ModelBuildError
     """
-    raise ModelBuildError(
+    raise exceptions.ModelBuildError(
         data_string=json.dumps(data),
         model_name=name,
         exception_type=str(type(exc)),
@@ -107,10 +104,10 @@ class Tally:
     uuid: int
     created_at: str
     updated_at: str
-    state: State
+    state: enums.State
     owner_id: str
     date: str
-    measure: Measure
+    measure: enums.Measure
     count: int
     note: str
     work_id: int
@@ -126,10 +123,10 @@ class Tally:
                 uuid=data["uuid"],
                 created_at=data["createdAt"],
                 updated_at=data["updatedAt"],
-                state=State(data["state"]),
+                state=enums.State(data["state"]),
                 owner_id=data["ownerId"],
                 date=data["date"],
-                measure=Measure(data["measure"]),
+                measure=enums.Measure(data["measure"]),
                 count=data["count"],
                 note=data["note"],
                 work_id=data["workId"],
@@ -149,11 +146,11 @@ class Project:
     uuid: str
     created_at: str
     updated_at: str
-    state: State
+    state: enums.State
     owner_id: int
     title: str
     description: str
-    phase: Phase
+    phase: enums.Phase
     starting_balance: Balance
     cover: str | None
     starred: bool
@@ -170,11 +167,11 @@ class Project:
                 uuid=data["uuid"],
                 created_at=data["createdAt"],
                 updated_at=data["updatedAt"],
-                state=State(data["state"]),
+                state=enums.State(data["state"]),
                 owner_id=data["ownerId"],
                 title=data["title"],
                 description=data["description"],
-                phase=Phase(data["phase"]),
+                phase=enums.Phase(data["phase"]),
                 starting_balance=Balance(
                     word=data["startingBalance"].get("word", 0),
                     time=data["startingBalance"].get("time", 0),
@@ -209,11 +206,11 @@ class ProjectStub:
     uuid: str
     created_at: str
     updated_at: str
-    state: State
+    state: enums.State
     owner_id: int
     title: str
     description: str
-    phase: Phase
+    phase: enums.Phase
     starting_balance: Balance
     cover: str | None
     starred: bool
@@ -228,11 +225,11 @@ class ProjectStub:
                 uuid=data["uuid"],
                 created_at=data["createdAt"],
                 updated_at=data["updatedAt"],
-                state=State(data["state"]),
+                state=enums.State(data["state"]),
                 owner_id=data["ownerId"],
                 title=data["title"],
                 description=data["description"],
-                phase=Phase(data["phase"]),
+                phase=enums.Phase(data["phase"]),
                 starting_balance=Balance(
                     word=data["startingBalance"].get("word", 0),
                     time=data["startingBalance"].get("time", 0),
@@ -258,10 +255,10 @@ class Tag:
     uuid: str
     created_at: str
     updated_at: str
-    state: State
+    state: enums.State
     owner_id: int
     name: str
-    color: Color
+    color: enums.Color
 
     @classmethod
     def build(cls, data: dict[str, Any]) -> Tag:
@@ -272,10 +269,10 @@ class Tag:
                 uuid=data["uuid"],
                 created_at=data["createdAt"],
                 updated_at=data["updatedAt"],
-                state=State(data["state"]),
+                state=enums.State(data["state"]),
                 owner_id=data["ownerId"],
                 name=data["name"],
-                color=Color(data["color"]),
+                color=enums.Color(data["color"]),
             )
 
         except (KeyError, ValueError) as exc:
