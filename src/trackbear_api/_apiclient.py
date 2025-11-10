@@ -6,8 +6,8 @@ from typing import Any
 
 import requests
 
-from ._trackbearresponse import TrackBearResponse
 from .exceptions import APITimeoutError
+from .models import TrackBearResponse
 
 
 class APIClient:

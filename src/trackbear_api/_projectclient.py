@@ -2,11 +2,10 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
+from . import enums
+from . import exceptions
+from . import models
 from ._apiclient import APIClient
-from .enums import Phase
-from .exceptions import APIResponseError
-from .models import Project
-from .models import ProjectStub
 
 
 class ProjectClient:
@@ -16,28 +15,28 @@ class ProjectClient:
         """Initialize client by providing defined APIClient."""
         self._api_client = api_client
 
-    def list(self) -> Sequence[Project]:
+    def list(self) -> Sequence[models.Project]:
         """
         List all projects
 
         Returns:
-            A sequence of Project models, can be empty
+            A sequence of trackbear_api.models.Project
 
         Raises:
-            APIResponseError: On any failure message returned from TrackBear API
+            exceptions.APIResponseError: On any failure message returned from TrackBear API
         """
         response = self._api_client.get("/project")
 
         if not response.success:
-            raise APIResponseError(
+            raise exceptions.APIResponseError(
                 status_code=response.status_code,
                 code=response.error.code,
                 message=response.error.message,
             )
 
-        return [Project.build(data) for data in response.data]
+        return [models.Project.build(data) for data in response.data]
 
-    def get(self, project_id: int) -> Project:
+    def get(self, project_id: int) -> models.Project:
         """
         Get Project by id.
 
@@ -45,27 +44,27 @@ class ProjectClient:
             project_id (int): Project ID to request from TrackBear
 
         Returns:
-            Project model
+            trackbear_api.models.Project
 
         Raises:
-            APIResponseError: On failure to retrieve requested model
+            exceptions.APIResponseError: On failure to retrieve requested model
         """
         response = self._api_client.get(f"/project/{project_id}")
 
         if not response.success:
-            raise APIResponseError(
+            raise exceptions.APIResponseError(
                 status_code=response.status_code,
                 code=response.error.code,
                 message=response.error.message,
             )
 
-        return Project.build(response.data)
+        return models.Project.build(response.data)
 
     def save(
         self,
         title: str,
         description: str,
-        phase: Phase | str,
+        phase: enums.Phase | str,
         *,
         starred: bool = False,
         display_on_profile: bool = False,
@@ -76,7 +75,7 @@ class ProjectClient:
         scene: int = 0,
         line: int = 0,
         project_id: int | None = None,
-    ) -> ProjectStub:
+    ) -> models.ProjectStub:
         """
         Save a Project.
 
@@ -101,18 +100,18 @@ class ProjectClient:
             project_id (int): Existing project id if request is to update existing projects
 
         Returns:
-            ProjectStub object on success
+            trackbear.models.ProjectStub
 
         Raises:
-            APIResponseError: On any failure message returned from TrackBear API
+            exceptions.APIResponseError: On any failure message returned from TrackBear API
             ValueError: When `phase` is not a valid value
         """
         # Forcing the use of the Enum here allows for fast failures at runtime if the
         # incorrect string is provided.
-        if isinstance(phase, Phase):
+        if isinstance(phase, enums.Phase):
             _phase = phase
         else:
-            _phase = Phase(phase)
+            _phase = enums.Phase(phase)
 
         payload = {
             "title": title,
@@ -136,15 +135,15 @@ class ProjectClient:
             response = self._api_client.patch(f"/project/{project_id}", payload)
 
         if not response.success:
-            raise APIResponseError(
+            raise exceptions.APIResponseError(
                 status_code=response.status_code,
                 code=response.error.code,
                 message=response.error.message,
             )
 
-        return ProjectStub.build(response.data)
+        return models.ProjectStub.build(response.data)
 
-    def delete(self, project_id: int) -> ProjectStub:
+    def delete(self, project_id: int) -> models.ProjectStub:
         """
         Delete an existing project.
 
@@ -152,18 +151,18 @@ class ProjectClient:
             project_id (int): Existing project id
 
         Returns:
-            ProjectStub object on success
+            trackbear_api.models.ProjectStub
 
         Raises:
-            APIResponseError: On any failure message returned from TrackBear API
+            exceptions.APIResponseError: On any failure message returned from TrackBear API
         """
         response = self._api_client.delete(f"/project/{project_id}")
 
         if not response.success:
-            raise APIResponseError(
+            raise exceptions.APIResponseError(
                 status_code=response.status_code,
                 code=response.error.code,
                 message=response.error.message,
             )
 
-        return ProjectStub.build(response.data)
+        return models.ProjectStub.build(response.data)

@@ -3,9 +3,9 @@ from __future__ import annotations
 import re
 from collections.abc import Sequence
 
+from . import exceptions
+from . import models
 from ._apiclient import APIClient
-from .exceptions import APIResponseError
-from .models import Stat
 
 _DATE_PATTERN = re.compile(r"[\d]{4}-[\d]{2}-[\d]{2}")
 
@@ -21,7 +21,7 @@ class StatClient:
         self,
         start_date: str | None = None,
         end_date: str | None = None,
-    ) -> Sequence[Stat]:
+    ) -> Sequence[models.Stat]:
         """
         List stats by a given date range. Pulls all stats by default.
 
@@ -30,7 +30,7 @@ class StatClient:
             end_date (str): Ending date to pull (YYYY-MM-DD)
 
         Returns:
-            A sequence of Tag models, can be empty
+            A sequence of trackbear_api.models.Stat
 
         Raises:
             ValueError: If start_date or end_date are not a valid YYYY-MM-DD format
@@ -53,10 +53,10 @@ class StatClient:
         response = self._api_client.get("/stats/days", params)
 
         if not response.success:
-            raise APIResponseError(
+            raise exceptions.APIResponseError(
                 status_code=response.status_code,
                 code=response.error.code,
                 message=response.error.message,
             )
 
-        return [Stat.build(data) for data in response.data]
+        return [models.Stat.build(data) for data in response.data]

@@ -69,8 +69,8 @@ from their respective attribute.
 Error handling removed for brevity.
 
 ```python
-from trackbear_api import Phase
 from trackbear_api import TrackBearClient
+from trackbear_api.enums import Phase
 
 # Assumes TRACKBEAR_API_TOKEN is set in the environment
 client = TrackBearClient()
@@ -79,7 +79,7 @@ client = TrackBearClient()
 new_project = client.project.save(
     title="My new TrackBear project",
     description="This will be an amazing story!",
-    phase=Phase.OUTLINING,
+    phase=Phase.OUTLINING,  # "outlining" as a string works here too
     starred=True,
     word=1667,
 )
@@ -153,7 +153,7 @@ https://help.trackbear.app/api/
 ### Bare Access
 
 Bare access to the API allows you to escape from the structured return models
-and call routes directly. These methods return a `TrackBearResponse` object.
+and call routes directly. These methods return a `models.TrackBearResponse` object.
 
 | Provider Method        | Description                                         |
 | ---------------------- | --------------------------------------------------- |
@@ -166,7 +166,7 @@ and call routes directly. These methods return a `TrackBearResponse` object.
 | `.patch()`  | HTTP PATCH to the TrackBear API  |
 | `.delete()` | HTTP DELETE to the TrackBear API |
 
-#### TrackBearResponse object
+#### trackbear_api.models.TrackBearResponse
 
 | Attribute             | Type | Description                                           |
 | --------------------- | ---- | ----------------------------------------------------- |
@@ -182,7 +182,7 @@ and call routes directly. These methods return a `TrackBearResponse` object.
 
 The library defines a handful of useful custom exceptions.
 
-#### ModelBuildError(Exception)
+#### trackbear_api.exceptions.ModelBuildError(Exception)
 
 Raised when building a dataclass model from the API response fails. This can
 indicate the expected response has changed from the observed response. The
@@ -194,7 +194,7 @@ to build with. Both are vital for bug reports.
 | `data_string` | str  | The data which caused the model build to fail |
 | `model_name`  | str  | The name of the model that failed             |
 
-#### APIResponseError(Exception)
+#### trackbear_api.exceptions.APIResponseError(Exception)
 
 Raised by all provider methods when the API returns an unsuccessful response.
 
@@ -204,7 +204,7 @@ Raised by all provider methods when the API returns an unsuccessful response.
 | `code`        | str  | Error code provided by the API                   |
 | `message`     | str  | Human readable error message provided by the API |
 
-#### APITimeoutError(Exception)
+#### trackbear_api.exceptions.APITimeoutError(Exception)
 
 Raised when the TrackBear API request, read, or connection times out.
 
