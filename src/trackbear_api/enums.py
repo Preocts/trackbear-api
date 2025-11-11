@@ -9,6 +9,8 @@ __all__ = [
     "State",
     "Color",
     "Measure",
+    "HabitUnit",
+    "GoalType",
 ]
 
 

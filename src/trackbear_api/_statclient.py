@@ -33,8 +33,8 @@ class StatClient:
             A sequence of trackbear_api.models.Stat
 
         Raises:
-            ValueError: If start_date or end_date are not a valid YYYY-MM-DD format
             APIResponseError: On any failure message returned from TrackBear API
+            ValueError: If `start_date` or `end_date` are not "YYYY-MM-DD"
         """
         if start_date is not None:
             if _DATE_PATTERN.match(start_date) is None:

@@ -6,6 +6,8 @@ import dataclasses
 
 __all__ = [
     "ModelBuildError",
+    "APIResponseError",
+    "APITimeoutError",
 ]
 
 

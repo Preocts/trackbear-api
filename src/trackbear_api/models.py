@@ -13,10 +13,17 @@ from . import exceptions
 
 __all__ = [
     "Balance",
+    "Cadence",
+    "Error",
+    "Goal",
+    "HabitParameter",
     "Project",
+    "ProjectStub",
     "Stat",
     "Tag",
     "Tally",
+    "TargetParameter",
+    "Threshold",
 ]
 
 
@@ -80,6 +87,8 @@ class TrackBearResponse:
 
 @dataclasses.dataclass(slots=True, frozen=True)
 class Error:
+    """Sub-model of TrackBearResponse"""
+
     code: str
     message: str
 

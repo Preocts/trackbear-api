@@ -43,19 +43,20 @@ class TrackBearClient:
         """
         Initialize the client.
 
-        No log handler is defined by default. Logger is named "trackbear-api".
+        While optional as a parameter, an API token **must** be provided either by
+        parameter or by environment variable (TRACKBEAR_APP_TOKEN)
 
         Args:
-            api_token (str): The API token for TrackBear. If not provided then the token
-                is looked for in the loaded environment (TRACKBEAR_APP_TOKEN)
-            api_url (str): Defaults to "https://trackbear.app/api/v1/", can also be set
-                in environment (TRACKBEAR_API_URL)
-            user_agent (str): By default the User-Agent header value points to the
-                trackbear-api repo. You can override this to identify your own app by
-                providing directly or fro the environment (TRACKBEAR_USER_AGENT).
+            api_token (str): (Optional) The API token for TrackBear. If not provided
+                then the token is looked for in the loaded environment (TRACKBEAR_APP_TOKEN)
+            api_url (str): (Optional) Defaults to "https://trackbear.app/api/v1/", can
+                also be set in environment (TRACKBEAR_API_URL)
+            user_agent (str): (Optional) By default the User-Agent header value points
+                to the trackbear-api repo. You can override this to identify your own
+                app by providing directly or fro the environment (TRACKBEAR_USER_AGENT).
                 https://help.trackbear.app/api/authentication#identifying-your-app
-            timeout_seconds (int): Number of seconds to wait for a response from the API
-                before raising an exception.
+            timeout_seconds (int): (Optional) Number of seconds to wait for a response
+                from the API before raising an exception.
 
         Raises:
             ValueError: If API token is not provided or an empty string.
