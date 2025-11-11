@@ -72,7 +72,7 @@ class APIClient:
             self.logger.error("Bad API response. %s", log_body)
         else:
             log_body = f"Code: {response.status_code} Route: {route} Parames: {params}"
-            self.logger.debug("Good API resposne. %s", log_body)
+            self.logger.debug("Good API response. %s", log_body)
 
         rheaders = response.headers.get("RateLimit", "Undefined")
         remaining, reset = self.parse_response_rate_limit(rheaders)

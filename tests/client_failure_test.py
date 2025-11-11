@@ -20,6 +20,8 @@ import responses
 from trackbear_api import TrackBearClient
 from trackbear_api import exceptions
 
+from . import test_parameters
+
 ModelType = TypeVar("ModelType")
 
 
@@ -54,6 +56,31 @@ FAILURE_RESPONSE = {
             "project.delete",
             {"project_id": 123},
             "https://trackbear.app/api/v1/project/123",
+        ),
+        (
+            "goal.list",
+            {},
+            "https://trackbear.app/api/v1/goal",
+        ),
+        (
+            "goal.get",
+            {"goal_id": 123},
+            "https://trackbear.app/api/v1/goal/123",
+        ),
+        (
+            "goal.save_target",
+            test_parameters.GOAL_SAVE_TARGET_KWARGS,
+            "https://trackbear.app/api/v1/goal",
+        ),
+        (
+            "goal.save_habit",
+            test_parameters.GOAL_SAVE_HABIT_KWARGS,
+            "https://trackbear.app/api/v1/goal",
+        ),
+        (
+            "goal.delete",
+            {"goal_id": 123},
+            "https://trackbear.app/api/v1/goal/123",
         ),
         (
             "stat.list",
@@ -117,7 +144,7 @@ def test_api_response_error(
     pattern = r"TrackBear API Failure \(409\) SOME_ERROR_CODE - A human-readable error message"
 
     responses.add(
-        method=methods[route],
+        method=methods[route.split("_", 1)[0]],
         status=409,
         url=url,
         body=json.dumps(FAILURE_RESPONSE),
@@ -148,6 +175,26 @@ def test_api_response_error(
         (
             "tally.list",
             {"end_date": "bar"},
+            "Invalid end_date 'bar'. Must be YYYY-MM-DD",
+        ),
+        (
+            "goal.save_target",
+            test_parameters.GOAL_SAVE_TARGET_KWARGS | {"start_date": "foo"},
+            "Invalid start_date 'foo'. Must be YYYY-MM-DD",
+        ),
+        (
+            "goal.save_target",
+            test_parameters.GOAL_SAVE_TARGET_KWARGS | {"end_date": "bar"},
+            "Invalid end_date 'bar'. Must be YYYY-MM-DD",
+        ),
+        (
+            "goal.save_habit",
+            test_parameters.GOAL_SAVE_HABIT_KWARGS | {"start_date": "foo"},
+            "Invalid start_date 'foo'. Must be YYYY-MM-DD",
+        ),
+        (
+            "goal.save_habit",
+            test_parameters.GOAL_SAVE_HABIT_KWARGS | {"end_date": "bar"},
             "Invalid end_date 'bar'. Must be YYYY-MM-DD",
         ),
     ),

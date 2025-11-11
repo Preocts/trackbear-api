@@ -110,16 +110,63 @@ GOAL_RESPONSE_THRESHOLD = {
     "starred": False,
     "displayOnProfile": False,
 }
-
 GOAL_RESPONSE_HABIT = GOAL_RESPONSE_THRESHOLD | {
     "type": "habit",
     "parameters": {"cadence": {"unit": "day", "period": 1}, "threshold": None},
 }
-
 GOAL_RESPONSE_HABIT_THRESHOLD = GOAL_RESPONSE_HABIT | {
     "parameters": {
         "cadence": {"unit": "day", "period": 1},
         "threshold": {"count": 1667, "measure": "word"},
+    },
+}
+GOAL_SAVE_TARGET_KWARGS = {
+    "title": "Target Goal",
+    "description": "We'll crush this goal",
+    "measure": enums.Measure.WORD,
+    "count": 50000,
+    "start_date": "2025-11-01",
+    "end_date": "2025-11-30",
+    "work_ids": [123],
+}
+GOAL_SAVE_TARGET_PAYLOAD = {
+    "title": "Target Goal",
+    "description": "We'll crush this goal",
+    "type": "target",
+    "parameters": {
+        "threshold": {
+            "measure": enums.Measure.WORD,
+            "count": 50000,
+        },
+    },
+    "startDate": "2025-11-01",
+    "endDate": "2025-11-30",
+    "workIds": [123],
+    "tagIds": [],
+    "starred": False,
+    "displayOnProfile": False,
+}
+GOAL_SAVE_HABIT_KWARGS = GOAL_SAVE_TARGET_KWARGS | {
+    "unit": enums.HabitUnit.DAY,
+    "period": 12,
+    "measure": None,
+    "count": None,
+}
+GOAL_SAVE_HABIT_PAYLOAD = GOAL_SAVE_TARGET_PAYLOAD | {
+    "type": "habit",
+    "parameters": {"cadence": {"unit": "day", "period": 12}, "threshold": None},
+}
+GOAL_SAVE_HABIT_TARGET_KWARGS = GOAL_SAVE_TARGET_KWARGS | {
+    "unit": enums.HabitUnit.DAY,
+    "period": 12,
+    "measure": enums.Measure.CHAPTER,
+    "count": 1,
+}
+GOAL_SAVE_HABIT_TARGET_PAYLOAD = GOAL_SAVE_TARGET_PAYLOAD | {
+    "type": "habit",
+    "parameters": {
+        "cadence": {"unit": "day", "period": 12},
+        "threshold": {"measure": "chapter", "count": 1},
     },
 }
 

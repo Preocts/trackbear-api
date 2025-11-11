@@ -282,7 +282,7 @@ class HabitParameter:
 class Goal:
     """Goal model built from API repsonse."""
 
-    id: str
+    id: int
     uuid: str
     created_at: str
     updated_at: str

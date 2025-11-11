@@ -27,10 +27,10 @@ Implemented routes:
 - Projects
 - Tags
 - Stats
+- Goals
 
 Routes pending implementation:
 
-- Goals
 - Leaderboards
 - Leaderboard Teams
 - Leaderboard Members
@@ -126,6 +126,20 @@ https://help.trackbear.app/api/
 | `.get()`    | Get a project by specific id |
 | `.save()`   | Create or update project     |
 | `.delete()` | Delete a project by its id   |
+
+### Goals
+
+| Provider Method        | Description                                         |
+| ---------------------- | --------------------------------------------------- |
+| `TrackBearClient.goal` | Contains helper methods for all Goal related routes |
+
+| Method           | Description                  |
+| ---------------- | ---------------------------- |
+| `.list()`        | Get all goals                |
+| `.get()`         | Get a goal by specific id    |
+| `.save_target()` | Create or update target goal |
+| `.save_habit()`  | Create or update habit goal  |  |
+| `.delete()`      | Delete a goal by its id      |
 
 ### Tags
 
