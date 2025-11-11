@@ -19,7 +19,7 @@ def keys_to_snake_case(response: dict[str, Any]) -> dict[str, Any]:
         new_key = re.sub("([A-Z])", r"_\1", key).lower()
 
         if isinstance(value, list):
-            new_value = [keys_to_snake_case(val) for val in value]
+            new_value = [keys_to_snake_case(val) if isinstance(val, dict) else val for val in value]
 
         elif isinstance(value, dict):
             new_value = keys_to_snake_case(value)
@@ -90,6 +90,37 @@ PROJECTSTUB_RESPONSE = {
     "cover": "string",
     "starred": True,
     "displayOnProfile": True,
+}
+
+GOAL_RESPONSE_THRESHOLD = {
+    "id": 123,
+    "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+    "createdAt": "string",
+    "updatedAt": "string",
+    "state": "active",
+    "ownerId": 123,
+    "title": "string",
+    "description": "string",
+    "type": "target",
+    "parameters": {"threshold": {"measure": "word", "count": 0}},
+    "startDate": "string",
+    "endDate": "string",
+    "workIds": [123],
+    "tagIds": [123],
+    "starred": False,
+    "displayOnProfile": False,
+}
+
+GOAL_RESPONSE_HABIT = GOAL_RESPONSE_THRESHOLD | {
+    "type": "habit",
+    "parameters": {"cadence": {"unit": "day", "period": 1}, "threshold": None},
+}
+
+GOAL_RESPONSE_HABIT_THRESHOLD = GOAL_RESPONSE_HABIT | {
+    "parameters": {
+        "cadence": {"unit": "day", "period": 1},
+        "threshold": {"count": 1667, "measure": "word"},
+    },
 }
 
 STAT_RESPONSE = {

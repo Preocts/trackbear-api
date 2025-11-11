@@ -22,6 +22,7 @@ class ModelType(Protocol):
     (
         models.Project,
         models.ProjectStub,
+        models.Goal,
         models.Stat,
         models.Tag,
         models.Tally,
@@ -41,6 +42,9 @@ def test_build_model_failure(model_type: type[ModelType]) -> None:
     (
         (test_parameters.PROJECT_RESPONSE, models.Project),
         (test_parameters.PROJECTSTUB_RESPONSE, models.ProjectStub),
+        (test_parameters.GOAL_RESPONSE_THRESHOLD, models.Goal),
+        (test_parameters.GOAL_RESPONSE_HABIT_THRESHOLD, models.Goal),
+        (test_parameters.GOAL_RESPONSE_HABIT, models.Goal),
         (test_parameters.STAT_RESPONSE, models.Stat),
         (test_parameters.TAG_RESPONSE, models.Tag),
         (test_parameters.TALLY_RESPONSE, models.Tally),
