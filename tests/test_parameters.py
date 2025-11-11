@@ -57,7 +57,7 @@ PROJECT_SAVE_KWARGS = {
     "display_on_profile": True,
     "word": 1000,
     "page": 10,
-    "chapter": 1,
+    "chapter": 0,
     "scene": 3,
 }
 PROJECT_SAVE_PAYLOAD = {
@@ -66,11 +66,9 @@ PROJECT_SAVE_PAYLOAD = {
     "phase": "drafting",
     "startingBalance": {
         "word": 1000,
-        "time": 0,
         "page": 10,
-        "chapter": 1,
+        "chapter": 0,
         "scene": 3,
-        "line": 0,
     },
     "starred": True,
     "displayOnProfile": True,
