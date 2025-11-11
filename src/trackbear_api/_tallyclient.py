@@ -29,20 +29,23 @@ class TallyClient:
         """
         List all tallies by default or use provided filters.
 
+        All arguements are optional and act as filters for the results.
+
         Args:
-            works (Sequence[int]): List of project ids to filter results by
-            tags: (Sequence[int]): List of tag ids to filter results by
-            measure (Measure | str): Measure enum of the following: `word`, `time`,
-                `page`, `chapter`, `scene`, or `line`.
-            start_date (str): Starting date to pull (YYYY-MM-DD)
-            end_date (str): Ending date to pull (YYYY-MM-DD)
+            works (Sequence[int]): (Optional) List of project ids
+            tags: (Sequence[int]): (Optional) List of tag ids
+            measure (Measure | str): (Optional) Measure enum of the following: `word`,
+                `time`, `page`, `chapter`, `scene`, or `line`.
+            start_date (str): (Optional) Starting date to pull (YYYY-MM-DD)
+            end_date (str): (Optional) Ending date to pull (YYYY-MM-DD)
 
         Returns:
             A sequence of trackbear_api.models.Tally
 
         Raises:
             exceptions.APIResponseError: On any failure message returned from TrackBear API
-            ValueError: When a given parameter is an invalid value.
+            ValueError: When `measure` is not a valid value
+            ValueError: If `start_date` or `end_date` are not "YYYY-MM-DD"
         """
         # Forcing the use of the Enum here allows for fast failures at runtime if the
         # incorrect string is provided.
@@ -126,8 +129,10 @@ class TallyClient:
                 `page`, `chapter`, `scene`, or `line`.
             count (int): Value of the measure
             note (str): A note for the tally
-            tags (Sequence[str]): A list of tag names to apply. New tags will be created.
-            tally_id (int): Existing project id if request is to update existing projects
+            tags (Sequence[str]): (Optional) A list of tag names to apply. New tags
+                will be created.
+            tally_id (int): (Optional) Existing project id if request is to update
+                existing projects
             set_total (bool): If true, the provided count will be set as the project total.
 
         Returns:
@@ -135,7 +140,8 @@ class TallyClient:
 
         Raises:
             exceptions.APIResponseError: On any failure message returned from TrackBear API
-            ValueError: When a given parameter is an invalid value.
+            ValueError: When `measure` is not a valid value
+            ValueError: If `date` is not "YYYY-MM-DD"
         """
         # Forcing the use of the Enum here allows for fast failures at runtime if the
         # incorrect string is provided.
@@ -173,7 +179,7 @@ class TallyClient:
             tally_id (int): Existing tally id
 
         Returns:
-            Tally object on success
+            trackbear_api.models.Tally
 
         Raises:
             exceptions.APIResponseError: On any failure message returned from TrackBear API

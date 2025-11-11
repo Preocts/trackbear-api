@@ -2,12 +2,13 @@ from __future__ import annotations
 
 import logging
 import re
+from collections.abc import Mapping
 from typing import Any
 
 import requests
 
-from .exceptions import APITimeoutError
-from .models import TrackBearResponse
+from . import exceptions
+from . import models
 
 
 class APIClient:
@@ -28,30 +29,90 @@ class APIClient:
         self.api_url = api_url
         self.timeout = timeout
 
-    def get(self, route: str, params: dict[str, Any] | None = None) -> TrackBearResponse:
-        """GET request to the TrackBear API."""
+    def get(
+        self,
+        route: str,
+        params: Mapping[str, Any] | None = None,
+    ) -> models.TrackBearResponse:
+        """
+        GET request to the TrackBear API.
+
+        Args:
+            route (str): Route to call from API; example: "/project"
+            params (Mapping): key-value pairs of URL parameters for the call
+
+        Returns:
+            trackbear_api.models.TrackBearResponse
+
+        Raises:
+            exceptions.APITimeoutError: If the call exceeds defined time-out
+        """
         return self._handle_request("GET", route, params=params)
 
-    def post(self, route: str, payload: dict[str, Any] | None = None) -> TrackBearResponse:
-        """POST request to the TrackBear API."""
+    def post(
+        self,
+        route: str,
+        payload: Mapping[str, Any] | None = None,
+    ) -> models.TrackBearResponse:
+        """
+        POST request to the TrackBear API.
+
+        Args:
+            route (str): Route to call from API; example: "/project"
+            payload (Mapping): key-value pairs of request body
+
+        Returns:
+            trackbear_api.models.TrackBearResponse
+
+        Raises:
+            exceptions.APITimeoutError: If the call exceeds defined time-out
+        """
         return self._handle_request("POST", route, payload=payload)
 
-    def patch(self, route: str, payload: dict[str, Any] | None = None) -> TrackBearResponse:
-        """PATCH request to the TrackBear API."""
+    def patch(
+        self,
+        route: str,
+        payload: Mapping[str, Any] | None = None,
+    ) -> models.TrackBearResponse:
+        """
+        PATCH request to the TrackBear API.
+
+        Args:
+            route (str): Route to call from API; example: "/project"
+            payload (Mapping): key-value pairs of request body
+
+        Returns:
+            trackbear_api.models.TrackBearResponse
+
+        Raises:
+            exceptions.APITimeoutError: If the call exceeds defined time-out
+        """
         return self._handle_request("PATCH", route, payload=payload)
 
-    def delete(self, route: str, payload: dict[str, Any] | None = None) -> TrackBearResponse:
-        """DELETE request to the TrackBear API."""
-        return self._handle_request("DELETE", route, payload=payload)
+    def delete(self, route: str) -> models.TrackBearResponse:
+        """
+        DELETE request to the TrackBear API.
+
+        Args:
+            route (str): Route to call from API; example: "/project"
+
+        Returns:
+            trackbear_api.models.TrackBearResponse
+
+        Raises:
+            exceptions.APITimeoutError: If the call exceeds defined time-out
+
+        """
+        return self._handle_request("DELETE", route)
 
     def _handle_request(
         self,
         method: str,
         route: str,
         *,
-        params: dict[str, Any] | None = None,
-        payload: dict[str, Any] | None = None,
-    ) -> TrackBearResponse:
+        params: Mapping[str, Any] | None = None,
+        payload: Mapping[str, Any] | None = None,
+    ) -> models.TrackBearResponse:
         """Internal logic for making all API requests."""
         route = route.lstrip("/") if route.startswith("/") else route
         url = f"{self.api_url}/{route}"
@@ -63,7 +124,7 @@ class APIClient:
                 response = self.session.request(method, url, json=payload, timeout=self.timeout)
 
         except requests.exceptions.Timeout as err:
-            exc = APITimeoutError(err, method, url, self.timeout)
+            exc = exceptions.APITimeoutError(err, method, url, self.timeout)
             self.logger.error("%s", exc)
             raise exc from err
 
@@ -79,7 +140,7 @@ class APIClient:
 
         self.logger.debug("%d requets remaining; resets in %s seconds", remaining, reset)
 
-        return TrackBearResponse.build(
+        return models.TrackBearResponse.build(
             response=response.json(),
             remaining_requests=remaining,
             rate_reset=reset,

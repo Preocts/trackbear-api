@@ -74,9 +74,9 @@ class TagClient:
 
         Args:
             name (str): The name of the tag
-            color (enum | str): Color enum of the following: 'default', 'red', 'orange',
+            color (Color | str): Color enum of the following: 'default', 'red', 'orange',
                 'yellow', 'green', 'blue', 'purple', 'brown', 'white', 'black', 'gray'
-            tag_id (int): Existing tag id if request is to update existing tag
+            tag_id (int): (Optional) Existing tag id if request is to update existing tag
 
         Returns:
             trackbear_api.models.Tag
@@ -113,13 +113,13 @@ class TagClient:
 
     def delete(self, tag_id: int) -> models.Tag:
         """
-        Delete an existing models.tag.
+        Delete an existing tag.
 
         Args:
             tag_id (int): Existing tag id
 
         Returns:
-            Tag object on success
+            trackbear_api.models.Tag
 
         Raises:
             exceptions.APIResponseError: On any failure message returned from TrackBear API

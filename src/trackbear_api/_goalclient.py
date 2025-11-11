@@ -91,23 +91,22 @@ class GoalClient:
             count (int): Goal of the given measure
             start_date (str): Starting date to pull (YYYY-MM-DD)
             end_date (str): Ending date to pull (YYYY-MM-DD)
-            work_ids (Sequence[int]): List of work ids that apply to the goal.
-                Default: None, all works apply to goal
-            tag_ids (Sequence[int]): (Optional) List of tag ids that apply to the goal.
-                Default: None, all tags apply to goal
-            starred (bool): (Optional) Star the project (default: False)
-            display_on_profile (bool): (Optional) Display project on public profile
-                (default: False)
+            work_ids (Sequence[int]): (Optional) List of work ids that apply to the
+                goal. Default: None, all works apply to goal
+            tag_ids (Sequence[int]): (Optional) List of tag ids that apply to the
+                goal. Default: None, all tags apply to goal
+            starred (bool): Star the project (default: False)
+            display_on_profile (bool): Display project on public profile (default: False)
             goal_id (int): (Optional) Existing tag id if request is to update
                 existing tag
-
 
         Returns:
             trackbear_api.models.Goal
 
         Raises:
             exceptions.APIResponseError: On any failure message returned from TrackBear API
-            ValueError: When `color` is not a valid value
+            ValueError: When `measure` is not a valid value
+            ValueError: If `start_date` or `end_date` are not "YYYY-MM-DD"
         """
         # Forcing the use of the Enum here allows for fast failures at runtime if the
         # incorrect string is provided.
@@ -191,9 +190,8 @@ class GoalClient:
                 Default: None, all works apply to goal
             tag_ids (Sequence[int]): (Optional) List of tag ids that apply to the goal.
                 Default: None, all tags apply to goal
-            starred (bool): (Optional) Star the project (default: False)
-            display_on_profile (bool): (Optional) Display project on public profile
-                (default: False)
+            starred (bool): Star the project (default: False)
+            display_on_profile (bool): Display project on public profile (default: False)
             goal_id (int): (Optional) Existing tag id if request is to update
                 existing tag
 
@@ -202,7 +200,8 @@ class GoalClient:
 
         Raises:
             exceptions.APIResponseError: On any failure message returned from TrackBear API
-            ValueError: When `color` is not a valid value
+            ValueError: When `unit` or `measure` are not valid
+            ValueError: If `start_date` or `end_date` are not "YYYY-MM-DD"
         """
         # Forcing the use of the Enum here allows for fast failures at runtime if the
         # incorrect string is provided.

@@ -85,7 +85,7 @@ class ProjectClient:
         Args:
             title (str): Title of the Project
             description (str): Description of the Project
-            phase (enum | str): Phase enum of the following: `planning`, `outlining`,
+            phase (Phase | str): Phase enum of the following: `planning`, `outlining`,
                 `drafting`, `revising`, `on hold`, `finished`, or `abandoned`.
             starred (bool): Star the project (default: False)
             display_on_profile (bool): Display project on public profile (default: False)
@@ -95,7 +95,8 @@ class ProjectClient:
             chapter (int): (Optional) Starting balance of chapters
             scene (int): (Optional) Starting balance of scenes
             line (int): (Optional) Starting balance of lines
-            project_id (int): Existing project id if request is to update existing projects
+            project_id (int): (Optional) Existing project id if request is to update
+                existing projects
 
         Returns:
             trackbear.models.ProjectStub
