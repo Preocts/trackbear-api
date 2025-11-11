@@ -68,12 +68,12 @@ class ProjectClient:
         *,
         starred: bool = False,
         display_on_profile: bool = False,
-        word: int = 0,
-        time: int = 0,
-        page: int = 0,
-        chapter: int = 0,
-        scene: int = 0,
-        line: int = 0,
+        word: int | None = None,
+        time: int | None = None,
+        page: int | None = None,
+        chapter: int | None = None,
+        scene: int | None = None,
+        line: int | None = None,
         project_id: int | None = None,
     ) -> models.ProjectStub:
         """
@@ -82,8 +82,6 @@ class ProjectClient:
         If `project_id` is provided, then the existing project is updated. Otherwise,
         a new projec is created.
 
-        NOTE: While updating an existing project, be mindful of default values.
-
         Args:
             title (str): Title of the Project
             description (str): Description of the Project
@@ -91,12 +89,12 @@ class ProjectClient:
                 `drafting`, `revising`, `on hold`, `finished`, or `abandoned`.
             starred (bool): Star the project (default: False)
             display_on_profile (bool): Display project on public profile (default: False)
-            word (int): Starting balance of words (default: 0)
-            time (int): Starting balance of time (default: 0)
-            page (int): Starting balance of pages (default: 0)
-            chapter (int): Starting balance of chapters (default: 0)
-            scene (int): Starting balance of scenes (default: 0)
-            line (int): Starting balance of lines (default: 0)
+            word (int): (Optional) Starting balance of words
+            time (int): (Optional) Starting balance of time
+            page (int): (Optional) Starting balance of pages
+            chapter (int): (Optional) Starting balance of chapters
+            scene (int): (Optional) Starting balance of scenes
+            line (int): (Optional) Starting balance of lines
             project_id (int): Existing project id if request is to update existing projects
 
         Returns:
@@ -113,18 +111,20 @@ class ProjectClient:
         else:
             _phase = enums.Phase(phase)
 
+        balance = {
+            "word": word,
+            "time": time,
+            "page": page,
+            "chapter": chapter,
+            "scene": scene,
+            "line": line,
+        }
+
         payload = {
             "title": title,
             "description": description,
             "phase": _phase.value,
-            "startingBalance": {
-                "word": word,
-                "time": time,
-                "page": page,
-                "chapter": chapter,
-                "scene": scene,
-                "line": line,
-            },
+            "startingBalance": {k: v for k, v, in balance.items() if v is not None},
             "starred": starred,
             "displayOnProfile": display_on_profile,
         }
