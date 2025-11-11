@@ -7,6 +7,7 @@ import os
 import requests
 
 from ._apiclient import APIClient
+from ._goalclient import GoalClient
 from ._projectclient import ProjectClient
 from ._statclient import StatClient
 from ._tagclient import TagClient
@@ -88,6 +89,7 @@ class TrackBearClient:
         # Define all client provider references
         self.bare = self._api_client
         self.project = ProjectClient(self._api_client)
+        self.goal = GoalClient(self._api_client)
         self.tag = TagClient(self._api_client)
         self.stat = StatClient(self._api_client)
         self.tally = TallyClient(self._api_client)

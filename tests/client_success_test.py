@@ -41,6 +41,14 @@ ModelType = TypeVar("ModelType")
             models.Project,
         ),
         (
+            "goal",
+            {},
+            "https://trackbear.app/api/v1/goal",
+            test_parameters.GOAL_RESPONSE_THRESHOLD,
+            "",
+            models.Goal,
+        ),
+        (
             "tag",
             {},
             "https://trackbear.app/api/v1/tag",
@@ -119,6 +127,12 @@ def test_client_list_success(
             models.Project,
         ),
         (
+            "goal",
+            "https://trackbear.app/api/v1/goal/123",
+            test_parameters.GOAL_RESPONSE_HABIT_THRESHOLD,
+            models.Goal,
+        ),
+        (
             "tag",
             "https://trackbear.app/api/v1/tag/123",
             test_parameters.TAG_RESPONSE,
@@ -160,10 +174,10 @@ def test_client_get_success(
 
 
 @pytest.mark.parametrize(
-    "provider,kwargs,expected_payload,url,api_response,model_type",
+    "provider_method,kwargs,expected_payload,url,api_response,model_type",
     (
         (
-            "project",
+            "project.save",
             test_parameters.PROJECT_SAVE_KWARGS,
             test_parameters.PROJECT_SAVE_PAYLOAD,
             "https://trackbear.app/api/v1/project",
@@ -171,7 +185,7 @@ def test_client_get_success(
             models.ProjectStub,
         ),
         (
-            "project",
+            "project.save",
             # replace enum with string while adding project_id
             test_parameters.PROJECT_SAVE_KWARGS | {"phase": "drafting", "project_id": 123},
             test_parameters.PROJECT_SAVE_PAYLOAD,
@@ -180,7 +194,54 @@ def test_client_get_success(
             models.ProjectStub,
         ),
         (
-            "tag",
+            "goal.save_target",
+            test_parameters.GOAL_SAVE_TARGET_KWARGS,
+            test_parameters.GOAL_SAVE_TARGET_PAYLOAD,
+            "https://trackbear.app/api/v1/goal",
+            test_parameters.GOAL_RESPONSE_THRESHOLD,
+            models.Goal,
+        ),
+        (
+            "goal.save_habit",
+            test_parameters.GOAL_SAVE_HABIT_KWARGS,
+            test_parameters.GOAL_SAVE_HABIT_PAYLOAD,
+            "https://trackbear.app/api/v1/goal",
+            test_parameters.GOAL_RESPONSE_HABIT,
+            models.Goal,
+        ),
+        (
+            "goal.save_habit",
+            test_parameters.GOAL_SAVE_HABIT_TARGET_KWARGS,
+            test_parameters.GOAL_SAVE_HABIT_TARGET_PAYLOAD,
+            "https://trackbear.app/api/v1/goal",
+            test_parameters.GOAL_RESPONSE_HABIT_THRESHOLD,
+            models.Goal,
+        ),
+        (
+            # replace enum with string while adding project_id
+            "goal.save_target",
+            test_parameters.GOAL_SAVE_TARGET_KWARGS | {"measure": "word", "goal_id": 123},
+            test_parameters.GOAL_SAVE_TARGET_PAYLOAD,
+            "https://trackbear.app/api/v1/goal/123",
+            test_parameters.GOAL_RESPONSE_THRESHOLD,
+            models.Goal,
+        ),
+        (
+            # replace enum with string while adding project_id
+            "goal.save_habit",
+            test_parameters.GOAL_SAVE_HABIT_TARGET_KWARGS
+            | {
+                "unit": "day",
+                "measure": "chapter",
+                "goal_id": 123,
+            },
+            test_parameters.GOAL_SAVE_HABIT_TARGET_PAYLOAD,
+            "https://trackbear.app/api/v1/goal/123",
+            test_parameters.GOAL_RESPONSE_HABIT_THRESHOLD,
+            models.Goal,
+        ),
+        (
+            "tag.save",
             test_parameters.TAG_SAVE_KWARGS,
             test_parameters.TAG_SAVE_PAYLOAD,
             "https://trackbear.app/api/v1/tag",
@@ -188,7 +249,7 @@ def test_client_get_success(
             models.Tag,
         ),
         (
-            "tag",
+            "tag.save",
             # replace enum with string while adding tag_id
             test_parameters.TAG_SAVE_KWARGS | {"color": "blue", "tag_id": 123},
             test_parameters.TAG_SAVE_PAYLOAD,
@@ -197,7 +258,7 @@ def test_client_get_success(
             models.Tag,
         ),
         (
-            "tally",
+            "tally.save",
             test_parameters.TALLY_SAVE_KWARGS,
             test_parameters.TALLY_SAVE_PAYLOAD,
             "https://trackbear.app/api/v1/tally",
@@ -205,7 +266,7 @@ def test_client_get_success(
             models.Tally,
         ),
         (
-            "tally",
+            "tally.save",
             # replace enum with string while adding tally_id
             test_parameters.TALLY_SAVE_KWARGS | {"measure": "scene", "tally_id": 123},
             test_parameters.TALLY_SAVE_PAYLOAD,
@@ -218,7 +279,7 @@ def test_client_get_success(
 @responses.activate(assert_all_requests_are_fired=True)
 def test_client_save_success(
     client: TrackBearClient,
-    provider: str,
+    provider_method: str,
     kwargs: dict[str, Any],
     expected_payload: dict[str, Any],
     url: str,
@@ -234,6 +295,7 @@ def test_client_save_success(
     Accepts a Measure enum in the parameters
     """
     body_match = responses.matchers.body_matcher(json.dumps(expected_payload))
+    provider, method = provider_method.split(".", 1)
 
     responses.add(
         method="PATCH" if url.endswith("123") else "POST",
@@ -243,7 +305,7 @@ def test_client_save_success(
         body=json.dumps({"success": True, "data": api_response}),
     )
 
-    result = getattr(client, provider).save(**kwargs)
+    result = getattr(getattr(client, provider), method)(**kwargs)
 
     assert isinstance(result, model_type)
     assert dataclasses.is_dataclass(result)
@@ -252,25 +314,28 @@ def test_client_save_success(
 
 
 @pytest.mark.parametrize(
-    "provider,kwargs,url,api_response,model_type",
+    "provider,url,api_response,model_type",
     (
         (
             "project",
-            {"project_id": 123},
             "https://trackbear.app/api/v1/project/123",
             test_parameters.PROJECTSTUB_RESPONSE,
             models.ProjectStub,
         ),
         (
+            "goal",
+            "https://trackbear.app/api/v1/goal/123",
+            test_parameters.GOAL_RESPONSE_HABIT,
+            models.Goal,
+        ),
+        (
             "tag",
-            {"tag_id": 123},
             "https://trackbear.app/api/v1/tag/123",
             test_parameters.TAG_RESPONSE,
             models.Tag,
         ),
         (
             "tally",
-            {"tally_id": 123},
             "https://trackbear.app/api/v1/tally/123",
             test_parameters.TALLY_RESPONSE,
             models.Tally,
@@ -281,7 +346,6 @@ def test_client_save_success(
 def test_client_delete_success(
     client: TrackBearClient,
     provider: str,
-    kwargs: dict[str, Any],
     url: str,
     api_response: dict[str, Any],
     model_type: type[ModelType],
@@ -290,7 +354,7 @@ def test_client_delete_success(
     body = json.dumps({"success": True, "data": api_response})
     responses.add(method="DELETE", url=url, status=200, body=body)
 
-    result = getattr(client, provider).delete(**kwargs)
+    result = getattr(client, provider).delete(123)
 
     assert isinstance(result, model_type)
     assert dataclasses.is_dataclass(result)
