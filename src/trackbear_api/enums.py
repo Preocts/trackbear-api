@@ -48,3 +48,15 @@ class Measure(str, enum.Enum):
     CHAPTER = "chapter"
     SCENE = "scene"
     LINE = "line"
+
+
+class HabitUnit(str, enum.Enum):
+    DAY = "day"
+    WEEK = "week"
+    MONTH = "month"
+    YEAR = "year"
+
+
+class GoalType(str, enum.Enum):
+    TARGET = "target"
+    HABIT = "habit"

@@ -248,6 +248,118 @@ class ProjectStub:
 
 
 @dataclasses.dataclass(frozen=True, slots=True)
+class Threshold:
+    """Sub-model for TargetParameter and HabitParameter. Defines thresholds for a target goal."""
+
+    measure: enums.Measure
+    count: int
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class Cadence:
+    """Sub-model for TargetParameter and HabitParameter."""
+
+    unit: enums.HabitUnit
+    period: int
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class TargetParameter:
+    """Defines threshold for a target goal."""
+
+    threshold: Threshold
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class HabitParameter:
+    """Defines cadence with optional threshold for a habit goal."""
+
+    cadence: Cadence
+    threshold: Threshold | None
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class Goal:
+    """Goal model built from API repsonse."""
+
+    id: str
+    uuid: str
+    created_at: str
+    updated_at: str
+    state: enums.State
+    owner_id: str
+    title: str
+    description: str
+    type: enums.GoalType
+    parameters: HabitParameter | TargetParameter
+    start_date: str
+    end_date: str
+    work_ids: list[int]
+    tag_ids: list[int]
+    starred: bool = False
+    display_on_profile: bool = False
+
+    @classmethod
+    def build(cls, data: dict[str, Any]) -> Goal:
+        """Build a Project model from the API response data."""
+        try:
+            type = data["type"]
+            parameters = data["parameters"]
+            parameter_object: HabitParameter | TargetParameter
+
+            if type == enums.GoalType.HABIT and parameters["threshold"] is not None:
+                parameter_object = HabitParameter(
+                    cadence=Cadence(
+                        unit=enums.HabitUnit(parameters["cadence"]["unit"]),
+                        period=parameters["cadence"]["period"],
+                    ),
+                    threshold=Threshold(
+                        measure=enums.Measure(parameters["threshold"]["measure"]),
+                        count=parameters["threshold"]["count"],
+                    ),
+                )
+
+            elif type == enums.GoalType.HABIT and parameters["threshold"] is None:
+                parameter_object = HabitParameter(
+                    cadence=Cadence(
+                        unit=enums.HabitUnit(parameters["cadence"]["unit"]),
+                        period=parameters["cadence"]["period"],
+                    ),
+                    threshold=None,
+                )
+
+            else:
+                parameter_object = TargetParameter(
+                    threshold=Threshold(
+                        measure=enums.Measure(parameters["threshold"]["measure"]),
+                        count=parameters["threshold"]["count"],
+                    )
+                )
+
+            return cls(
+                id=data["id"],
+                uuid=data["uuid"],
+                created_at=data["createdAt"],
+                updated_at=data["updatedAt"],
+                state=enums.State(data["state"]),
+                owner_id=data["ownerId"],
+                title=data["title"],
+                description=data["description"],
+                type=enums.GoalType(data["type"]),
+                parameters=parameter_object,
+                start_date=data["startDate"],
+                end_date=data["endDate"],
+                work_ids=data["workIds"],
+                tag_ids=data["tagIds"],
+                starred=data.get("starred", False),
+                display_on_profile=data.get("displayOnProfile", False),
+            )
+
+        except (KeyError, ValueError) as exc:
+            _handle_build_error(exc, data, cls.__name__)
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
 class Tag:
     """Tag model build from API response."""
 
