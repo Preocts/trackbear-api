@@ -255,3 +255,22 @@ TALLY_SAVE_PAYLOAD = {
     "setTotal": True,
     "tags": ["New Tag"],
 }
+
+LEADERBOARD_RESPONSE = {
+    "id": 123,
+    "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+    "createdAt": "string",
+    "updatedAt": "string",
+    "state": "active",
+    "ownerId": 123,
+    "title": "string",
+    "description": "string",
+    "startDate": "string",
+    "endDate": "string",
+    "individualGoalMode": True,
+    "fundraiserMode": True,
+    "measures": ["word", "time"],
+    "goal": {"word": 100, "time": 0, "page": 0, "chapter": 0, "scene": 0, "line": 0},
+    "isJoinable": True,
+    "starred": False,
+}

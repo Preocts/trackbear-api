@@ -17,6 +17,7 @@ __all__ = [
     "Error",
     "Goal",
     "HabitParameter",
+    "Leaderboard",
     "Project",
     "ProjectStub",
     "Stat",
@@ -421,6 +422,61 @@ class Stat:
                     scene=data["counts"].get("scene", 0),
                     line=data["counts"].get("line", 0),
                 ),
+            )
+
+        except (KeyError, ValueError) as exc:
+            _handle_build_error(exc, data, cls.__name__)
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class Leaderboard:
+    """Leaderboard model, built from API response."""
+
+    id: int
+    uuid: str
+    created_at: str
+    updated_at: str
+    state: enums.State
+    owner_id: int
+    title: str
+    description: str
+    start_date: str
+    end_date: str
+    individual_goal_mode: bool
+    fundraiser_mode: bool
+    measures: list[enums.Measure]
+    goal: Balance
+    is_joinable: bool
+    starred: bool = False
+
+    @classmethod
+    def build(cls, data: dict[str, Any]) -> Leaderboard:
+        """Build a Stat model from the API response data."""
+        try:
+            return cls(
+                id=data["id"],
+                uuid=data["uuid"],
+                created_at=data["createdAt"],
+                updated_at=data["updatedAt"],
+                state=enums.State(data["state"]),
+                owner_id=data["ownerId"],
+                title=data["title"],
+                description=data["description"],
+                start_date=data["startDate"],
+                end_date=data["endDate"],
+                individual_goal_mode=data["individualGoalMode"],
+                fundraiser_mode=data["fundraiserMode"],
+                measures=[enums.Measure(measure) for measure in data["measures"]],
+                goal=Balance(
+                    word=data["goal"].get("word", 0),
+                    time=data["goal"].get("time", 0),
+                    page=data["goal"].get("page", 0),
+                    chapter=data["goal"].get("chapter", 0),
+                    scene=data["goal"].get("scene", 0),
+                    line=data["goal"].get("line", 0),
+                ),
+                is_joinable=data["isJoinable"],
+                starred=data["starred"],
             )
 
         except (KeyError, ValueError) as exc:
