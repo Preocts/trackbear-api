@@ -69,8 +69,8 @@ class GoalClient:
         description: str,
         measure: enums.Measure | str,
         count: int,
-        start_date: str,
-        end_date: str,
+        start_date: str | None = None,
+        end_date: str | None = None,
         work_ids: Sequence[int] | None = None,
         tag_ids: Sequence[int] | None = None,
         starred: bool = False,
@@ -89,8 +89,8 @@ class GoalClient:
             measure (Measure | str): Measure enum of the following: `word`, `time`,
                 `page`, `chapter`, `scene`, or `line`
             count (int): Goal of the given measure
-            start_date (str): Starting date to pull (YYYY-MM-DD)
-            end_date (str): Ending date to pull (YYYY-MM-DD)
+            start_date (str): (Optional) Starting date to pull (YYYY-MM-DD)
+            end_date (str): (Optional) Ending date to pull (YYYY-MM-DD)
             work_ids (Sequence[int]): (Optional) List of work ids that apply to the
                 goal. Default: None, all works apply to goal
             tag_ids (Sequence[int]): (Optional) List of tag ids that apply to the
@@ -115,10 +115,10 @@ class GoalClient:
         else:
             _measure = enums.Measure(measure)
 
-        if _DATE_PATTERN.match(start_date) is None:
+        if start_date is not None and _DATE_PATTERN.match(start_date) is None:
             raise ValueError(f"Invalid start_date '{start_date}'. Must be YYYY-MM-DD")
 
-        if _DATE_PATTERN.match(end_date) is None:
+        if end_date is not None and _DATE_PATTERN.match(end_date) is None:
             raise ValueError(f"Invalid end_date '{end_date}'. Must be YYYY-MM-DD")
 
         payload = {
@@ -159,8 +159,8 @@ class GoalClient:
         description: str,
         unit: enums.HabitUnit | str,
         period: int,
-        start_date: str,
-        end_date: str,
+        start_date: str | None = None,
+        end_date: str | None = None,
         measure: enums.Measure | str | None = None,
         count: int | None = None,
         work_ids: Sequence[int] | None = None,
@@ -181,8 +181,8 @@ class GoalClient:
             unit (Unit | str): Unit enum of the following: `day`, `week`, `month`
                 or `year`
             period (int): How often the cadance is every N units
-            start_date (str): Starting date to pull (YYYY-MM-DD)
-            end_date (str): Ending date to pull (YYYY-MM-DD)
+            start_date (str): (Optional) Starting date to pull (YYYY-MM-DD)
+            end_date (str): (Optional) Ending date to pull (YYYY-MM-DD)
             measure (Measure | str): (Optional) Measure enum of the following: `word`,
                 `time`, `page`, `chapter`, `scene`, or `line`
             count (int): (Optional) Goal of the given measure
@@ -215,10 +215,10 @@ class GoalClient:
         else:
             _unit = enums.HabitUnit(unit)
 
-        if _DATE_PATTERN.match(start_date) is None:
+        if start_date is not None and _DATE_PATTERN.match(start_date) is None:
             raise ValueError(f"Invalid start_date '{start_date}'. Must be YYYY-MM-DD")
 
-        if _DATE_PATTERN.match(end_date) is None:
+        if end_date is not None and _DATE_PATTERN.match(end_date) is None:
             raise ValueError(f"Invalid end_date '{end_date}'. Must be YYYY-MM-DD")
 
         if _measure is not None:

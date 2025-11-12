@@ -149,10 +149,15 @@ GOAL_SAVE_HABIT_KWARGS = GOAL_SAVE_TARGET_KWARGS | {
     "period": 12,
     "measure": None,
     "count": None,
+    "end_date": None,
 }
 GOAL_SAVE_HABIT_PAYLOAD = GOAL_SAVE_TARGET_PAYLOAD | {
     "type": "habit",
-    "parameters": {"cadence": {"unit": "day", "period": 12}, "threshold": None},
+    "endDate": None,
+    "parameters": {
+        "cadence": {"unit": "day", "period": 12},
+        "threshold": None,
+    },
 }
 GOAL_SAVE_HABIT_TARGET_KWARGS = GOAL_SAVE_TARGET_KWARGS | {
     "unit": enums.HabitUnit.DAY,

@@ -301,8 +301,8 @@ class Goal:
     description: str
     type: enums.GoalType
     parameters: HabitParameter | TargetParameter
-    start_date: str
-    end_date: str
+    start_date: str | None
+    end_date: str | None
     work_ids: list[int]
     tag_ids: list[int]
     starred: bool = False
