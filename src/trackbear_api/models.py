@@ -18,6 +18,7 @@ __all__ = [
     "Goal",
     "HabitParameter",
     "Leaderboard",
+    "Member",
     "Project",
     "ProjectStub",
     "Stat",
@@ -451,7 +452,7 @@ class Leaderboard:
 
     @classmethod
     def build(cls, data: dict[str, Any]) -> Leaderboard:
-        """Build a Stat model from the API response data."""
+        """Build a Leaderboard model from the API response data."""
         try:
             return cls(
                 id=data["id"],
@@ -477,6 +478,38 @@ class Leaderboard:
                 ),
                 is_joinable=data["isJoinable"],
                 starred=data["starred"],
+            )
+
+        except (KeyError, ValueError) as exc:
+            _handle_build_error(exc, data, cls.__name__)
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class Member:
+    """Member model."""
+
+    id: int
+    uuid: str
+    state: enums.State
+    display_name: str
+    avatar: str | None
+    color: str | None
+    is_participant: bool
+    is_owner: bool
+
+    @classmethod
+    def build(cls, data: dict[str, Any]) -> Member:
+        """Build a Member model from the API response data."""
+        try:
+            return cls(
+                id=data["id"],
+                uuid=data["uuid"],
+                state=data["state"],
+                display_name=data["displayName"],
+                avatar=data["avatar"],
+                color=data["color"],
+                is_participant=data["isParticipant"],
+                is_owner=data["isOwner"],
             )
 
         except (KeyError, ValueError) as exc:

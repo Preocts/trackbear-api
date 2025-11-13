@@ -27,6 +27,7 @@ class ModelType(Protocol):
         models.Tag,
         models.Tally,
         models.Leaderboard,
+        models.Member,
     ),
 )
 def test_build_model_failure(model_type: type[ModelType]) -> None:
@@ -50,6 +51,7 @@ def test_build_model_failure(model_type: type[ModelType]) -> None:
         (test_parameters.TAG_RESPONSE, models.Tag),
         (test_parameters.TALLY_RESPONSE, models.Tally),
         (test_parameters.LEADERBOARD_RESPONSE, models.Leaderboard),
+        (test_parameters.MEMBER_RESPONSE, models.Member),
     ),
 )
 def test_build_model_success(data: dict[str, Any], model_type: type[ModelType]) -> None:
