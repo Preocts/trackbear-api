@@ -274,3 +274,14 @@ LEADERBOARD_RESPONSE = {
     "isJoinable": True,
     "starred": False,
 }
+
+MEMBER_RESPONSE = {
+    "id": 123,
+    "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+    "state": "string",
+    "displayName": "string",
+    "avatar": "string",
+    "color": "string",
+    "isParticipant": True,
+    "isOwner": True,
+}
