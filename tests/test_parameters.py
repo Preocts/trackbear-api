@@ -256,25 +256,6 @@ TALLY_SAVE_PAYLOAD = {
     "tags": ["New Tag"],
 }
 
-LEADERBOARD_RESPONSE = {
-    "id": 123,
-    "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
-    "createdAt": "string",
-    "updatedAt": "string",
-    "state": "active",
-    "ownerId": 123,
-    "title": "string",
-    "description": "string",
-    "startDate": "string",
-    "endDate": "string",
-    "individualGoalMode": True,
-    "fundraiserMode": True,
-    "measures": ["word", "time"],
-    "goal": {"word": 100, "time": 0, "page": 0, "chapter": 0, "scene": 0, "line": 0},
-    "isJoinable": True,
-    "starred": False,
-}
-
 MEMBER_RESPONSE = {
     "id": 123,
     "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
@@ -294,4 +275,63 @@ TEAM_RESPONSE = {
     "boardId": 123,
     "name": "string",
     "color": "string",
+}
+
+LEADERBOARD_RESPONSE = {
+    "id": 123,
+    "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+    "createdAt": "string",
+    "updatedAt": "string",
+    "state": "active",
+    "ownerId": 123,
+    "title": "string",
+    "description": "string",
+    "startDate": "string",
+    "endDate": "string",
+    "individualGoalMode": True,
+    "fundraiserMode": True,
+    "measures": ["word", "time"],
+    "goal": {"word": 100, "time": 0, "page": 0, "chapter": 0, "scene": 0, "line": 0},
+    "isJoinable": True,
+    "starred": False,
+}
+
+LEADERBOARD_EXTENDED_RESPONSE = {
+    "id": 123,
+    "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+    "createdAt": "string",
+    "updatedAt": "string",
+    "state": "active",
+    "ownerId": 123,
+    "title": "string",
+    "description": "string",
+    "startDate": "string",
+    "endDate": "string",
+    "individualGoalMode": True,
+    "fundraiserMode": True,
+    "measures": ["word"],
+    "goal": {"word": 0, "time": 0, "page": 0, "chapter": 0, "scene": 0, "line": 0},
+    "isJoinable": True,
+    "starred": False,
+    "teams": [
+        {
+            "id": 123,
+            "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+            "createdAt": "string",
+            "updatedAt": "string",
+            "boardId": 123,
+            "name": "string",
+            "color": "string",
+        }
+    ],
+    "members": [
+        {
+            "id": 123,
+            "displayName": "string",
+            "avatar": "string",
+            "isParticipant": True,
+            "isOwner": True,
+            "userUuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+        }
+    ],
 }
