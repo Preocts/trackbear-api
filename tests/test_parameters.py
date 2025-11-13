@@ -285,3 +285,13 @@ MEMBER_RESPONSE = {
     "isParticipant": True,
     "isOwner": True,
 }
+
+TEAM_RESPONSE = {
+    "id": 123,
+    "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+    "createdAt": "string",
+    "updatedAt": "string",
+    "boardId": 123,
+    "name": "string",
+    "color": "string",
+}
