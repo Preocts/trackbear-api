@@ -18,6 +18,8 @@ __all__ = [
     "Goal",
     "HabitParameter",
     "Leaderboard",
+    "LeaderboardExtended",
+    "LeaderboardMember",
     "Member",
     "Project",
     "ProjectStub",
@@ -431,61 +433,6 @@ class Stat:
 
 
 @dataclasses.dataclass(frozen=True, slots=True)
-class Leaderboard:
-    """Leaderboard model, built from API response."""
-
-    id: int
-    uuid: str
-    created_at: str
-    updated_at: str
-    state: enums.State
-    owner_id: int
-    title: str
-    description: str
-    start_date: str
-    end_date: str
-    individual_goal_mode: bool
-    fundraiser_mode: bool
-    measures: list[enums.Measure]
-    goal: Balance
-    is_joinable: bool
-    starred: bool = False
-
-    @classmethod
-    def build(cls, data: dict[str, Any]) -> Leaderboard:
-        """Build a Leaderboard model from the API response data."""
-        try:
-            return cls(
-                id=data["id"],
-                uuid=data["uuid"],
-                created_at=data["createdAt"],
-                updated_at=data["updatedAt"],
-                state=enums.State(data["state"]),
-                owner_id=data["ownerId"],
-                title=data["title"],
-                description=data["description"],
-                start_date=data["startDate"],
-                end_date=data["endDate"],
-                individual_goal_mode=data["individualGoalMode"],
-                fundraiser_mode=data["fundraiserMode"],
-                measures=[enums.Measure(measure) for measure in data["measures"]],
-                goal=Balance(
-                    word=data["goal"].get("word", 0),
-                    time=data["goal"].get("time", 0),
-                    page=data["goal"].get("page", 0),
-                    chapter=data["goal"].get("chapter", 0),
-                    scene=data["goal"].get("scene", 0),
-                    line=data["goal"].get("line", 0),
-                ),
-                is_joinable=data["isJoinable"],
-                starred=data["starred"],
-            )
-
-        except (KeyError, ValueError) as exc:
-            _handle_build_error(exc, data, cls.__name__)
-
-
-@dataclasses.dataclass(frozen=True, slots=True)
 class Member:
     """Member model."""
 
@@ -541,6 +488,153 @@ class Team:
                 board_id=data["boardId"],
                 name=data["name"],
                 color=data["color"],
+            )
+
+        except (KeyError, ValueError) as exc:
+            _handle_build_error(exc, data, cls.__name__)
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class LeaderboardMember:
+    """Leaderboard Member - slightly different than a Member."""
+
+    id: int
+    display_name: str
+    avatar: str
+    is_participant: bool
+    is_owner: bool
+    user_uuid: str
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class LeaderboardExtended:
+    """Leaderboard model with extended information, built from API response."""
+
+    id: int
+    uuid: str
+    created_at: str
+    updated_at: str
+    state: enums.State
+    owner_id: int
+    title: str
+    description: str
+    start_date: str | None
+    end_date: str | None
+    individual_goal_mode: bool
+    fundraiser_mode: bool
+    measures: list[enums.Measure]
+    goal: Balance
+    is_joinable: bool
+    teams: list[Team]
+    members: list[LeaderboardMember]
+    starred: bool = False
+
+    @classmethod
+    def build(cls, data: dict[str, Any]) -> LeaderboardExtended:
+        """Build a LeaderboardExtended model from the API response data."""
+        try:
+            return cls(
+                id=data["id"],
+                uuid=data["uuid"],
+                created_at=data["createdAt"],
+                updated_at=data["updatedAt"],
+                state=enums.State(data["state"]),
+                owner_id=data["ownerId"],
+                title=data["title"],
+                description=data["description"],
+                start_date=data["startDate"],
+                end_date=data["endDate"],
+                individual_goal_mode=data["individualGoalMode"],
+                fundraiser_mode=data["fundraiserMode"],
+                measures=[enums.Measure(measure) for measure in data["measures"]],
+                goal=Balance(
+                    word=data["goal"].get("word", 0),
+                    time=data["goal"].get("time", 0),
+                    page=data["goal"].get("page", 0),
+                    chapter=data["goal"].get("chapter", 0),
+                    scene=data["goal"].get("scene", 0),
+                    line=data["goal"].get("line", 0),
+                ),
+                is_joinable=data["isJoinable"],
+                teams=[
+                    Team(
+                        id=team["id"],
+                        uuid=team["uuid"],
+                        created_at=team["createdAt"],
+                        updated_at=team["updatedAt"],
+                        board_id=team["boardId"],
+                        name=team["name"],
+                        color=team["color"],
+                    )
+                    for team in data["teams"]
+                ],
+                members=[
+                    LeaderboardMember(
+                        id=member["id"],
+                        display_name=member["displayName"],
+                        avatar=member["avatar"],
+                        is_participant=member["isParticipant"],
+                        is_owner=member["isOwner"],
+                        user_uuid=member["userUuid"],
+                    )
+                    for member in data["members"]
+                ],
+                starred=data["starred"],
+            )
+
+        except (KeyError, ValueError) as exc:
+            _handle_build_error(exc, data, cls.__name__)
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class Leaderboard:
+    """Leaderboard model, built from API response."""
+
+    id: int
+    uuid: str
+    created_at: str
+    updated_at: str
+    state: enums.State
+    owner_id: int
+    title: str
+    description: str
+    start_date: str | None
+    end_date: str | None
+    individual_goal_mode: bool
+    fundraiser_mode: bool
+    measures: list[enums.Measure]
+    goal: Balance
+    is_joinable: bool
+    starred: bool = False
+
+    @classmethod
+    def build(cls, data: dict[str, Any]) -> Leaderboard:
+        """Build a Leaderboard model from the API response data."""
+        try:
+            return cls(
+                id=data["id"],
+                uuid=data["uuid"],
+                created_at=data["createdAt"],
+                updated_at=data["updatedAt"],
+                state=enums.State(data["state"]),
+                owner_id=data["ownerId"],
+                title=data["title"],
+                description=data["description"],
+                start_date=data["startDate"],
+                end_date=data["endDate"],
+                individual_goal_mode=data["individualGoalMode"],
+                fundraiser_mode=data["fundraiserMode"],
+                measures=[enums.Measure(measure) for measure in data["measures"]],
+                goal=Balance(
+                    word=data["goal"].get("word", 0),
+                    time=data["goal"].get("time", 0),
+                    page=data["goal"].get("page", 0),
+                    chapter=data["goal"].get("chapter", 0),
+                    scene=data["goal"].get("scene", 0),
+                    line=data["goal"].get("line", 0),
+                ),
+                is_joinable=data["isJoinable"],
+                starred=data["starred"],
             )
 
         except (KeyError, ValueError) as exc:
