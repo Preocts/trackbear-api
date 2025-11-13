@@ -25,6 +25,7 @@ __all__ = [
     "Tag",
     "Tally",
     "TargetParameter",
+    "Team",
     "Threshold",
 ]
 
@@ -510,6 +511,36 @@ class Member:
                 color=data["color"],
                 is_participant=data["isParticipant"],
                 is_owner=data["isOwner"],
+            )
+
+        except (KeyError, ValueError) as exc:
+            _handle_build_error(exc, data, cls.__name__)
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class Team:
+    """Team model."""
+
+    id: int
+    uuid: str
+    created_at: str
+    updated_at: str
+    board_id: str
+    name: str
+    color: str
+
+    @classmethod
+    def build(cls, data: dict[str, Any]) -> Team:
+        """Build a Team model from the API response data."""
+        try:
+            return cls(
+                id=data["id"],
+                uuid=data["uuid"],
+                created_at=data["createdAt"],
+                updated_at=data["updatedAt"],
+                board_id=data["boardId"],
+                name=data["name"],
+                color=data["color"],
             )
 
         except (KeyError, ValueError) as exc:
