@@ -112,7 +112,7 @@ class Balance:
 
 @dataclasses.dataclass(frozen=True, slots=True)
 class Tally:
-    """Tally model built from the API response."""
+    """Tally model."""
 
     id: int
     uuid: int
@@ -130,7 +130,7 @@ class Tally:
 
     @classmethod
     def build(cls, data: dict[str, Any]) -> Tally:
-        """Build a Project model from the API response data."""
+        """Build a Tally model from the API response data."""
         try:
             return cls(
                 id=data["id"],
@@ -154,7 +154,7 @@ class Tally:
 
 @dataclasses.dataclass(frozen=True, slots=True)
 class Project:
-    """Project model built from the API response."""
+    """Project model."""
 
     id: int
     uuid: str
@@ -214,7 +214,7 @@ class Project:
 
 @dataclasses.dataclass(frozen=True, slots=True)
 class ProjectStub:
-    """ProjectStub model built from the API response."""
+    """ProjectStub model."""
 
     id: int
     uuid: str
@@ -232,7 +232,7 @@ class ProjectStub:
 
     @classmethod
     def build(cls, data: dict[str, Any]) -> ProjectStub:
-        """Build a Project model from the API response data."""
+        """Build a ProjectStub model from the API response data."""
         try:
             return cls(
                 id=data["id"],
@@ -294,7 +294,7 @@ class HabitParameter:
 
 @dataclasses.dataclass(frozen=True, slots=True)
 class Goal:
-    """Goal model built from API repsonse."""
+    """Goal model."""
 
     id: int
     uuid: str
@@ -315,7 +315,7 @@ class Goal:
 
     @classmethod
     def build(cls, data: dict[str, Any]) -> Goal:
-        """Build a Project model from the API response data."""
+        """Build a Goal model from the API response data."""
         try:
             type = data["type"]
             parameters = data["parameters"]
@@ -375,7 +375,7 @@ class Goal:
 
 @dataclasses.dataclass(frozen=True, slots=True)
 class Tag:
-    """Tag model build from API response."""
+    """Tag model."""
 
     id: int
     uuid: str
@@ -407,7 +407,7 @@ class Tag:
 
 @dataclasses.dataclass(frozen=True, slots=True)
 class Stat:
-    """Stat model build from API response."""
+    """Stat model."""
 
     date: str
     counts: Balance
@@ -496,7 +496,7 @@ class Team:
 
 @dataclasses.dataclass(frozen=True, slots=True)
 class LeaderboardMember:
-    """Leaderboard Member - slightly different than a Member."""
+    """Sub-model for LeaderboardExtended."""
 
     id: int
     display_name: str
@@ -508,7 +508,7 @@ class LeaderboardMember:
 
 @dataclasses.dataclass(frozen=True, slots=True)
 class LeaderboardExtended:
-    """Leaderboard model with extended information, built from API response."""
+    """LeaderboardExtended model."""
 
     id: int
     uuid: str
@@ -588,7 +588,7 @@ class LeaderboardExtended:
 
 @dataclasses.dataclass(frozen=True, slots=True)
 class Leaderboard:
-    """Leaderboard model, built from API response."""
+    """Leaderboard model."""
 
     id: int
     uuid: str
