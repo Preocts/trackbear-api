@@ -142,6 +142,11 @@ FAILURE_RESPONSE = {
             {"board_uuid": "uuid1234"},
             "https://trackbear.app/api/v1/leaderboard/uuid1234",
         ),
+        (
+            "leaderboard.save",
+            test_parameters.LEADERBOARD_SAVE_SIMPLE_KWARGS,
+            "https://trackbear.app/api/v1/leaderboard",
+        ),
     ),
 )
 @responses.activate()
@@ -210,6 +215,16 @@ def test_api_response_error(
         (
             "goal.save_habit",
             test_parameters.GOAL_SAVE_HABIT_KWARGS | {"end_date": "bar"},
+            "Invalid end_date 'bar'. Must be YYYY-MM-DD",
+        ),
+        (
+            "leaderboard.save",
+            test_parameters.LEADERBOARD_SAVE_SIMPLE_KWARGS | {"start_date": "foo"},
+            "Invalid start_date 'foo'. Must be YYYY-MM-DD",
+        ),
+        (
+            "leaderboard.save",
+            test_parameters.LEADERBOARD_SAVE_SIMPLE_KWARGS | {"end_date": "bar"},
             "Invalid end_date 'bar'. Must be YYYY-MM-DD",
         ),
     ),
