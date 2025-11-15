@@ -97,6 +97,14 @@ def get_client_attribute(client: TrackBearClient, provider_method: str) -> Any:
             "",
             models.LeaderboardExtended,
         ),
+        (
+            "leaderboard.list_participants",
+            {"board_uuid": "uuid1234"},
+            "https://trackbear.app/api/v1/leaderboard/uuid1234/participants",
+            test_parameters.LEADERBOARD_PARTICIPANT_RESPONSE,
+            "",
+            models.Participant,
+        ),
     ),
 )
 @responses.activate(assert_all_requests_are_fired=True)
