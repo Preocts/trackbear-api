@@ -295,6 +295,47 @@ LEADERBOARD_RESPONSE = {
     "isJoinable": True,
     "starred": False,
 }
+LEADERBOARD_SAVE_SIMPLE_KWARGS = {
+    "title": "Some New Leaderboard",
+    "description": "This is going to be awesome.",
+    "fundraiser_mode": True,
+    "starred": True,
+}
+LEADERBOARD_SAVE_SIMPLE_PAYLOAD: dict[str, Any] = {
+    "title": "Some New Leaderboard",
+    "description": "This is going to be awesome.",
+    "startDate": None,
+    "endDate": None,
+    "individualGoalMode": False,
+    "fundraiserMode": True,
+    "measures": [],
+    "goal": None,
+    "isJoinable": True,
+    "starred": True,
+}
+LEADERBOARD_SAVE_COMPLEX_KWARGS = {
+    "title": "Some New Leaderboard",
+    "description": "This is going to be awesome.",
+    "start_date": "2025-11-01",
+    "end_date": "2025-11-30",
+    "measures": ["word", enums.Measure.CHAPTER],
+    "word": 50000,
+    "chapter": 25,
+    "is_joinable": False,
+    "starred": True,
+}
+LEADERBOARD_SAVE_COMPLEX_PAYLOAD: dict[str, Any] = {
+    "title": "Some New Leaderboard",
+    "description": "This is going to be awesome.",
+    "startDate": "2025-11-01",
+    "endDate": "2025-11-30",
+    "individualGoalMode": False,
+    "fundraiserMode": False,
+    "measures": ["word", "chapter"],
+    "goal": {"word": 50000, "chapter": 25},
+    "isJoinable": False,
+    "starred": True,
+}
 
 LEADERBOARD_EXTENDED_RESPONSE = {
     "id": 123,

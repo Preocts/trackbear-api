@@ -313,6 +313,30 @@ def test_client_get_success(
             test_parameters.TALLY_RESPONSE,
             models.Tally,
         ),
+        (
+            "leaderboard.save",
+            test_parameters.LEADERBOARD_SAVE_SIMPLE_KWARGS,
+            test_parameters.LEADERBOARD_SAVE_SIMPLE_PAYLOAD,
+            "https://trackbear.app/api/v1/leaderboard",
+            test_parameters.LEADERBOARD_RESPONSE,
+            models.Leaderboard,
+        ),
+        (
+            "leaderboard.save",
+            test_parameters.LEADERBOARD_SAVE_COMPLEX_KWARGS,
+            test_parameters.LEADERBOARD_SAVE_COMPLEX_PAYLOAD,
+            "https://trackbear.app/api/v1/leaderboard",
+            test_parameters.LEADERBOARD_RESPONSE,
+            models.Leaderboard,
+        ),
+        (
+            "leaderboard.save",
+            test_parameters.LEADERBOARD_SAVE_COMPLEX_KWARGS | {"board_uuid": "uuid123"},
+            test_parameters.LEADERBOARD_SAVE_COMPLEX_PAYLOAD,
+            "https://trackbear.app/api/v1/leaderboard/uuid123",
+            test_parameters.LEADERBOARD_RESPONSE,
+            models.Leaderboard,
+        ),
     ),
 )
 @responses.activate(assert_all_requests_are_fired=True)
