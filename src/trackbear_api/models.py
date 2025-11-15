@@ -16,16 +16,19 @@ __all__ = [
     "Cadence",
     "Error",
     "Goal",
+    "GoalStub",
     "HabitParameter",
     "Leaderboard",
     "LeaderboardExtended",
     "LeaderboardMember",
     "Member",
+    "Participant",
     "Project",
     "ProjectStub",
     "Stat",
     "Tag",
     "Tally",
+    "TallyStub",
     "TargetParameter",
     "Team",
     "Threshold",
@@ -635,6 +638,70 @@ class Leaderboard:
                 ),
                 is_joinable=data["isJoinable"],
                 starred=data["starred"],
+            )
+
+        except (KeyError, ValueError) as exc:
+            _handle_build_error(exc, data, cls.__name__)
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class TallyStub:
+    """Sub-model of Participant."""
+
+    uuid: str
+    date: str
+    measure: enums.Measure
+    count: int
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class GoalStub:
+    """Sub-model of Participant."""
+
+    measure: enums.Measure
+    count: int
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class Participant:
+    """Participant model."""
+
+    id: int
+    uuid: str
+    display_name: str
+    avatar: str | None
+    color: enums.Color | None
+    goal: GoalStub | None
+    tallies: Sequence[TallyStub]
+
+    @classmethod
+    def build(cls, data: dict[str, Any]) -> Participant:
+        """Build a Participant model from the API response data."""
+        try:
+
+            return cls(
+                id=data["id"],
+                uuid=data["uuid"],
+                display_name=data["displayName"],
+                avatar=data["avatar"],
+                color=enums.Color(data["color"]) if data["color"] is not None else None,
+                goal=(
+                    GoalStub(
+                        measure=enums.Measure(data["goal"]["measure"]),
+                        count=data["goal"]["count"],
+                    )
+                    if data["goal"] is not None
+                    else None
+                ),
+                tallies=[
+                    TallyStub(
+                        uuid=tally["uuid"],
+                        date=tally["date"],
+                        measure=tally["measure"],
+                        count=tally["count"],
+                    )
+                    for tally in data["tallies"]
+                ],
             )
 
         except (KeyError, ValueError) as exc:
