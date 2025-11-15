@@ -706,3 +706,19 @@ class Participant:
 
         except (KeyError, ValueError) as exc:
             _handle_build_error(exc, data, cls.__name__)
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class Starred:
+    """Starred model."""
+
+    starred: bool = False
+
+    @classmethod
+    def build(cls, data: dict[str, Any]) -> Starred:
+        """Build a Starred model from the API response data."""
+        try:
+            return cls(starred=data["starred"])
+
+        except (KeyError, ValueError) as exc:
+            _handle_build_error(exc, data, cls.__name__)

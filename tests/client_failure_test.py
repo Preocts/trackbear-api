@@ -148,6 +148,11 @@ FAILURE_RESPONSE = {
             "https://trackbear.app/api/v1/leaderboard",
         ),
         (
+            "leaderboard.save_star",
+            {"board_uuid": "uuid1234", "starred": True},
+            "https://trackbear.app/api/v1/leaderboard/uuid1234/star",
+        ),
+        (
             "leaderboard.delete",
             {"board_uuid": "uuid1234"},
             "https://trackbear.app/api/v1/leaderboard/uuid1234",
@@ -162,14 +167,18 @@ def test_api_response_error(
     url: str,
 ) -> None:
     """Assert a failure on the API side will raise the expected exception."""
-    methods = {"list": "GET", "get": "GET", "save": "POST", "delete": "DELETE"}
     fragments = provider_method.split(".", 1)
     provider = fragments[0]
     route = fragments[1]
     pattern = r"TrackBear API Failure \(409\) SOME_ERROR_CODE - A human-readable error message"
 
+    methods = {"list": "GET", "get": "GET", "save": "POST", "delete": "DELETE"}
+    http_method = methods[route.split("_", 1)[0]]
+    if http_method == "POST" and "123" in url:
+        http_method = "PATCH"
+
     responses.add(
-        method=methods[route.split("_", 1)[0]],
+        method=http_method,
         status=409,
         url=url,
         body=json.dumps(FAILURE_RESPONSE),

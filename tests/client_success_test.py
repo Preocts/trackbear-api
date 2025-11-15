@@ -337,6 +337,14 @@ def test_client_get_success(
             test_parameters.LEADERBOARD_RESPONSE,
             models.Leaderboard,
         ),
+        (
+            "leaderboard.save_star",
+            {"board_uuid": "uuid123", "starred": True},
+            {"starred": True},
+            "https://trackbear.app/api/v1/leaderboard/uuid123/star",
+            test_parameters.STARRED_RESPONSE,
+            models.Starred,
+        ),
     ),
 )
 @responses.activate(assert_all_requests_are_fired=True)
@@ -361,7 +369,7 @@ def test_client_save_success(
     method_to_call = get_client_attribute(client, provider_method)
 
     responses.add(
-        method="PATCH" if url.endswith("123") else "POST",
+        method="PATCH" if "123" in url else "POST",
         url=url,
         status=200,
         match=[body_match],

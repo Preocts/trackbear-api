@@ -393,3 +393,5 @@ LEADERBOARD_PARTICIPANT_RESPONSE = {
         }
     ],
 }
+
+STARRED_RESPONSE = {"starred": True}
