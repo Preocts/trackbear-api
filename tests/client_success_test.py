@@ -29,11 +29,20 @@ from . import test_parameters
 ModelType = TypeVar("ModelType")
 
 
+def get_client_attribute(client: TrackBearClient, provider_method: str) -> Any:
+    """Return the attribute given through dot-notation of the client."""
+    method_to_call = getattr(client, provider_method.split(".")[0])
+    for attribute in provider_method.split(".")[1:]:
+        method_to_call = getattr(method_to_call, attribute)
+
+    return method_to_call
+
+
 @pytest.mark.parametrize(
-    "provider,kwargs,url,api_response,query_string,model_type",
+    "provider_method,kwargs,url,api_response,query_string,model_type",
     (
         (
-            "project",
+            "project.list",
             {},
             "https://trackbear.app/api/v1/project",
             test_parameters.PROJECT_RESPONSE,
@@ -41,7 +50,7 @@ ModelType = TypeVar("ModelType")
             models.Project,
         ),
         (
-            "goal",
+            "goal.list",
             {},
             "https://trackbear.app/api/v1/goal",
             test_parameters.GOAL_RESPONSE_THRESHOLD,
@@ -49,7 +58,7 @@ ModelType = TypeVar("ModelType")
             models.Goal,
         ),
         (
-            "tag",
+            "tag.list",
             {},
             "https://trackbear.app/api/v1/tag",
             test_parameters.TAG_RESPONSE,
@@ -57,7 +66,7 @@ ModelType = TypeVar("ModelType")
             models.Tag,
         ),
         (
-            "stat",
+            "stat.list",
             {"start_date": "2024-01-01", "end_date": "2025-01-01"},
             "https://trackbear.app/api/v1/stats/days",
             test_parameters.STAT_RESPONSE,
@@ -65,7 +74,7 @@ ModelType = TypeVar("ModelType")
             models.Stat,
         ),
         (
-            "tally",
+            "tally.list",
             {"works": [123, 456], "tags": [987, 654], "measure": enums.Measure.SCENE},
             "https://trackbear.app/api/v1/tally",
             test_parameters.TALLY_RESPONSE,
@@ -73,7 +82,7 @@ ModelType = TypeVar("ModelType")
             models.Tally,
         ),
         (
-            "tally",
+            "tally.list",
             {"measure": "scene", "start_date": "2025-01-01", "end_date": "2025-12-31"},
             "https://trackbear.app/api/v1/tally",
             test_parameters.TALLY_RESPONSE,
@@ -81,7 +90,7 @@ ModelType = TypeVar("ModelType")
             models.Tally,
         ),
         (
-            "leaderboard",
+            "leaderboard.list",
             {},
             "https://trackbear.app/api/v1/leaderboard",
             test_parameters.LEADERBOARD_EXTENDED_RESPONSE,
@@ -93,7 +102,7 @@ ModelType = TypeVar("ModelType")
 @responses.activate(assert_all_requests_are_fired=True)
 def test_client_list_success(
     client: TrackBearClient,
-    provider: str,
+    provider_method: str,
     kwargs: dict[str, Any],
     api_response: dict[str, Any],
     query_string: str,
@@ -103,6 +112,7 @@ def test_client_list_success(
     """Assert the list method has success and that the models are correct."""
     mock_data = [copy.deepcopy(api_response)] * 3
     mock_body = {"success": True, "data": mock_data}
+    method_to_call = get_client_attribute(client, provider_method)
 
     query_matcher = responses.matchers.query_string_matcher(query_string)
 
@@ -114,7 +124,7 @@ def test_client_list_success(
         match=[query_matcher],
     )
 
-    results = getattr(client, provider).list(**kwargs)
+    results = method_to_call(**kwargs)
 
     assert len(results) == len(mock_data)
 
@@ -126,35 +136,41 @@ def test_client_list_success(
 
 
 @pytest.mark.parametrize(
-    "provider,url,api_response,model_type",
+    "provider_method,url,api_response,model_type",
     (
         (
-            "project",
+            "project.get",
             "https://trackbear.app/api/v1/project/123",
             test_parameters.PROJECT_RESPONSE,
             models.Project,
         ),
         (
-            "goal",
+            "goal.get",
             "https://trackbear.app/api/v1/goal/123",
             test_parameters.GOAL_RESPONSE_HABIT_THRESHOLD,
             models.Goal,
         ),
         (
-            "tag",
+            "tag.get",
             "https://trackbear.app/api/v1/tag/123",
             test_parameters.TAG_RESPONSE,
             models.Tag,
         ),
         (
-            "tally",
+            "tally.get",
             "https://trackbear.app/api/v1/tally/123",
             test_parameters.TALLY_RESPONSE,
             models.Tally,
         ),
         (
-            "leaderboard",
+            "leaderboard.get",
             "https://trackbear.app/api/v1/leaderboard/uuid1234",
+            test_parameters.LEADERBOARD_RESPONSE,
+            models.Leaderboard,
+        ),
+        (
+            "leaderboard.get_by_join_code",
+            "https://trackbear.app/api/v1/leaderboard/joincode/code1234",
             test_parameters.LEADERBOARD_RESPONSE,
             models.Leaderboard,
         ),
@@ -163,7 +179,7 @@ def test_client_list_success(
 @responses.activate(assert_all_requests_are_fired=True)
 def test_client_get_success(
     client: TrackBearClient,
-    provider: str,
+    provider_method: str,
     url: str,
     api_response: dict[str, Any],
     model_type: type[ModelType],
@@ -171,6 +187,7 @@ def test_client_get_success(
     """Assert the Project model is built correctly."""
     mock_data = copy.deepcopy(api_response)
     mock_body = {"success": True, "data": mock_data}
+    method_to_call = get_client_attribute(client, provider_method)
 
     responses.add(
         method="GET",
@@ -179,7 +196,7 @@ def test_client_get_success(
         body=json.dumps(mock_body),
     )
 
-    result = getattr(client, provider).get(url.split("/")[-1])
+    result = method_to_call(url.split("/")[-1])
 
     assert isinstance(result, model_type)
     assert dataclasses.is_dataclass(result)
@@ -309,7 +326,7 @@ def test_client_save_success(
     Accepts a Measure enum in the parameters
     """
     body_match = responses.matchers.body_matcher(json.dumps(expected_payload))
-    provider, method = provider_method.split(".", 1)
+    method_to_call = get_client_attribute(client, provider_method)
 
     responses.add(
         method="PATCH" if url.endswith("123") else "POST",
@@ -319,7 +336,7 @@ def test_client_save_success(
         body=json.dumps({"success": True, "data": api_response}),
     )
 
-    result = getattr(getattr(client, provider), method)(**kwargs)
+    result = method_to_call(**kwargs)
 
     assert isinstance(result, model_type)
     assert dataclasses.is_dataclass(result)
