@@ -28,10 +28,10 @@ Implemented routes:
 - Tags
 - Stats
 - Goals
+- Leaderboards
 
 Routes pending implementation:
 
-- Leaderboards
 - Leaderboard Teams
 - Leaderboard Members
 - Leaderboard Participation
@@ -163,6 +163,22 @@ https://help.trackbear.app/api/
 | Method    | Description                              |
 | --------- | ---------------------------------------- |
 | `.list()` | Get stats. By default returns all stats. |
+
+### Tags
+
+| Provider Method               | Description                                                |
+| ----------------------------- | ---------------------------------------------------------- |
+| `TrackBearClient.leaderboard` | Contains helper methods for all Leaderboard related routes |
+
+| Method                 | Description                             |
+| ---------------------- | --------------------------------------- |
+| `.list()`              | Get all leaderboards                    |
+| `.list_participants()` | Get a leaderboard's participants        |
+| `.get()`               | Get a leaderboard by specific uuid      |
+| `.get_by_join_code()`  | Get a leaderboard by specific join code |
+| `.save()`              | Create or update a leaderboard          |
+| `.save_star()`         | Star or unstar a Leaderboard            |
+| `.delete()`            | Delete a leaderboard by uuid            |
 
 ### Bare Access
 
