@@ -50,7 +50,26 @@ class LeaderboardClient:
         Raises:
             exceptions.APIResponseError: On failure to retrieve requested model
         """
-        response = self._api_client.get(f"/leaderboard/{board_uuid}")
+        return self._get(board_uuid, "/leaderboard")
+
+    def get_by_join_code(self, join_code: str) -> models.Leaderboard:
+        """
+        Get Leaderboard by a join code.
+
+        Args:
+            join_code (str): The leaderboard's join code.
+
+        Returns:
+            trackbear_api.models.Leaderboard
+
+        Raises:
+            exceptions.APIResponseError: On failure to retrieve requested model
+        """
+        return self._get(join_code, "/leaderboard/joincode")
+
+    def _get(self, uuid: str, route: str) -> models.Leaderboard:
+        """Handle GET requests by url."""
+        response = self._api_client.get(f"{route}/{uuid}")
 
         if not response.success:
             raise exceptions.APIResponseError(
