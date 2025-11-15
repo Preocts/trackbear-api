@@ -190,7 +190,7 @@ TAG_RESPONSE = {
 }
 TAG_SAVE_KWARGS = {
     "name": "Mock Tag",
-    "color": enums.Color.BLUE,
+    "color": enums.TagColor.BLUE,
 }
 TAG_SAVE_PAYLOAD = {
     "name": "Mock Tag",
@@ -262,7 +262,7 @@ MEMBER_RESPONSE = {
     "state": "string",
     "displayName": "string",
     "avatar": "string",
-    "color": "string",
+    "color": "pink",
     "isParticipant": True,
     "isOwner": True,
 }
@@ -274,7 +274,7 @@ TEAM_RESPONSE = {
     "updatedAt": "string",
     "boardId": 123,
     "name": "string",
-    "color": "string",
+    "color": "pink",
 }
 
 LEADERBOARD_RESPONSE = {
@@ -321,7 +321,7 @@ LEADERBOARD_EXTENDED_RESPONSE = {
             "updatedAt": "string",
             "boardId": 123,
             "name": "string",
-            "color": "string",
+            "color": "pink",
         }
     ],
     "members": [
@@ -341,7 +341,7 @@ LEADERBOARD_PARTICIPANT_RESPONSE = {
     "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
     "displayName": "string",
     "avatar": "string",
-    "color": "blue",
+    "color": "pink",
     "goal": {"measure": "word", "count": 0},
     "tallies": [
         {

@@ -63,7 +63,7 @@ class TagClient:
     def save(
         self,
         name: str,
-        color: enums.Color | str,
+        color: enums.TagColor | str,
         tag_id: int | None = None,
     ) -> models.Tag:
         """
@@ -87,10 +87,10 @@ class TagClient:
         """
         # Forcing the use of the Enum here allows for fast failures at runtime if the
         # incorrect string is provided.
-        if isinstance(color, enums.Color):
+        if isinstance(color, enums.TagColor):
             _color = color
         else:
-            _color = enums.Color(color)
+            _color = enums.TagColor(color)
 
         payload = {
             "name": name,

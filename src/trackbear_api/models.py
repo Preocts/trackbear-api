@@ -387,7 +387,7 @@ class Tag:
     state: enums.State
     owner_id: int
     name: str
-    color: enums.Color
+    color: enums.TagColor
 
     @classmethod
     def build(cls, data: dict[str, Any]) -> Tag:
@@ -401,7 +401,7 @@ class Tag:
                 state=enums.State(data["state"]),
                 owner_id=data["ownerId"],
                 name=data["name"],
-                color=enums.Color(data["color"]),
+                color=enums.TagColor(data["color"]),
             )
 
         except (KeyError, ValueError) as exc:
@@ -444,7 +444,7 @@ class Member:
     state: enums.State
     display_name: str
     avatar: str | None
-    color: str | None
+    color: enums.MemberColor | None
     is_participant: bool
     is_owner: bool
 
@@ -458,7 +458,7 @@ class Member:
                 state=data["state"],
                 display_name=data["displayName"],
                 avatar=data["avatar"],
-                color=data["color"],
+                color=enums.MemberColor(data["color"]) if data["color"] is not None else None,
                 is_participant=data["isParticipant"],
                 is_owner=data["isOwner"],
             )
@@ -477,7 +477,7 @@ class Team:
     updated_at: str
     board_id: str
     name: str
-    color: str
+    color: enums.MemberColor
 
     @classmethod
     def build(cls, data: dict[str, Any]) -> Team:
@@ -490,7 +490,7 @@ class Team:
                 updated_at=data["updatedAt"],
                 board_id=data["boardId"],
                 name=data["name"],
-                color=data["color"],
+                color=enums.MemberColor(data["color"]),
             )
 
         except (KeyError, ValueError) as exc:
@@ -567,7 +567,7 @@ class LeaderboardExtended:
                         updated_at=team["updatedAt"],
                         board_id=team["boardId"],
                         name=team["name"],
-                        color=team["color"],
+                        color=enums.MemberColor(team["color"]),
                     )
                     for team in data["teams"]
                 ],
@@ -670,7 +670,7 @@ class Participant:
     uuid: str
     display_name: str
     avatar: str | None
-    color: enums.Color | None
+    color: enums.MemberColor | None
     goal: GoalStub | None
     tallies: Sequence[TallyStub]
 
@@ -684,7 +684,7 @@ class Participant:
                 uuid=data["uuid"],
                 display_name=data["displayName"],
                 avatar=data["avatar"],
-                color=enums.Color(data["color"]) if data["color"] is not None else None,
+                color=enums.MemberColor(data["color"]) if data["color"] is not None else None,
                 goal=(
                     GoalStub(
                         measure=enums.Measure(data["goal"]["measure"]),
