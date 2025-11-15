@@ -35,6 +35,29 @@ class LeaderboardClient:
 
         return [models.LeaderboardExtended.build(data) for data in response.data]
 
+    def list_participants(self, board_uuid: str) -> Sequence[models.Participant]:
+        """
+        List all participants of a given leaderboard.
+
+        NOTE: This method uses the UUID, not the ID like most others.
+
+        Returns:
+            A sequence of trackbear_api.models.Participant
+
+        Raises:
+            exceptions.APIResponseError: On any failure message returned from TrackBear API
+        """
+        response = self._api_client.get(f"/leaderboard/{board_uuid}/participants")
+
+        if not response.success:
+            raise exceptions.APIResponseError(
+                status_code=response.status_code,
+                code=response.error.code,
+                message=response.error.message,
+            )
+
+        return [models.Participant.build(data) for data in response.data]
+
     def get(self, board_uuid: str) -> models.Leaderboard:
         """
         Get Leaderboard by uuid.

@@ -133,6 +133,11 @@ FAILURE_RESPONSE = {
             "https://trackbear.app/api/v1/leaderboard",
         ),
         (
+            "leaderboard.list_participants",
+            {"board_uuid": "uuid1234"},
+            "https://trackbear.app/api/v1/leaderboard/uuid1234/participants",
+        ),
+        (
             "leaderboard.get",
             {"board_uuid": "uuid1234"},
             "https://trackbear.app/api/v1/leaderboard/uuid1234",
