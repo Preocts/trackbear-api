@@ -403,6 +403,12 @@ def test_client_save_success(
             test_parameters.TALLY_RESPONSE,
             models.Tally,
         ),
+        (
+            "leaderboard",
+            "https://trackbear.app/api/v1/leaderboard/uuid1234",
+            test_parameters.LEADERBOARD_RESPONSE,
+            models.Leaderboard,
+        ),
     ),
 )
 @responses.activate(assert_all_requests_are_fired=True)
@@ -417,7 +423,7 @@ def test_client_delete_success(
     body = json.dumps({"success": True, "data": api_response})
     responses.add(method="DELETE", url=url, status=200, body=body)
 
-    result = getattr(client, provider).delete(123)
+    result = getattr(client, provider).delete(url.split("/")[-1])
 
     assert isinstance(result, model_type)
     assert dataclasses.is_dataclass(result)
