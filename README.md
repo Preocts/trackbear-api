@@ -164,7 +164,7 @@ https://help.trackbear.app/api/
 | --------- | ---------------------------------------- |
 | `.list()` | Get stats. By default returns all stats. |
 
-### Tags
+### Leaderboards
 
 | Provider Method               | Description                                                |
 | ----------------------------- | ---------------------------------------------------------- |
