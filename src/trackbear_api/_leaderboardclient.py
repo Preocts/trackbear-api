@@ -210,3 +210,27 @@ class LeaderboardClient:
             )
 
         return models.Leaderboard.build(response.data)
+
+    def delete(self, board_uuid: int) -> models.Leaderboard:
+        """
+        Delete an existing Leaderboard.
+
+        Args:
+            board_uuid (int): Existing leaderboard uuid
+
+        Returns:
+            trackbear_api.models.Leaderboard
+
+        Raises:
+            exceptions.APIResponseError: On any failure message returned from TrackBear API
+        """
+        response = self._api_client.delete(f"/leaderboard/{board_uuid}")
+
+        if not response.success:
+            raise exceptions.APIResponseError(
+                status_code=response.status_code,
+                code=response.error.code,
+                message=response.error.message,
+            )
+
+        return models.Leaderboard.build(response.data)

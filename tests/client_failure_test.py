@@ -147,6 +147,11 @@ FAILURE_RESPONSE = {
             test_parameters.LEADERBOARD_SAVE_SIMPLE_KWARGS,
             "https://trackbear.app/api/v1/leaderboard",
         ),
+        (
+            "leaderboard.delete",
+            {"board_uuid": "uuid1234"},
+            "https://trackbear.app/api/v1/leaderboard/uuid1234",
+        ),
     ),
 )
 @responses.activate()
