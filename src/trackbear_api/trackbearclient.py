@@ -8,6 +8,7 @@ import requests
 
 from ._apiclient import APIClient
 from ._goalclient import GoalClient
+from ._leaderboardclient import LeaderboardClient
 from ._projectclient import ProjectClient
 from ._statclient import StatClient
 from ._tagclient import TagClient
@@ -94,6 +95,7 @@ class TrackBearClient:
         self.tag = TagClient(self._api_client)
         self.stat = StatClient(self._api_client)
         self.tally = TallyClient(self._api_client)
+        self.leaderboard = LeaderboardClient(self._api_client)
 
     def _pick_config_value(
         self,
