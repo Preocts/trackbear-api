@@ -335,3 +335,20 @@ LEADERBOARD_EXTENDED_RESPONSE = {
         }
     ],
 }
+
+LEADERBOARD_PARTICIPANT_RESPONSE = {
+    "id": 123,
+    "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+    "displayName": "string",
+    "avatar": "string",
+    "color": "blue",
+    "goal": {"measure": "word", "count": 0},
+    "tallies": [
+        {
+            "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
+            "date": "2021-03-23",
+            "measure": "word",
+            "count": 0,
+        }
+    ],
+}

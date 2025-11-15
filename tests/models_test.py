@@ -30,6 +30,7 @@ class ModelType(Protocol):
         models.LeaderboardExtended,
         models.Member,
         models.Team,
+        models.Participant,
     ),
 )
 def test_build_model_failure(model_type: type[ModelType]) -> None:
@@ -56,6 +57,7 @@ def test_build_model_failure(model_type: type[ModelType]) -> None:
         (test_parameters.TEAM_RESPONSE, models.Team),
         (test_parameters.LEADERBOARD_RESPONSE, models.Leaderboard),
         (test_parameters.LEADERBOARD_EXTENDED_RESPONSE, models.LeaderboardExtended),
+        (test_parameters.LEADERBOARD_PARTICIPANT_RESPONSE, models.Participant),
     ),
 )
 def test_build_model_success(data: dict[str, Any], model_type: type[ModelType]) -> None:
