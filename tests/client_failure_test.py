@@ -127,6 +127,16 @@ FAILURE_RESPONSE = {
             {"tally_id": 123},
             "https://trackbear.app/api/v1/tally/123",
         ),
+        (
+            "leaderboard.list",
+            {},
+            "https://trackbear.app/api/v1/leaderboard",
+        ),
+        (
+            "leaderboard.get",
+            {"board_uuid": "uuid1234"},
+            "https://trackbear.app/api/v1/leaderboard/uuid1234",
+        ),
     ),
 )
 @responses.activate()

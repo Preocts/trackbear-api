@@ -80,6 +80,14 @@ ModelType = TypeVar("ModelType")
             "measure=scene&startDate=2025-01-01&endDate=2025-12-31",
             models.Tally,
         ),
+        (
+            "leaderboard",
+            {},
+            "https://trackbear.app/api/v1/leaderboard",
+            test_parameters.LEADERBOARD_EXTENDED_RESPONSE,
+            "",
+            models.LeaderboardExtended,
+        ),
     ),
 )
 @responses.activate(assert_all_requests_are_fired=True)
@@ -144,6 +152,12 @@ def test_client_list_success(
             test_parameters.TALLY_RESPONSE,
             models.Tally,
         ),
+        (
+            "leaderboard",
+            "https://trackbear.app/api/v1/leaderboard/uuid1234",
+            test_parameters.LEADERBOARD_RESPONSE,
+            models.Leaderboard,
+        ),
     ),
 )
 @responses.activate(assert_all_requests_are_fired=True)
@@ -165,7 +179,7 @@ def test_client_get_success(
         body=json.dumps(mock_body),
     )
 
-    result = getattr(client, provider).get(123)
+    result = getattr(client, provider).get(url.split("/")[-1])
 
     assert isinstance(result, model_type)
     assert dataclasses.is_dataclass(result)
