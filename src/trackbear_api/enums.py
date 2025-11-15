@@ -7,8 +7,9 @@ import enum
 __all__ = [
     "Phase",
     "State",
-    "Color",
+    "TagColor",
     "Measure",
+    "MemberColor",
     "HabitUnit",
     "GoalType",
 ]
@@ -29,7 +30,7 @@ class State(str, enum.Enum):
     DELETED = "deleted"
 
 
-class Color(str, enum.Enum):
+class TagColor(str, enum.Enum):
     DEFAULT = "default"
     RED = "red"
     ORANGE = "orange"
@@ -40,6 +41,26 @@ class Color(str, enum.Enum):
     BROWN = "brown"
     WHITE = "white"
     BLACK = "black"
+    GRAY = "gray"
+
+
+class MemberColor(str, enum.Enum):
+    AUTO = "auto"
+    RED = "red"
+    ORANGE = "orange"
+    AMBER = "amber"
+    YELLOW = "yellow"
+    LIME = "lime"
+    GREEN = "green"
+    TEAL = "teal"
+    CYAN = "cyan"
+    SKY = "sky"
+    BLUE = "blue"
+    VIOLET = "violet"
+    PURPLE = "purple"
+    FUCHIA = "fuchia"
+    PINK = "pink"
+    ROSE = "rose"
     GRAY = "gray"
 
 
