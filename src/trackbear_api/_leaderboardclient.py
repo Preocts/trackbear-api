@@ -213,7 +213,7 @@ class LeaderboardClient:
 
     def save_star(self, board_uuid: int, *, starred: bool = True) -> models.Starred:
         """
-        Star or unstar a LeaderBoard
+        Star or unstar a Leaderboard
 
         Args:
             board_uuid (int): Existing leaderboard uuid
