@@ -194,52 +194,52 @@ def test_api_response_error(
         (
             "stat.list",
             {"start_date": "foo"},
-            "Invalid start_date 'foo'. Must be YYYY-MM-DD",
+            "Invalid date value: 'foo'. Must be YYYY-MM-DD",
         ),
         (
             "stat.list",
             {"end_date": "bar"},
-            "Invalid end_date 'bar'. Must be YYYY-MM-DD",
+            "Invalid date value: 'bar'. Must be YYYY-MM-DD",
         ),
         (
             "tally.list",
             {"start_date": "foo"},
-            "Invalid start_date 'foo'. Must be YYYY-MM-DD",
+            "Invalid date value: 'foo'. Must be YYYY-MM-DD",
         ),
         (
             "tally.list",
             {"end_date": "bar"},
-            "Invalid end_date 'bar'. Must be YYYY-MM-DD",
+            "Invalid date value: 'bar'. Must be YYYY-MM-DD",
         ),
         (
             "goal.save_target",
             test_parameters.GOAL_SAVE_TARGET_KWARGS | {"start_date": "foo"},
-            "Invalid start_date 'foo'. Must be YYYY-MM-DD",
+            "Invalid date value: 'foo'. Must be YYYY-MM-DD",
         ),
         (
             "goal.save_target",
             test_parameters.GOAL_SAVE_TARGET_KWARGS | {"end_date": "bar"},
-            "Invalid end_date 'bar'. Must be YYYY-MM-DD",
+            "Invalid date value: 'bar'. Must be YYYY-MM-DD",
         ),
         (
             "goal.save_habit",
             test_parameters.GOAL_SAVE_HABIT_KWARGS | {"start_date": "foo"},
-            "Invalid start_date 'foo'. Must be YYYY-MM-DD",
+            "Invalid date value: 'foo'. Must be YYYY-MM-DD",
         ),
         (
             "goal.save_habit",
             test_parameters.GOAL_SAVE_HABIT_KWARGS | {"end_date": "bar"},
-            "Invalid end_date 'bar'. Must be YYYY-MM-DD",
+            "Invalid date value: 'bar'. Must be YYYY-MM-DD",
         ),
         (
             "leaderboard.save",
             test_parameters.LEADERBOARD_SAVE_SIMPLE_KWARGS | {"start_date": "foo"},
-            "Invalid start_date 'foo'. Must be YYYY-MM-DD",
+            "Invalid date value: 'foo'. Must be YYYY-MM-DD",
         ),
         (
             "leaderboard.save",
             test_parameters.LEADERBOARD_SAVE_SIMPLE_KWARGS | {"end_date": "bar"},
-            "Invalid end_date 'bar'. Must be YYYY-MM-DD",
+            "Invalid date value: 'bar'. Must be YYYY-MM-DD",
         ),
     ),
 )
