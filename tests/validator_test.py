@@ -6,6 +6,8 @@ from typing import Any
 import pytest
 
 from trackbear_api import _validator as validators
+from trackbear_api import exceptions
+from trackbear_api import models
 
 
 @pytest.mark.parametrize(
@@ -23,3 +25,30 @@ def test_check_date(date: str | None, expected: Any) -> None:
     """Check that dates are validated correctly."""
     with expected:
         validators.check_date(date)
+
+
+def test_check_response_success() -> None:
+    response = models.TrackBearResponse.build(
+        response={"success": True, "data": {}, "status_code": 200},
+        remaining_requests=100,
+        rate_reset=60,
+        status_code=200,
+    )
+
+    validators.check_response(response)
+
+
+def test_check_response_failure() -> None:
+    response = models.TrackBearResponse.build(
+        response={"success": False, "error": {"code": "foo", "message": "bar"}, "status_code": 429},
+        remaining_requests=0,
+        rate_reset=60,
+        status_code=429,
+    )
+
+    with pytest.raises(exceptions.APIResponseError) as exception:
+        validators.check_response(response)
+
+    assert exception.value.status_code == 429
+    assert exception.value.code == "foo"
+    assert exception.value.message == "bar"

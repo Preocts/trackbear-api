@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 
+from . import _validator as validator
 from . import enums
-from . import exceptions
 from . import models
 from ._apiclient import APIClient
 
@@ -27,12 +27,7 @@ class ProjectClient:
         """
         response = self._api_client.get("/project")
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return [models.Project.build(data) for data in response.data]
 
@@ -51,12 +46,7 @@ class ProjectClient:
         """
         response = self._api_client.get(f"/project/{project_id}")
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return models.Project.build(response.data)
 
@@ -135,12 +125,7 @@ class ProjectClient:
         else:
             response = self._api_client.patch(f"/project/{project_id}", payload)
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return models.ProjectStub.build(response.data)
 
@@ -159,11 +144,6 @@ class ProjectClient:
         """
         response = self._api_client.delete(f"/project/{project_id}")
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return models.ProjectStub.build(response.data)
