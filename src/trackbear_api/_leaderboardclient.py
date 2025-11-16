@@ -4,7 +4,6 @@ from collections.abc import Sequence
 
 from . import _validator as validator
 from . import enums
-from . import exceptions
 from . import models
 from ._apiclient import APIClient
 
@@ -28,12 +27,7 @@ class LeaderboardClient:
         """
         response = self._api_client.get("/leaderboard")
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return [models.LeaderboardExtended.build(data) for data in response.data]
 
@@ -49,12 +43,7 @@ class LeaderboardClient:
         """
         response = self._api_client.get(f"/leaderboard/{board_uuid}/participants")
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return [models.Participant.build(data) for data in response.data]
 
@@ -92,12 +81,7 @@ class LeaderboardClient:
         """Handle GET requests by url."""
         response = self._api_client.get(f"{route}/{uuid}")
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return models.Leaderboard.build(response.data)
 
@@ -197,12 +181,7 @@ class LeaderboardClient:
         else:
             response = self._api_client.patch(f"/leaderboard/{board_uuid}", payload)
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return models.Leaderboard.build(response.data)
 
@@ -224,12 +203,7 @@ class LeaderboardClient:
 
         response = self._api_client.patch(f"/leaderboard/{board_uuid}/star", payload)
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return models.Starred.build(response.data)
 
@@ -248,11 +222,6 @@ class LeaderboardClient:
         """
         response = self._api_client.delete(f"/leaderboard/{board_uuid}")
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return models.Leaderboard.build(response.data)

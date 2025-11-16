@@ -4,7 +4,6 @@ from collections.abc import Sequence
 
 from . import _validator as validator
 from . import enums
-from . import exceptions
 from . import models
 from ._apiclient import APIClient
 
@@ -28,12 +27,7 @@ class GoalClient:
         """
         response = self._api_client.get("/goal")
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return [models.Goal.build(data) for data in response.data]
 
@@ -52,12 +46,7 @@ class GoalClient:
         """
         response = self._api_client.get(f"/goal/{goal_id}")
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return models.Goal.build(response.data)
 
@@ -139,12 +128,7 @@ class GoalClient:
         else:
             response = self._api_client.patch(f"/goal/{goal_id}", payload)
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return models.Goal.build(response.data)
 
@@ -242,12 +226,7 @@ class GoalClient:
         else:
             response = self._api_client.patch(f"/goal/{goal_id}", payload)
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return models.Goal.build(response.data)
 
@@ -266,11 +245,6 @@ class GoalClient:
         """
         response = self._api_client.delete(f"/goal/{goal_id}")
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return models.Goal.build(response.data)

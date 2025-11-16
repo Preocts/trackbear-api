@@ -3,7 +3,6 @@ from __future__ import annotations
 from collections.abc import Sequence
 
 from . import _validator as validator
-from . import exceptions
 from . import models
 from ._apiclient import APIClient
 
@@ -45,11 +44,6 @@ class StatClient:
 
         response = self._api_client.get("/stats/days", params)
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return [models.Stat.build(data) for data in response.data]

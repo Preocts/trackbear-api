@@ -4,7 +4,6 @@ from collections.abc import Sequence
 
 from . import _validator as validator
 from . import enums
-from . import exceptions
 from . import models
 from ._apiclient import APIClient
 
@@ -64,12 +63,7 @@ class TallyClient:
 
         response = self._api_client.get("/tally", params=params)
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return [models.Tally.build(data) for data in response.data]
 
@@ -88,12 +82,7 @@ class TallyClient:
         """
         response = self._api_client.get(f"/tally/{tally_id}")
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return models.Tally.build(response.data)
 
@@ -155,12 +144,7 @@ class TallyClient:
         else:
             response = self._api_client.patch(f"/tally/{tally_id}", payload)
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return models.Tally.build(response.data)
 
@@ -179,11 +163,6 @@ class TallyClient:
         """
         response = self._api_client.delete(f"/tally/{tally_id}")
 
-        if not response.success:
-            raise exceptions.APIResponseError(
-                status_code=response.status_code,
-                code=response.error.code,
-                message=response.error.message,
-            )
+        validator.check_response(response)
 
         return models.Tally.build(response.data)
