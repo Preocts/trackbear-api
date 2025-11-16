@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-import re
 from collections.abc import Sequence
 
+from . import _validator as validator
 from . import exceptions
 from . import models
 from ._apiclient import APIClient
-
-_DATE_PATTERN = re.compile(r"[\d]{4}-[\d]{2}-[\d]{2}")
 
 
 class StatClient:
@@ -36,13 +34,8 @@ class StatClient:
             APIResponseError: On any failure message returned from TrackBear API
             ValueError: If `start_date` or `end_date` are not "YYYY-MM-DD"
         """
-        if start_date is not None:
-            if _DATE_PATTERN.match(start_date) is None:
-                raise ValueError(f"Invalid start_date '{start_date}'. Must be YYYY-MM-DD")
-
-        if end_date is not None:
-            if _DATE_PATTERN.match(end_date) is None:
-                raise ValueError(f"Invalid end_date '{end_date}'. Must be YYYY-MM-DD")
+        validator.check_date(start_date)
+        validator.check_date(end_date)
 
         params = {}
         if start_date:
