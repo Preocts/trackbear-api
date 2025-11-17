@@ -14,8 +14,6 @@ from ._statclient import StatClient
 from ._tagclient import TagClient
 from ._tallyclient import TallyClient
 
-__all__ = ["TrackBearClient"]
-
 # Environment variable keys pulled for configuration if they exist
 _TOKEN_ENVIRON = "TRACKBEAR_API_TOKEN"
 _USER_AGENT_ENVIRON = "TRACKBEAR_API_AGENT"

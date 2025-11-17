@@ -10,10 +10,6 @@ from . import models
 
 _DATE_PATTERN = re.compile(r"[\d]{4}-[\d]{2}-[\d]{2}")
 
-__all__ = [
-    "check_date",
-]
-
 
 def check_date(date: str | None) -> None | NoReturn:
     """
