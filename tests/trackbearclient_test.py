@@ -20,7 +20,7 @@ def test_init_client_providing_no_token() -> None:
     expected_msg = "Missing api token. Either provide directly as a keyword arguement or as the environment variable 'TRACKBEAR_APP_TOKEN'."
 
     with pytest.raises(ValueError, match=expected_msg):
-        TrackBearClient()
+        TrackBearClient("test")
 
 
 @pytest.mark.usefixtures("add_environs")
@@ -32,13 +32,15 @@ def test_init_client_custom_values() -> None:
     """
     expected_api_token = "mock_api_key"
     expected_url = "https://some.other.app"
-    expected_user_agent = "my custom app/1.0"
+    user_agent = "my custom app/1.0"
+    expected_user_agent = f"{user_agent} (app name: test)"
     expected_timeout = 5
 
     client = TrackBearClient(
+        app_name="test",
         api_token=expected_api_token,
         api_url=expected_url,
-        user_agent=expected_user_agent,
+        user_agent=user_agent,
         timeout_seconds=expected_timeout,
     )
 
@@ -53,13 +55,14 @@ def test_init_client_environ_values() -> None:
     """
     Initialize the client, assert environment values provided are used
     """
-    expected_value = "environ_value"
+    expected_auth = "Bearer environ_value"
+    expected_agent = "environ_value (app name: test)"
 
-    client = TrackBearClient()
+    client = TrackBearClient("test")
 
-    assert client.bare.session.headers["Authorization"] == f"Bearer {expected_value}"
     assert client.bare.api_url == "https://trackbear.app/api/v1"
-    assert client.bare.session.headers["User-Agent"] == expected_value
+    assert client.bare.session.headers["Authorization"] == expected_auth
+    assert client.bare.session.headers["User-Agent"] == expected_agent
     assert client.bare.timeout == 3
 
 
@@ -69,9 +72,9 @@ def test_init_client_default_values() -> None:
     Initialize the client, assert default values are used. Excludes API token.
     """
     expected_url = "https://trackbear.app/api/v1"
-    expected_user_agent = f"trackbear-api/{importlib.metadata.version('trackbear-api')} (https://github.com/Preocts/trackbear-api) by Preocts"
+    expected_user_agent = f"trackbear-api/{importlib.metadata.version('trackbear-api')} (https://github.com/Preocts/trackbear-api) (app name: test)"
 
-    client = TrackBearClient()
+    client = TrackBearClient("test")
 
     assert client.bare.api_url == expected_url
     assert client.bare.session.headers["User-Agent"] == expected_user_agent
@@ -83,7 +86,7 @@ def test_get_valid_response(client: TrackBearClient) -> None:
     """GET request with expected valid response."""
     expected_headers = {
         "Authorization": "Bearer environ_value",
-        "User-Agent": "environ_value",
+        "User-Agent": "environ_value (app name: test)",
     }
     expected_params = {"foo": "bar"}
     mock_response = json.dumps({"success": True, "data": "pong"})
@@ -117,7 +120,7 @@ def test_get_invalid_response(client: TrackBearClient) -> None:
     """GET request with expected invalid response."""
     expected_headers = {
         "Authorization": "Bearer environ_value",
-        "User-Agent": "environ_value",
+        "User-Agent": "environ_value (app name: test)",
     }
     expected_params = {"foo": "bar"}
     mock_response = json.dumps(
@@ -175,7 +178,7 @@ def test_post_valid_response(client: TrackBearClient) -> None:
 
     expected_headers = {
         "Authorization": "Bearer environ_value",
-        "User-Agent": "environ_value",
+        "User-Agent": "environ_value (app name: test)",
     }
     mock_response = json.dumps({"success": True, "data": mock_data})
     mock_headers = {
@@ -222,7 +225,7 @@ def test_patch_valid_response(client: TrackBearClient) -> None:
 
     expected_headers = {
         "Authorization": "Bearer environ_value",
-        "User-Agent": "environ_value",
+        "User-Agent": "environ_value (app name: test)",
     }
     expected_payload = {
         "title": "string",
@@ -309,7 +312,7 @@ def test_delete_valid_response(client: TrackBearClient) -> None:
 
     expected_headers = {
         "Authorization": "Bearer environ_value",
-        "User-Agent": "environ_value",
+        "User-Agent": "environ_value (app name: test)",
     }
 
     mock_response = json.dumps({"success": True, "data": mock_data})

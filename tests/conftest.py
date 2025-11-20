@@ -40,4 +40,4 @@ def add_environs() -> Generator[None, None, None]:
 @pytest.fixture
 def client(add_environs: None) -> TrackBearClient:
     """Create a mock TrackBearClient."""
-    return TrackBearClient()
+    return TrackBearClient("test")
