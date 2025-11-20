@@ -21,7 +21,7 @@ _URL_ENVIRON = "TRACKBEAR_API_URL"
 _TIMEOUT_SECONDS = "TRACKBEAR_API_TIMEOUT_SECONDS"
 
 # Default values, can be overridden by user
-_DEFAULT_USER_AGENT = f"trackbear-api/{importlib.metadata.version('trackbear-api')} (https://github.com/Preocts/trackbear-api) by Preocts"
+_DEFAULT_USER_AGENT = f"trackbear-api/{importlib.metadata.version('trackbear-api')} (https://github.com/Preocts/trackbear-api)"
 _DEFAULT_API_URL = "https://trackbear.app/api/v1"
 _DEFAULT_TIMEOUT_SECONDS = 10
 
@@ -33,6 +33,7 @@ class TrackBearClient:
 
     def __init__(
         self,
+        app_name: str,
         *,
         api_token: str | None = None,
         api_url: str | None = None,
@@ -46,13 +47,15 @@ class TrackBearClient:
         parameter or by environment variable (TRACKBEAR_APP_TOKEN)
 
         Args:
+            name (str): Give your app a name. This can be any value and is appended
+                to the User-Agent header.
             api_token (str): (Optional) The API token for TrackBear. If not provided
                 then the token is looked for in the loaded environment (TRACKBEAR_APP_TOKEN)
             api_url (str): (Optional) Defaults to "https://trackbear.app/api/v1/", can
                 also be set in environment (TRACKBEAR_API_URL)
             user_agent (str): (Optional) By default the User-Agent header value points
                 to the trackbear-api repo. You can override this to identify your own
-                app by providing directly or fro the environment (TRACKBEAR_USER_AGENT).
+                app by providing directly or from the environment (TRACKBEAR_USER_AGENT).
                 https://help.trackbear.app/api/authentication#identifying-your-app
             timeout_seconds (int): (Optional) Number of seconds to wait for a response
                 from the API before raising an exception.
@@ -60,7 +63,6 @@ class TrackBearClient:
         Raises:
             ValueError: If API token is not provided or an empty string.
         """
-
         api_token = self._pick_config_value(api_token, _TOKEN_ENVIRON, "")
         if not api_token:
             msg = "Missing api token. Either provide directly as a keyword arguement or as the environment variable 'TRACKBEAR_APP_TOKEN'."
@@ -83,7 +85,7 @@ class TrackBearClient:
         self.logger.debug("Initialized TrackBearClient with url: %s", api_url)
         self.logger.debug("Initialized TrackBearClient with timeout: %s seconds", timeout)
 
-        session = self._get_request_session(api_token, user_agent)
+        session = self._get_request_session(api_token, app_name, user_agent)
         self._api_client = APIClient(session, api_url, int(timeout))
 
         # Define all client provider references
@@ -117,12 +119,17 @@ class TrackBearClient:
         self.logger.debug("Using default value for %s", environ_key)
         return str(default)
 
-    def _get_request_session(self, api_token: str, user_agent: str) -> requests.sessions.Session:
+    def _get_request_session(
+        self,
+        api_token: str,
+        app_name: str,
+        user_agent: str,
+    ) -> requests.sessions.Session:
         """Build a Session with required headers for API calls."""
         session = requests.sessions.Session()
 
         session.headers = {
-            "User-Agent": user_agent,
+            "User-Agent": f"{user_agent} (app name: {app_name})",
             "Authorization": f"Bearer {api_token}",
         }
 

@@ -53,12 +53,12 @@ The following environment variables allow you to configure the TrackBearClient
 outside of code. All variables listed below can also be set during the
 initialization of the `TrackBearClient` as well.
 
-| Variable                      | Description                              | Has Default | Default                                                                   |
-| ----------------------------- | ---------------------------------------- | ----------- | ------------------------------------------------------------------------- |
-| TRACKBEAR_API_TOKEN           | Your secret API token                    | False       |                                                                           |
-| TRACKBEAR_API_URL             | The URL of the TrackBear API             | True        | https://trackbear.app/api/v1/                                             |
-| TRACKBEAR_API_AGENT           | The User-Agent header sent with requests | True        | trackbear-api/0.x.x (https://github.com/Preocts/trackbear-api) by Preocts |
-| TRACKBEAR_API_TIMEOUT_SECONDS | Seconds before HTTPS reqeusts timeout    | True        | 10                                                                        |
+| Variable                      | Description                              | Has Default | Default                                                                               |
+| ----------------------------- | ---------------------------------------- | ----------- | ------------------------------------------------------------------------------------- |
+| TRACKBEAR_API_TOKEN           | Your secret API token                    | False       |                                                                                       |
+| TRACKBEAR_API_URL             | The URL of the TrackBear API             | True        | https://trackbear.app/api/v1/                                                         |
+| TRACKBEAR_API_AGENT           | The User-Agent header sent with requests | True        | trackbear-api/0.x.x (https://github.com/Preocts/trackbear-api) (app name: [app_name]) |
+| TRACKBEAR_API_TIMEOUT_SECONDS | Seconds before HTTPS reqeusts timeout    | True        | 10                                                                                    |
 
 ## Example Use
 
@@ -73,7 +73,7 @@ from trackbear_api import TrackBearClient
 from trackbear_api.enums import Phase
 
 # Assumes TRACKBEAR_API_TOKEN is set in the environment
-client = TrackBearClient()
+client = TrackBearClient("my_app")
 
 # Create a new Project
 new_project = client.project.save(
