@@ -136,7 +136,7 @@ class LeaderboardClient:
                 update existing LeaderBoard
 
         Returns:
-            trackbear_api.models.Goal
+            trackbear_api.models.Leaderboard
 
         Raises:
             exceptions.APIResponseError: On any failure message returned from TrackBear API
@@ -185,12 +185,12 @@ class LeaderboardClient:
 
         return models.Leaderboard.build(response.data)
 
-    def save_star(self, board_uuid: int, *, starred: bool = True) -> models.Starred:
+    def save_star(self, board_uuid: str, *, starred: bool = True) -> models.Starred:
         """
         Star or unstar a Leaderboard
 
         Args:
-            board_uuid (int): Existing leaderboard uuid
+            board_uuid (str): Existing leaderboard uuid
             starred (bool): True to star the loaderboard (default: True)
 
         Returns:
@@ -207,12 +207,12 @@ class LeaderboardClient:
 
         return models.Starred.build(response.data)
 
-    def delete(self, board_uuid: int) -> models.Leaderboard:
+    def delete(self, board_uuid: str) -> models.Leaderboard:
         """
         Delete an existing Leaderboard.
 
         Args:
-            board_uuid (int): Existing leaderboard uuid
+            board_uuid (str): Existing leaderboard uuid
 
         Returns:
             trackbear_api.models.Leaderboard
