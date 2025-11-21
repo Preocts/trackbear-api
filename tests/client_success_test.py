@@ -105,6 +105,14 @@ def get_client_attribute(client: TrackBearClient, provider_method: str) -> Any:
             "",
             models.Participant,
         ),
+        (
+            "leaderboard.team.list",
+            {"board_uuid": "uuid1234"},
+            "https://trackbear.app/api/v1/leaderboard/uuid1234/teams",
+            test_parameters.TEAM_RESPONSE,
+            "",
+            models.Team,
+        ),
     ),
 )
 @responses.activate(assert_all_requests_are_fired=True)
@@ -144,43 +152,56 @@ def test_client_list_success(
 
 
 @pytest.mark.parametrize(
-    "provider_method,url,api_response,model_type",
+    "provider_method,kwargs,url,api_response,model_type",
     (
         (
             "project.get",
+            {"project_id": 123},
             "https://trackbear.app/api/v1/project/123",
             test_parameters.PROJECT_RESPONSE,
             models.Project,
         ),
         (
             "goal.get",
+            {"goal_id": 123},
             "https://trackbear.app/api/v1/goal/123",
             test_parameters.GOAL_RESPONSE_HABIT_THRESHOLD,
             models.Goal,
         ),
         (
             "tag.get",
+            {"tag_id": 123},
             "https://trackbear.app/api/v1/tag/123",
             test_parameters.TAG_RESPONSE,
             models.Tag,
         ),
         (
             "tally.get",
+            {"tally_id": 123},
             "https://trackbear.app/api/v1/tally/123",
             test_parameters.TALLY_RESPONSE,
             models.Tally,
         ),
         (
             "leaderboard.get",
+            {"board_uuid": "uuid1234"},
             "https://trackbear.app/api/v1/leaderboard/uuid1234",
             test_parameters.LEADERBOARD_RESPONSE,
             models.Leaderboard,
         ),
         (
             "leaderboard.get_by_join_code",
+            {"join_code": "code1234"},
             "https://trackbear.app/api/v1/leaderboard/joincode/code1234",
             test_parameters.LEADERBOARD_RESPONSE,
             models.Leaderboard,
+        ),
+        (
+            "leaderboard.team.get",
+            {"board_uuid": "uuid1234", "team_id": 123},
+            "https://trackbear.app/api/v1/leaderboard/uuid1234/teams/123",
+            test_parameters.TEAM_RESPONSE,
+            models.Team,
         ),
     ),
 )
@@ -188,6 +209,7 @@ def test_client_list_success(
 def test_client_get_success(
     client: TrackBearClient,
     provider_method: str,
+    kwargs: dict[str, Any],
     url: str,
     api_response: dict[str, Any],
     model_type: type[ModelType],
@@ -204,7 +226,7 @@ def test_client_get_success(
         body=json.dumps(mock_body),
     )
 
-    result = method_to_call(url.split("/")[-1])
+    result = method_to_call(**kwargs)
 
     assert isinstance(result, model_type)
     assert dataclasses.is_dataclass(result)
@@ -219,7 +241,7 @@ def test_client_get_success(
             "project.save",
             test_parameters.PROJECT_SAVE_KWARGS,
             test_parameters.PROJECT_SAVE_PAYLOAD,
-            "https://trackbear.app/api/v1/project",
+            "POST https://trackbear.app/api/v1/project",
             test_parameters.PROJECTSTUB_RESPONSE,
             models.ProjectStub,
         ),
@@ -228,7 +250,7 @@ def test_client_get_success(
             # replace enum with string while adding project_id
             test_parameters.PROJECT_SAVE_KWARGS | {"phase": "drafting", "project_id": 123},
             test_parameters.PROJECT_SAVE_PAYLOAD,
-            "https://trackbear.app/api/v1/project/123",
+            "PATCH https://trackbear.app/api/v1/project/123",
             test_parameters.PROJECTSTUB_RESPONSE,
             models.ProjectStub,
         ),
@@ -236,7 +258,7 @@ def test_client_get_success(
             "goal.save_target",
             test_parameters.GOAL_SAVE_TARGET_KWARGS,
             test_parameters.GOAL_SAVE_TARGET_PAYLOAD,
-            "https://trackbear.app/api/v1/goal",
+            "POST https://trackbear.app/api/v1/goal",
             test_parameters.GOAL_RESPONSE_THRESHOLD,
             models.Goal,
         ),
@@ -244,7 +266,7 @@ def test_client_get_success(
             "goal.save_habit",
             test_parameters.GOAL_SAVE_HABIT_KWARGS,
             test_parameters.GOAL_SAVE_HABIT_PAYLOAD,
-            "https://trackbear.app/api/v1/goal",
+            "POST https://trackbear.app/api/v1/goal",
             test_parameters.GOAL_RESPONSE_HABIT,
             models.Goal,
         ),
@@ -252,7 +274,7 @@ def test_client_get_success(
             "goal.save_habit",
             test_parameters.GOAL_SAVE_HABIT_TARGET_KWARGS,
             test_parameters.GOAL_SAVE_HABIT_TARGET_PAYLOAD,
-            "https://trackbear.app/api/v1/goal",
+            "POST https://trackbear.app/api/v1/goal",
             test_parameters.GOAL_RESPONSE_HABIT_THRESHOLD,
             models.Goal,
         ),
@@ -261,7 +283,7 @@ def test_client_get_success(
             "goal.save_target",
             test_parameters.GOAL_SAVE_TARGET_KWARGS | {"measure": "word", "goal_id": 123},
             test_parameters.GOAL_SAVE_TARGET_PAYLOAD,
-            "https://trackbear.app/api/v1/goal/123",
+            "PATCH https://trackbear.app/api/v1/goal/123",
             test_parameters.GOAL_RESPONSE_THRESHOLD,
             models.Goal,
         ),
@@ -269,13 +291,9 @@ def test_client_get_success(
             # replace enum with string while adding project_id
             "goal.save_habit",
             test_parameters.GOAL_SAVE_HABIT_TARGET_KWARGS
-            | {
-                "unit": "day",
-                "measure": "chapter",
-                "goal_id": 123,
-            },
+            | {"unit": "day", "measure": "chapter", "goal_id": 123},
             test_parameters.GOAL_SAVE_HABIT_TARGET_PAYLOAD,
-            "https://trackbear.app/api/v1/goal/123",
+            "PATCH https://trackbear.app/api/v1/goal/123",
             test_parameters.GOAL_RESPONSE_HABIT_THRESHOLD,
             models.Goal,
         ),
@@ -283,7 +301,7 @@ def test_client_get_success(
             "tag.save",
             test_parameters.TAG_SAVE_KWARGS,
             test_parameters.TAG_SAVE_PAYLOAD,
-            "https://trackbear.app/api/v1/tag",
+            "POST https://trackbear.app/api/v1/tag",
             test_parameters.TAG_RESPONSE,
             models.Tag,
         ),
@@ -292,7 +310,7 @@ def test_client_get_success(
             # replace enum with string while adding tag_id
             test_parameters.TAG_SAVE_KWARGS | {"color": "blue", "tag_id": 123},
             test_parameters.TAG_SAVE_PAYLOAD,
-            "https://trackbear.app/api/v1/tag/123",
+            "PATCH https://trackbear.app/api/v1/tag/123",
             test_parameters.TAG_RESPONSE,
             models.Tag,
         ),
@@ -300,7 +318,7 @@ def test_client_get_success(
             "tally.save",
             test_parameters.TALLY_SAVE_KWARGS,
             test_parameters.TALLY_SAVE_PAYLOAD,
-            "https://trackbear.app/api/v1/tally",
+            "POST https://trackbear.app/api/v1/tally",
             test_parameters.TALLY_RESPONSE,
             models.Tally,
         ),
@@ -309,7 +327,7 @@ def test_client_get_success(
             # replace enum with string while adding tally_id
             test_parameters.TALLY_SAVE_KWARGS | {"measure": "scene", "tally_id": 123},
             test_parameters.TALLY_SAVE_PAYLOAD,
-            "https://trackbear.app/api/v1/tally/123",
+            "PATCH https://trackbear.app/api/v1/tally/123",
             test_parameters.TALLY_RESPONSE,
             models.Tally,
         ),
@@ -317,7 +335,7 @@ def test_client_get_success(
             "leaderboard.save",
             test_parameters.LEADERBOARD_SAVE_SIMPLE_KWARGS,
             test_parameters.LEADERBOARD_SAVE_SIMPLE_PAYLOAD,
-            "https://trackbear.app/api/v1/leaderboard",
+            "POST https://trackbear.app/api/v1/leaderboard",
             test_parameters.LEADERBOARD_RESPONSE,
             models.Leaderboard,
         ),
@@ -325,7 +343,7 @@ def test_client_get_success(
             "leaderboard.save",
             test_parameters.LEADERBOARD_SAVE_COMPLEX_KWARGS,
             test_parameters.LEADERBOARD_SAVE_COMPLEX_PAYLOAD,
-            "https://trackbear.app/api/v1/leaderboard",
+            "POST https://trackbear.app/api/v1/leaderboard",
             test_parameters.LEADERBOARD_RESPONSE,
             models.Leaderboard,
         ),
@@ -333,7 +351,7 @@ def test_client_get_success(
             "leaderboard.save",
             test_parameters.LEADERBOARD_SAVE_COMPLEX_KWARGS | {"board_uuid": "uuid123"},
             test_parameters.LEADERBOARD_SAVE_COMPLEX_PAYLOAD,
-            "https://trackbear.app/api/v1/leaderboard/uuid123",
+            "PATCH https://trackbear.app/api/v1/leaderboard/uuid123",
             test_parameters.LEADERBOARD_RESPONSE,
             models.Leaderboard,
         ),
@@ -341,9 +359,25 @@ def test_client_get_success(
             "leaderboard.save_star",
             {"board_uuid": "uuid123", "starred": True},
             {"starred": True},
-            "https://trackbear.app/api/v1/leaderboard/uuid123/star",
+            "PATCH https://trackbear.app/api/v1/leaderboard/uuid123/star",
             test_parameters.STARRED_RESPONSE,
             models.Starred,
+        ),
+        (
+            "leaderboard.team.save",
+            test_parameters.TEAM_SAVE_KWARGS,
+            test_parameters.TEAM_SAVE_PAYLOAD,
+            "POST https://trackbear.app/api/v1/leaderboard/uuid1234/teams",
+            test_parameters.TEAM_RESPONSE,
+            models.Team,
+        ),
+        (
+            "leaderboard.team.save",
+            test_parameters.TEAM_SAVE_KWARGS | {"team_id": "123"},
+            test_parameters.TEAM_SAVE_PAYLOAD,
+            "PATCH https://trackbear.app/api/v1/leaderboard/uuid1234/teams/123",
+            test_parameters.TEAM_RESPONSE,
+            models.Team,
         ),
     ),
 )
@@ -367,9 +401,10 @@ def test_client_save_success(
     """
     body_match = responses.matchers.body_matcher(json.dumps(expected_payload))
     method_to_call = get_client_attribute(client, provider_method)
+    method, url = url.split(" ", 1)
 
     responses.add(
-        method="PATCH" if "123" in url else "POST",
+        method=method,
         url=url,
         status=200,
         match=[body_match],
@@ -385,53 +420,67 @@ def test_client_save_success(
 
 
 @pytest.mark.parametrize(
-    "provider,url,api_response,model_type",
+    "provider_method,kwargs,url,api_response,model_type",
     (
         (
-            "project",
+            "project.delete",
+            {"project_id": 123},
             "https://trackbear.app/api/v1/project/123",
             test_parameters.PROJECTSTUB_RESPONSE,
             models.ProjectStub,
         ),
         (
-            "goal",
+            "goal.delete",
+            {"goal_id": 123},
             "https://trackbear.app/api/v1/goal/123",
             test_parameters.GOAL_RESPONSE_HABIT,
             models.Goal,
         ),
         (
-            "tag",
+            "tag.delete",
+            {"tag_id": 123},
             "https://trackbear.app/api/v1/tag/123",
             test_parameters.TAG_RESPONSE,
             models.Tag,
         ),
         (
-            "tally",
+            "tally.delete",
+            {"tally_id": 123},
             "https://trackbear.app/api/v1/tally/123",
             test_parameters.TALLY_RESPONSE,
             models.Tally,
         ),
         (
-            "leaderboard",
+            "leaderboard.delete",
+            {"board_uuid": "uuid1234"},
             "https://trackbear.app/api/v1/leaderboard/uuid1234",
             test_parameters.LEADERBOARD_RESPONSE,
             models.Leaderboard,
+        ),
+        (
+            "leaderboard.team.delete",
+            {"board_uuid": "uuid1234", "team_id": 123},
+            "https://trackbear.app/api/v1/leaderboard/uuid1234/teams/123",
+            test_parameters.TEAM_RESPONSE,
+            models.Team,
         ),
     ),
 )
 @responses.activate(assert_all_requests_are_fired=True)
 def test_client_delete_success(
     client: TrackBearClient,
-    provider: str,
+    provider_method: str,
+    kwargs: dict[str, Any],
     url: str,
     api_response: dict[str, Any],
     model_type: type[ModelType],
 ) -> None:
     """Assert a delete request returns the expected model."""
+    method_to_call = get_client_attribute(client, provider_method)
     body = json.dumps({"success": True, "data": api_response})
     responses.add(method="DELETE", url=url, status=200, body=body)
 
-    result = getattr(client, provider).delete(url.split("/")[-1])
+    result = method_to_call(**kwargs)
 
     assert isinstance(result, model_type)
     assert dataclasses.is_dataclass(result)
