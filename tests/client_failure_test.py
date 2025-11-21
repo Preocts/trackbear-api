@@ -34,148 +34,134 @@ FAILURE_RESPONSE = {
 }
 
 
+def get_client_attribute(client: TrackBearClient, provider_method: str) -> Any:
+    """Return the attribute given through dot-notation of the client."""
+    method_to_call = getattr(client, provider_method.split(".")[0])
+    for attribute in provider_method.split(".")[1:]:
+        method_to_call = getattr(method_to_call, attribute)
+
+    return method_to_call
+
+
 @pytest.mark.parametrize(
-    "provider_method,kwargs,url",
+    "provider_method,kwargs,url,http_method",
     (
         (
             "project.list",
             {},
             "https://trackbear.app/api/v1/project",
+            "GET",
         ),
-        (
-            "project.get",
-            {"project_id": 123},
-            "https://trackbear.app/api/v1/project/123",
-        ),
+        ("project.get", {"project_id": 123}, "https://trackbear.app/api/v1/project/123", "GET"),
         (
             "project.save",
             {"title": "mock", "description": "mock", "phase": "planning"},
             "https://trackbear.app/api/v1/project",
+            "POST",
         ),
         (
             "project.delete",
             {"project_id": 123},
             "https://trackbear.app/api/v1/project/123",
+            "DELETE",
         ),
-        (
-            "goal.list",
-            {},
-            "https://trackbear.app/api/v1/goal",
-        ),
-        (
-            "goal.get",
-            {"goal_id": 123},
-            "https://trackbear.app/api/v1/goal/123",
-        ),
+        ("goal.list", {}, "https://trackbear.app/api/v1/goal", "GET"),
+        ("goal.get", {"goal_id": 123}, "https://trackbear.app/api/v1/goal/123", "GET"),
         (
             "goal.save_target",
             test_parameters.GOAL_SAVE_TARGET_KWARGS,
             "https://trackbear.app/api/v1/goal",
+            "POST",
         ),
         (
             "goal.save_habit",
             test_parameters.GOAL_SAVE_HABIT_KWARGS,
             "https://trackbear.app/api/v1/goal",
+            "POST",
         ),
-        (
-            "goal.delete",
-            {"goal_id": 123},
-            "https://trackbear.app/api/v1/goal/123",
-        ),
-        (
-            "stat.list",
-            {},
-            "https://trackbear.app/api/v1/stats/days",
-        ),
-        (
-            "tag.list",
-            {},
-            "https://trackbear.app/api/v1/tag",
-        ),
-        (
-            "tag.get",
-            {"tag_id": 123},
-            "https://trackbear.app/api/v1/tag/123",
-        ),
-        (
-            "tag.save",
-            {"name": "mock", "color": "blue"},
-            "https://trackbear.app/api/v1/tag",
-        ),
-        (
-            "tag.delete",
-            {"tag_id": 123},
-            "https://trackbear.app/api/v1/tag/123",
-        ),
-        (
-            "tally.list",
-            {},
-            "https://trackbear.app/api/v1/tally",
-        ),
-        (
-            "tally.get",
-            {"tally_id": 123},
-            "https://trackbear.app/api/v1/tally/123",
-        ),
+        ("goal.delete", {"goal_id": 123}, "https://trackbear.app/api/v1/goal/123", "DELETE"),
+        ("stat.list", {}, "https://trackbear.app/api/v1/stats/days", "GET"),
+        ("tag.list", {}, "https://trackbear.app/api/v1/tag", "GET"),
+        ("tag.get", {"tag_id": 123}, "https://trackbear.app/api/v1/tag/123", "GET"),
+        ("tag.save", {"name": "mock", "color": "blue"}, "https://trackbear.app/api/v1/tag", "POST"),
+        ("tag.delete", {"tag_id": 123}, "https://trackbear.app/api/v1/tag/123", "DELETE"),
+        ("tally.list", {}, "https://trackbear.app/api/v1/tally", "GET"),
+        ("tally.get", {"tally_id": 123}, "https://trackbear.app/api/v1/tally/123", "GET"),
         (
             "tally.save",
             {"work_id": 123, "date": "2025-01-01", "measure": "word", "count": 0},
             "https://trackbear.app/api/v1/tally",
+            "POST",
         ),
-        (
-            "tally.delete",
-            {"tally_id": 123},
-            "https://trackbear.app/api/v1/tally/123",
-        ),
-        (
-            "leaderboard.list",
-            {},
-            "https://trackbear.app/api/v1/leaderboard",
-        ),
+        ("tally.delete", {"tally_id": 123}, "https://trackbear.app/api/v1/tally/123", "DELETE"),
+        ("leaderboard.list", {}, "https://trackbear.app/api/v1/leaderboard", "GET"),
         (
             "leaderboard.list_participants",
             {"board_uuid": "uuid1234"},
             "https://trackbear.app/api/v1/leaderboard/uuid1234/participants",
+            "GET",
         ),
         (
             "leaderboard.get",
             {"board_uuid": "uuid1234"},
             "https://trackbear.app/api/v1/leaderboard/uuid1234",
+            "GET",
         ),
         (
             "leaderboard.save",
             test_parameters.LEADERBOARD_SAVE_SIMPLE_KWARGS,
             "https://trackbear.app/api/v1/leaderboard",
+            "POST",
         ),
         (
             "leaderboard.save_star",
             {"board_uuid": "uuid1234", "starred": True},
             "https://trackbear.app/api/v1/leaderboard/uuid1234/star",
+            "PATCH",
         ),
         (
             "leaderboard.delete",
             {"board_uuid": "uuid1234"},
             "https://trackbear.app/api/v1/leaderboard/uuid1234",
+            "DELETE",
+        ),
+        (
+            "leaderboard.team.list",
+            {"board_uuid": "uuid1234"},
+            "https://trackbear.app/api/v1/leaderboard/uuid1234/teams",
+            "GET",
+        ),
+        (
+            "leaderboard.team.get",
+            {"board_uuid": "uuid1234", "team_id": 123},
+            "https://trackbear.app/api/v1/leaderboard/uuid1234/teams/123",
+            "GET",
+        ),
+        (
+            "leaderboard.team.save",
+            test_parameters.TEAM_SAVE_KWARGS,
+            "https://trackbear.app/api/v1/leaderboard/uuid1234/teams",
+            "POST",
+        ),
+        (
+            "leaderboard.team.delete",
+            {"board_uuid": "uuid1234", "team_id": 123},
+            "https://trackbear.app/api/v1/leaderboard/uuid1234/teams/123",
+            "DELETE",
         ),
     ),
 )
-@responses.activate()
+@responses.activate(assert_all_requests_are_fired=True)
 def test_api_response_error(
     client: TrackBearClient,
     provider_method: str,
     kwargs: dict[str, Any],
     url: str,
+    http_method: str,
 ) -> None:
     """Assert a failure on the API side will raise the expected exception."""
-    fragments = provider_method.split(".", 1)
-    provider = fragments[0]
-    route = fragments[1]
+    method_to_call = get_client_attribute(client, provider_method)
     pattern = r"TrackBear API Failure \(409\) SOME_ERROR_CODE - A human-readable error message"
-
-    methods = {"list": "GET", "get": "GET", "save": "POST", "delete": "DELETE"}
-    http_method = methods[route.split("_", 1)[0]]
-    if http_method == "POST" and "123" in url:
-        http_method = "PATCH"
 
     responses.add(
         method=http_method,
@@ -185,7 +171,7 @@ def test_api_response_error(
     )
 
     with pytest.raises(exceptions.APIResponseError, match=pattern):
-        getattr(getattr(client, provider), route)(**kwargs)
+        method_to_call(**kwargs)
 
 
 @pytest.mark.parametrize(

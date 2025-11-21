@@ -276,6 +276,17 @@ TEAM_RESPONSE = {
     "name": "string",
     "color": "pink",
 }
+TEAM_SAVE_KWARGS = {
+    "board_uuid": "uuid1234",
+    "board_id": 123,
+    "name": "My awesome team",
+    "color": enums.MemberColor.PINK,
+}
+TEAM_SAVE_PAYLOAD = {
+    "boardId": 123,
+    "name": "My awesome team",
+    "color": "pink",
+}
 
 LEADERBOARD_RESPONSE = {
     "id": 123,
