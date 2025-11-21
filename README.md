@@ -180,6 +180,19 @@ https://help.trackbear.app/api/
 | `.save_star()`         | Star or unstar a Leaderboard            |
 | `.delete()`            | Delete a leaderboard by uuid            |
 
+### Leaderboard Teams
+
+| Provider Method                    | Description                                                     |
+| ---------------------------------- | --------------------------------------------------------------- |
+| `TrackBearClient.leaderboard.team` | Contains helper methods for all leaderboard Team related routes |
+
+| Method      | Description                              |
+| ----------- | ---------------------------------------- |
+| `.list()`   | Get all teams on a leaderboard           |
+| `.get()`    | Get a specific team from a leaderboard   |
+| `.save()`   | Create or update a team on a leaderboard |
+| `.delete()` | Delete a team from a leaderboard         |
+
 ### Bare Access
 
 Bare access to the API allows you to escape from the structured return models
