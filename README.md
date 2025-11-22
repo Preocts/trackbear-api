@@ -29,11 +29,11 @@ Implemented routes:
 - Stats
 - Goals
 - Leaderboards
+- Leaderboard Teams
+- Leaderboard Members
 
 Routes pending implementation:
 
-- Leaderboard Teams
-- Leaderboard Members
 - Leaderboard Participation
 - Other
 
@@ -192,6 +192,18 @@ https://help.trackbear.app/api/
 | `.get()`    | Get a specific team from a leaderboard   |
 | `.save()`   | Create or update a team on a leaderboard |
 | `.delete()` | Delete a team from a leaderboard         |
+
+### Leaderboard Members
+
+| Provider Method                       | Description                                                        |
+| ------------------------------------- | ------------------------------------------------------------------ |
+| `TrackBearClient.leaderboard.members` | Contains helper methods for all leaderboard Members related routes |
+
+| Method          | Description                                       |
+| --------------- | ------------------------------------------------- |
+| `.list()`       | Get all members on a leaderboard                  |
+| `.save_owner()` | Set a member as an owner or remove the owner flag |
+| `.delete()`     | Delete a member from a leaderboard                |
 
 ### Bare Access
 
