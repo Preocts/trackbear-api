@@ -8,7 +8,7 @@ from . import models
 from ._apiclient import APIClient
 
 
-class TeamsClient:
+class TeamClient:
     """Provides methods and models for Leaderboard Teams API routes."""
 
     def __init__(self, api_client: APIClient) -> None:
