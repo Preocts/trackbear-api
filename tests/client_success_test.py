@@ -113,6 +113,14 @@ def get_client_attribute(client: TrackBearClient, provider_method: str) -> Any:
             "",
             models.Team,
         ),
+        (
+            "leaderboard.members.list",
+            {"board_uuid": "uuid1234"},
+            "https://trackbear.app/api/v1/leaderboard/uuid1234/members",
+            test_parameters.MEMBER_RESPONSE,
+            "",
+            models.Member,
+        ),
     ),
 )
 @responses.activate(assert_all_requests_are_fired=True)
@@ -379,6 +387,14 @@ def test_client_get_success(
             test_parameters.TEAM_RESPONSE,
             models.Team,
         ),
+        (
+            "leaderboard.members.save_owner",
+            {"board_uuid": "uuid1234", "member_id": 123, "is_owner": True},
+            {"isOwner": True},
+            "PATCH https://trackbear.app/api/v1/leaderboard/uuid1234/members/123",
+            test_parameters.MEMBER_RESPONSE,
+            models.Member,
+        ),
     ),
 )
 @responses.activate(assert_all_requests_are_fired=True)
@@ -463,6 +479,13 @@ def test_client_save_success(
             "https://trackbear.app/api/v1/leaderboard/uuid1234/teams/123",
             test_parameters.TEAM_RESPONSE,
             models.Team,
+        ),
+        (
+            "leaderboard.members.delete",
+            {"board_uuid": "uuid1234", "member_id": 123},
+            "https://trackbear.app/api/v1/leaderboard/uuid1234/members/123",
+            test_parameters.MEMBER_RESPONSE,
+            models.Member,
         ),
     ),
 )
