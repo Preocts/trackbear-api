@@ -259,7 +259,7 @@ TALLY_SAVE_PAYLOAD = {
 MEMBER_RESPONSE = {
     "id": 123,
     "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",
-    "state": "string",
+    "state": "active",
     "displayName": "string",
     "avatar": "string",
     "color": "pink",
