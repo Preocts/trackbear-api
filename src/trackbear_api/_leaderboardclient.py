@@ -6,6 +6,7 @@ from . import _validator as validator
 from . import enums
 from . import models
 from ._apiclient import APIClient
+from ._membersclient import MembersClient
 from ._teamclient import TeamClient
 
 
@@ -17,6 +18,7 @@ class LeaderboardClient:
         self._api_client = api_client
 
         self.team = TeamClient(api_client)
+        self.members = MembersClient(api_client)
 
     def list(self) -> Sequence[models.LeaderboardExtended]:
         """

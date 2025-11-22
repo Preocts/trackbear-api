@@ -186,6 +186,21 @@ def get_client_attribute(client: TrackBearClient, provider_method: str) -> Any:
             {"board_uuid": "uuid1234", "team_id": 123},
             "DELETE https://trackbear.app/api/v1/leaderboard/uuid1234/teams/123",
         ),
+        (
+            "leaderboard.members.list",
+            {"board_uuid": "uuid1234"},
+            "GET https://trackbear.app/api/v1/leaderboard/uuid1234/members",
+        ),
+        (
+            "leaderboard.members.save_owner",
+            {"board_uuid": "uuid1234", "member_id": 123},
+            "PATCH https://trackbear.app/api/v1/leaderboard/uuid1234/members/123",
+        ),
+        (
+            "leaderboard.members.delete",
+            {"board_uuid": "uuid1234", "member_id": 123},
+            "DELETE https://trackbear.app/api/v1/leaderboard/uuid1234/members/123",
+        ),
     ),
 )
 @responses.activate(assert_all_requests_are_fired=True)
