@@ -699,19 +699,3 @@ class Starred:
 
         except (KeyError, ValueError) as exc:
             _handle_build_error(exc, data, cls.__name__)
-
-
-@dataclasses.dataclass(frozen=True, slots=True)
-class Owner:
-    """Owner model."""
-
-    is_owner: bool = False
-
-    @classmethod
-    def build(cls, data: dict[str, Any]) -> Owner:
-        """Build a Owner model from the API response data."""
-        try:
-            return cls(is_owner=data["isOwner"])
-
-        except (KeyError, ValueError) as exc:
-            _handle_build_error(exc, data, cls.__name__)
