@@ -432,7 +432,7 @@ class Member:
             return cls(
                 id=data["id"],
                 uuid=data["uuid"],
-                state=data["state"],
+                state=enums.State(data["state"]),
                 display_name=data["displayName"],
                 avatar=data["avatar"],
                 color=enums.MemberColor(data["color"]) if data["color"] is not None else None,
