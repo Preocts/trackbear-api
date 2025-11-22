@@ -167,22 +167,22 @@ def get_client_attribute(client: TrackBearClient, provider_method: str) -> Any:
             "DELETE https://trackbear.app/api/v1/leaderboard/uuid1234",
         ),
         (
-            "leaderboard.team.list",
+            "leaderboard.teams.list",
             {"board_uuid": "uuid1234"},
             "GET https://trackbear.app/api/v1/leaderboard/uuid1234/teams",
         ),
         (
-            "leaderboard.team.get",
+            "leaderboard.teams.get",
             {"board_uuid": "uuid1234", "team_id": 123},
             "GET https://trackbear.app/api/v1/leaderboard/uuid1234/teams/123",
         ),
         (
-            "leaderboard.team.save",
+            "leaderboard.teams.save",
             test_parameters.TEAM_SAVE_KWARGS,
             "POST https://trackbear.app/api/v1/leaderboard/uuid1234/teams",
         ),
         (
-            "leaderboard.team.delete",
+            "leaderboard.teams.delete",
             {"board_uuid": "uuid1234", "team_id": 123},
             "DELETE https://trackbear.app/api/v1/leaderboard/uuid1234/teams/123",
         ),

@@ -106,7 +106,7 @@ def get_client_attribute(client: TrackBearClient, provider_method: str) -> Any:
             models.Participant,
         ),
         (
-            "leaderboard.team.list",
+            "leaderboard.teams.list",
             {"board_uuid": "uuid1234"},
             "https://trackbear.app/api/v1/leaderboard/uuid1234/teams",
             test_parameters.TEAM_RESPONSE,
@@ -205,7 +205,7 @@ def test_client_list_success(
             models.Leaderboard,
         ),
         (
-            "leaderboard.team.get",
+            "leaderboard.teams.get",
             {"board_uuid": "uuid1234", "team_id": 123},
             "https://trackbear.app/api/v1/leaderboard/uuid1234/teams/123",
             test_parameters.TEAM_RESPONSE,
@@ -372,7 +372,7 @@ def test_client_get_success(
             models.Starred,
         ),
         (
-            "leaderboard.team.save",
+            "leaderboard.teams.save",
             test_parameters.TEAM_SAVE_KWARGS,
             test_parameters.TEAM_SAVE_PAYLOAD,
             "POST https://trackbear.app/api/v1/leaderboard/uuid1234/teams",
@@ -380,7 +380,7 @@ def test_client_get_success(
             models.Team,
         ),
         (
-            "leaderboard.team.save",
+            "leaderboard.teams.save",
             test_parameters.TEAM_SAVE_KWARGS | {"team_id": "123"},
             test_parameters.TEAM_SAVE_PAYLOAD,
             "PATCH https://trackbear.app/api/v1/leaderboard/uuid1234/teams/123",
@@ -474,7 +474,7 @@ def test_client_save_success(
             models.Leaderboard,
         ),
         (
-            "leaderboard.team.delete",
+            "leaderboard.teams.delete",
             {"board_uuid": "uuid1234", "team_id": 123},
             "https://trackbear.app/api/v1/leaderboard/uuid1234/teams/123",
             test_parameters.TEAM_RESPONSE,

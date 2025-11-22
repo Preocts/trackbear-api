@@ -182,9 +182,9 @@ https://help.trackbear.app/api/
 
 ### Leaderboard Teams
 
-| Provider Method                    | Description                                                     |
-| ---------------------------------- | --------------------------------------------------------------- |
-| `TrackBearClient.leaderboard.team` | Contains helper methods for all leaderboard Team related routes |
+| Provider Method                     | Description                                                     |
+| ----------------------------------- | --------------------------------------------------------------- |
+| `TrackBearClient.leaderboard.teams` | Contains helper methods for all leaderboard Team related routes |
 
 | Method      | Description                              |
 | ----------- | ---------------------------------------- |
