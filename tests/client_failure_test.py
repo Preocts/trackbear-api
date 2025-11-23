@@ -157,8 +157,13 @@ def get_client_attribute(client: TrackBearClient, provider_method: str) -> Any:
             "POST https://trackbear.app/api/v1/leaderboard",
         ),
         (
-            "leaderboard.save_star",
-            {"board_uuid": "uuid1234", "starred": True},
+            "leaderboard.star",
+            {"board_uuid": "uuid1234"},
+            "PATCH https://trackbear.app/api/v1/leaderboard/uuid1234/star",
+        ),
+        (
+            "leaderboard.unstar",
+            {"board_uuid": "uuid1234"},
             "PATCH https://trackbear.app/api/v1/leaderboard/uuid1234/star",
         ),
         (

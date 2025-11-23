@@ -190,13 +190,12 @@ class LeaderboardClient:
 
         return models.Leaderboard.build(response.data)
 
-    def save_star(self, board_uuid: str, *, starred: bool = True) -> models.Starred:
+    def star(self, board_uuid: str) -> models.Starred:
         """
-        Star or unstar a Leaderboard
+        Star a Leaderboard
 
         Args:
             board_uuid (str): Existing leaderboard uuid
-            starred (bool): True to star the loaderboard (default: True)
 
         Returns:
             trackbear_api.models.Leaderboard
@@ -204,6 +203,25 @@ class LeaderboardClient:
         Raises:
             exceptions.APIResponseError: On any failure message returned from TrackBear API
         """
+        return self._save_star(board_uuid, starred=True)
+
+    def unstar(self, board_uuid: str) -> models.Starred:
+        """
+        Unstar a Leaderboard
+
+        Args:
+            board_uuid (str): Existing leaderboard uuid
+
+        Returns:
+            trackbear_api.models.Leaderboard
+
+        Raises:
+            exceptions.APIResponseError: On any failure message returned from TrackBear API
+        """
+        return self._save_star(board_uuid, starred=False)
+
+    def _save_star(self, board_uuid: str, *, starred: bool = True) -> models.Starred:
+        """Star or unstar a Leaderboard."""
         payload = {"starred": starred}
 
         response = self._api_client.patch(f"/leaderboard/{board_uuid}/star", payload)

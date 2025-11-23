@@ -177,7 +177,8 @@ https://help.trackbear.app/api/
 | `.get()`               | Get a leaderboard by specific uuid      |
 | `.get_by_join_code()`  | Get a leaderboard by specific join code |
 | `.save()`              | Create or update a leaderboard          |
-| `.save_star()`         | Star or unstar a Leaderboard            |
+| `.star()`              | Star a Leaderboard                      |
+| `.unstar()`            | Unstar a Leaderboard                    |
 | `.delete()`            | Delete a leaderboard by uuid            |
 
 ### Leaderboard Teams
