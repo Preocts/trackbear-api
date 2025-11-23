@@ -7,6 +7,7 @@ from . import enums
 from . import models
 from ._apiclient import APIClient
 from ._membersclient import MembersClient
+from ._participationclient import ParticipationClient
 from ._teamsclient import TeamsClient
 
 
@@ -17,8 +18,9 @@ class LeaderboardClient:
         """Initialize client by providing defined APIClient."""
         self._api_client = api_client
 
-        self.teams = TeamsClient(api_client)
         self.members = MembersClient(api_client)
+        self.participation = ParticipationClient(api_client)
+        self.teams = TeamsClient(api_client)
 
     def list(self) -> Sequence[models.LeaderboardExtended]:
         """
