@@ -702,43 +702,6 @@ class Starred:
 
 
 @dataclasses.dataclass(frozen=True, slots=True)
-class ParticipationStub:
-    """ParticipationStub model."""
-
-    id: int
-    display_name: str
-    color: enums.MemberColor | None
-    is_participant: bool
-    goal: GoalStub | None
-    work_ids: Sequence[int]
-    tag_ids: Sequence[int]
-
-    @classmethod
-    def build(cls, data: dict[str, Any]) -> ParticipationStub:
-        """Build a ParticipationStub model from the API response data."""
-        try:
-            return cls(
-                id=data["id"],
-                display_name=data["displayName"],
-                color=enums.MemberColor(data["color"]) if data["color"] else None,
-                is_participant=data["isParticipant"],
-                goal=(
-                    GoalStub(
-                        measure=enums.Measure(data["goal"]["measure"]),
-                        count=data["goal"]["count"],
-                    )
-                    if data["goal"] is not None
-                    else None
-                ),
-                work_ids=data["workIds"],
-                tag_ids=data["tagIds"],
-            )
-
-        except (KeyError, ValueError) as exc:
-            _handle_build_error(exc, data, cls.__name__)
-
-
-@dataclasses.dataclass(frozen=True, slots=True)
 class Participation:
     """Participation model."""
 
