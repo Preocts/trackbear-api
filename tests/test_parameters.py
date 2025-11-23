@@ -407,16 +407,6 @@ LEADERBOARD_PARTICIPANT_RESPONSE = {
 
 STARRED_RESPONSE = {"starred": True}
 
-PARTICIPATION_STUB_RESPONSE = {
-    "id": 123,
-    "displayName": "string",
-    "color": "pink",
-    "isParticipant": True,
-    "goal": {"measure": "word", "count": 0},
-    "workIds": [123],
-    "tagIds": [123],
-}
-
 PARTICIPATION_RESPONSE = {
     "id": 123,
     "uuid": "8fb3e519-fc08-477f-a70e-4132eca599d4",

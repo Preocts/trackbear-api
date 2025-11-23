@@ -32,7 +32,6 @@ class ModelType(Protocol):
         models.Team,
         models.Participant,
         models.Starred,
-        models.ParticipationStub,
         models.Participation,
     ),
 )
@@ -62,7 +61,6 @@ def test_build_model_failure(model_type: type[ModelType]) -> None:
         (test_parameters.LEADERBOARD_EXTENDED_RESPONSE, models.LeaderboardExtended),
         (test_parameters.LEADERBOARD_PARTICIPANT_RESPONSE, models.Participant),
         (test_parameters.STARRED_RESPONSE, models.Starred),
-        (test_parameters.PARTICIPATION_STUB_RESPONSE, models.ParticipationStub),
         (test_parameters.PARTICIPATION_RESPONSE, models.Participation),
     ),
 )
