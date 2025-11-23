@@ -211,6 +211,13 @@ def test_client_list_success(
             test_parameters.TEAM_RESPONSE,
             models.Team,
         ),
+        (
+            "leaderboard.participation.get",
+            {"board_uuid": "uuid1234"},
+            "https://trackbear.app/api/v1/leaderboard/uuid1234/me",
+            test_parameters.PARTICIPATION_RESPONSE,
+            models.Participation,
+        ),
     ),
 )
 @responses.activate(assert_all_requests_are_fired=True)
@@ -411,6 +418,22 @@ def test_client_get_success(
             test_parameters.MEMBER_RESPONSE,
             models.Member,
         ),
+        (
+            "leaderboard.participation.join",
+            test_parameters.PARTICIPATION_SAVE_KWARGS,
+            test_parameters.PARTICIPATION_SAVE_PAYLOAD,
+            "POST https://trackbear.app/api/v1/leaderboard/uuid1234/me",
+            test_parameters.PARTICIPATION_RESPONSE,
+            models.Participation,
+        ),
+        (
+            "leaderboard.participation.update",
+            test_parameters.PARTICIPATION_SAVE_KWARGS | {"goal_measure": None, "color": None},
+            test_parameters.PARTICIPATION_SAVE_PAYLOAD | {"goal": None, "color": None},
+            "PATCH https://trackbear.app/api/v1/leaderboard/uuid1234/me",
+            test_parameters.PARTICIPATION_RESPONSE | {"goal": None, "color": None},
+            models.Participation,
+        ),
     ),
 )
 @responses.activate(assert_all_requests_are_fired=True)
@@ -502,6 +525,13 @@ def test_client_save_success(
             "https://trackbear.app/api/v1/leaderboard/uuid1234/members/123",
             test_parameters.MEMBER_RESPONSE,
             models.Member,
+        ),
+        (
+            "leaderboard.participation.leave",
+            {"board_uuid": "uuid1234"},
+            "https://trackbear.app/api/v1/leaderboard/uuid1234/me",
+            test_parameters.PARTICIPATION_RESPONSE,
+            models.Participation,
         ),
     ),
 )

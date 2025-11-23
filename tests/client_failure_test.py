@@ -211,6 +211,26 @@ def get_client_attribute(client: TrackBearClient, provider_method: str) -> Any:
             {"board_uuid": "uuid1234", "member_id": 123},
             "DELETE https://trackbear.app/api/v1/leaderboard/uuid1234/members/123",
         ),
+        (
+            "leaderboard.participation.get",
+            {"board_uuid": "uuid1234"},
+            "GET https://trackbear.app/api/v1/leaderboard/uuid1234/me",
+        ),
+        (
+            "leaderboard.participation.join",
+            test_parameters.PARTICIPATION_SAVE_KWARGS,
+            "POST https://trackbear.app/api/v1/leaderboard/uuid1234/me",
+        ),
+        (
+            "leaderboard.participation.update",
+            test_parameters.PARTICIPATION_SAVE_KWARGS,
+            "PATCH https://trackbear.app/api/v1/leaderboard/uuid1234/me",
+        ),
+        (
+            "leaderboard.participation.leave",
+            {"board_uuid": "uuid1234"},
+            "DELETE https://trackbear.app/api/v1/leaderboard/uuid1234/me",
+        ),
     ),
 )
 @responses.activate(assert_all_requests_are_fired=True)

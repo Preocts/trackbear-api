@@ -424,3 +424,24 @@ PARTICIPATION_RESPONSE = {
     "workIds": [123],
     "tagIds": [123],
 }
+PARTICIPATION_SAVE_KWARGS = {
+    "board_uuid": "uuid1234",
+    "display_name": "My Name",
+    "is_participant": True,
+    "color": enums.MemberColor.PINK,
+    "goal_measure": enums.Measure.WORD,
+    "starting_count": 1000,
+    "work_ids": [123],
+    "tag_ids": [123],
+}
+PARTICIPATION_SAVE_PAYLOAD = {
+    "displayName": "My Name",
+    "isParticipant": True,
+    "color": enums.MemberColor.PINK,
+    "goal": {
+        "measure": "word",
+        "count": 1000,
+    },
+    "workIds": [123],
+    "tagIds": [123],
+}
