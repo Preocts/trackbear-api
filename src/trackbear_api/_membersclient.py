@@ -33,20 +33,17 @@ class MembersClient:
 
         return [models.Member.build(data) for data in response.data]
 
-    def save_owner(
+    def set_owner(
         self,
         board_uuid: str,
         member_id: int,
-        *,
-        is_owner: bool = True,
     ) -> models.Member:
         """
-        Save whether a member is an owner of the given leaderboard.
+        Set the member as an owner of the leaderboard.
 
         Args:
             board_uuid (str): The UUID of the leaderboard to get the team from
             member_id (int): The member id to adjust
-            is_owner (bool): Set whether the member is an owner (default: True)
 
         Returns:
             trackbear_api.models.Member
@@ -54,6 +51,36 @@ class MembersClient:
         Raises:
             exceptions.APIResponseError: On any failure message returned from TrackBear API
         """
+        return self._save_owner(board_uuid, member_id, is_owner=True)
+
+    def unset_owner(
+        self,
+        board_uuid: str,
+        member_id: int,
+    ) -> models.Member:
+        """
+        Remove the owner flag from the member of the leaderboard.
+
+        Args:
+            board_uuid (str): The UUID of the leaderboard to get the team from
+            member_id (int): The member id to adjust
+
+        Returns:
+            trackbear_api.models.Member
+
+        Raises:
+            exceptions.APIResponseError: On any failure message returned from TrackBear API
+        """
+        return self._save_owner(board_uuid, member_id, is_owner=False)
+
+    def _save_owner(
+        self,
+        board_uuid: str,
+        member_id: int,
+        *,
+        is_owner: bool = True,
+    ) -> models.Member:
+        """Save whether a member is an owner of the given leaderboard."""
         payload = {"isOwner": is_owner}
 
         url = f"/leaderboard/{board_uuid}/members/{member_id}"
