@@ -192,7 +192,12 @@ def get_client_attribute(client: TrackBearClient, provider_method: str) -> Any:
             "GET https://trackbear.app/api/v1/leaderboard/uuid1234/members",
         ),
         (
-            "leaderboard.members.save_owner",
+            "leaderboard.members.set_owner",
+            {"board_uuid": "uuid1234", "member_id": 123},
+            "PATCH https://trackbear.app/api/v1/leaderboard/uuid1234/members/123",
+        ),
+        (
+            "leaderboard.members.unset_owner",
             {"board_uuid": "uuid1234", "member_id": 123},
             "PATCH https://trackbear.app/api/v1/leaderboard/uuid1234/members/123",
         ),

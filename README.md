@@ -199,11 +199,12 @@ https://help.trackbear.app/api/
 | ------------------------------------- | ------------------------------------------------------------------ |
 | `TrackBearClient.leaderboard.members` | Contains helper methods for all leaderboard Members related routes |
 
-| Method          | Description                                       |
-| --------------- | ------------------------------------------------- |
-| `.list()`       | Get all members on a leaderboard                  |
-| `.save_owner()` | Set a member as an owner or remove the owner flag |
-| `.delete()`     | Delete a member from a leaderboard                |
+| Method           | Description                                   |
+| ---------------- | --------------------------------------------- |
+| `.list()`        | Get all members on a leaderboard              |
+| `.set_owner()`   | Set a member as an owner of a leaderboard     |
+| `.unset_owner()` | Remove ownership of a member of a leaderboard |
+| `.delete()`      | Delete a member from a leaderboard            |
 
 ### Bare Access
 
