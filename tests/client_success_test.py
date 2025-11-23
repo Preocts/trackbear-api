@@ -364,11 +364,19 @@ def test_client_get_success(
             models.Leaderboard,
         ),
         (
-            "leaderboard.save_star",
-            {"board_uuid": "uuid123", "starred": True},
+            "leaderboard.star",
+            {"board_uuid": "uuid123"},
             {"starred": True},
             "PATCH https://trackbear.app/api/v1/leaderboard/uuid123/star",
-            test_parameters.STARRED_RESPONSE,
+            {"starred": True},
+            models.Starred,
+        ),
+        (
+            "leaderboard.unstar",
+            {"board_uuid": "uuid123"},
+            {"starred": False},
+            "PATCH https://trackbear.app/api/v1/leaderboard/uuid123/star",
+            {"starred": False},
             models.Starred,
         ),
         (
