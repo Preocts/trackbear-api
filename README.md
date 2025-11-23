@@ -21,20 +21,8 @@ Python library for synchronous HTTP calls to the Trackbear API (https://help.tra
 
 **Deveploment in progress, expect breaking changes frequently until version 0.1.0**
 
-Implemented routes:
-
-- Tallies
-- Projects
-- Tags
-- Stats
-- Goals
-- Leaderboards
-- Leaderboard Teams
-- Leaderboard Members
-
 Routes pending implementation:
 
-- Leaderboard Participation
 - Other
 
 Features pending implementation:
@@ -206,6 +194,19 @@ https://help.trackbear.app/api/
 | `.set_owner()`   | Set a member as an owner of a leaderboard     |
 | `.unset_owner()` | Remove ownership of a member of a leaderboard |
 | `.delete()`      | Delete a member from a leaderboard            |
+
+### Leaderboard Participation
+
+| Provider Method                             | Description                                                              |
+| ------------------------------------------- | ------------------------------------------------------------------------ |
+| `TrackBearClient.leaderboard.participation` | Contains helper methods for all leaderboard participation related routes |
+
+| Method      | Description                                      |
+| ----------- | ------------------------------------------------ |
+| `.get()`    | Get your participation of a leaderboard          |
+| `.join()`   | Join a leaderboard                               |
+| `.update()` | Update your participant details of a leaderboard |
+| `.leave()`  | Leave a leaderboard                              |
 
 ### Bare Access
 
