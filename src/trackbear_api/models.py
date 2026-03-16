@@ -366,6 +366,15 @@ class Tag:
     name: str
     color: enums.TagColor
 
+    def __post_init__(self) -> None:
+        """Validate data."""
+        # Added with TrackBear 1.5.0
+        illegal_character = ";"
+
+        if illegal_character in self.name:
+            msg = "Tag names cannot contain a semicolon."
+            raise ValueError(msg)
+
     @classmethod
     def build(cls, data: dict[str, Any]) -> Tag:
         """Build a Tag model from the API response data."""

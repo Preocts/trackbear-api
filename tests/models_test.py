@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 import dataclasses
 from typing import Any
 from typing import Protocol
@@ -72,3 +73,13 @@ def test_build_model_success(data: dict[str, Any], model_type: type[ModelType]) 
     assert dataclasses.is_dataclass(result)
     assert not isinstance(result, type)
     assert dataclasses.asdict(result) == test_parameters.keys_to_snake_case(data)
+
+
+# TrackBear 1.5.0 removed support for `;` in tag names
+def test_tag_fails_with_semicolon() -> None:
+    """Assert failure with semi-colon in name."""
+    data = copy.deepcopy(test_parameters.TAG_RESPONSE)
+    data["name"] = "this;fails"
+
+    with pytest.raises(ModelBuildError):
+        models.Tag.build(data)
