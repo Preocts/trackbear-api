@@ -47,7 +47,7 @@ class TrackBearClient:
         parameter or by environment variable (TRACKBEAR_APP_TOKEN)
 
         Args:
-            name (str): Give your app a name. This can be any value and is appended
+            app_name (str): Give your app a name. This can be any value and is appended
                 to the User-Agent header.
             api_token (str): (Optional) The API token for TrackBear. If not provided
                 then the token is looked for in the loaded environment (TRACKBEAR_APP_TOKEN)
