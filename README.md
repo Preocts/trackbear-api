@@ -240,7 +240,11 @@ and call routes directly. These methods return a `models.TrackBearResponse` obje
 
 The library defines a handful of useful custom exceptions.
 
-#### trackbear_api.exceptions.ModelBuildError(Exception)
+#### trackbear_api.exceptions.TrackBearAPIException
+
+Parent class of all exceptions defined in the library. Inherits from `Exception`.
+
+#### trackbear_api.exceptions.ModelBuildError
 
 Raised when building a dataclass model from the API response fails. This can
 indicate the expected response has changed from the observed response. The
@@ -252,7 +256,7 @@ to build with. Both are vital for bug reports.
 | `data_string` | str  | The data which caused the model build to fail |
 | `model_name`  | str  | The name of the model that failed             |
 
-#### trackbear_api.exceptions.APIResponseError(Exception)
+#### trackbear_api.exceptions.APIResponseError
 
 Raised by all provider methods when the API returns an unsuccessful response.
 
@@ -262,7 +266,7 @@ Raised by all provider methods when the API returns an unsuccessful response.
 | `code`        | str  | Error code provided by the API                   |
 | `message`     | str  | Human readable error message provided by the API |
 
-#### trackbear_api.exceptions.APITimeoutError(Exception)
+#### trackbear_api.exceptions.APITimeoutError
 
 Raised when the TrackBear API request, read, or connection times out.
 

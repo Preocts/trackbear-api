@@ -6,7 +6,12 @@ import dataclasses
 
 
 @dataclasses.dataclass(frozen=True, slots=True)
-class ModelBuildError(Exception):
+class TrackBearAPIException(Exception):
+    """Base exception for all TrackBear API exceptions."""
+
+
+@dataclasses.dataclass(frozen=True, slots=True)
+class ModelBuildError(TrackBearAPIException):
     """
     Raised when a model fails to build from API data.
 
@@ -32,7 +37,7 @@ class ModelBuildError(Exception):
 
 
 @dataclasses.dataclass(frozen=True, slots=True)
-class APIResponseError(Exception):
+class APIResponseError(TrackBearAPIException):
     """
     Raised when the TrackBear API returns an unsuccessful response.
 
@@ -51,7 +56,7 @@ class APIResponseError(Exception):
 
 
 @dataclasses.dataclass(frozen=True, slots=True)
-class APITimeoutError(Exception):
+class APITimeoutError(TrackBearAPIException):
     """
     Raised when the TrackBear API request, read, or connection times out.
 
