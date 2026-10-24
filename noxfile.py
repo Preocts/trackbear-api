@@ -100,7 +100,6 @@ def combine_coverage(session: nox.Session) -> None:
 
     coverage("combine")
     coverage("report", "--show-missing")
-    coverage("html")
     coverage("json")
 
 
