@@ -1,4 +1,4 @@
-[![Python 3.10 | 3.11 | 3.12 | 3.13 | 3.14](https://img.shields.io/badge/Python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13%20%7C%203.14-blue)](https://www.python.org/downloads)
+[![Python >=3.11](https://img.shields.io/badge/Python->=3.11-blue)](https://www.python.org/downloads)
 [![PyPI - Version](https://img.shields.io/pypi/v/trackbear-api)](https://pypi.org/project/trackbear-api)
 [![Python tests](https://github.com/Preocts/trackbear-api/actions/workflows/python-tests.yml/badge.svg?branch=main)](https://github.com/Preocts/trackbear-api/actions/workflows/python-tests.yml)
 
