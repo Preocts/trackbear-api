@@ -78,7 +78,6 @@ jobs:
         run: |
           export TOTAL=$(python -c "import json;print(json.load(open('coverage.json'))['totals']['percent_covered_display'])")
           echo "TOTAL=$TOTAL" >> $GITHUB_ENV
-          echo "### Minimum coverage required: ${COVERAGE_REQUIRED}%" >> $GITHUB_STEP_SUMMARY
           echo "### Total coverage: ${TOTAL}%" >> $GITHUB_STEP_SUMMARY
 
   linters-and-formatters:
