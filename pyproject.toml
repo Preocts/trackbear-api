@@ -50,6 +50,10 @@ homepage = "https://github.com/Preocts/trackbear-api"
 [tool.hatch.version]
 source = "vcs"
 
+[tool.uv]
+exclude-newer = "P7D"
+exclude-newer-package = { certifi = false }
+
 [tool.black]
 line-length = 100
 
