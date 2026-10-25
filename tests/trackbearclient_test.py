@@ -17,7 +17,7 @@ def test_init_client_providing_no_token() -> None:
     """
     Initialize the client without a token. Expect an exception raised.
     """
-    expected_msg = "Missing api token. Either provide directly as a keyword arguement or as the environment variable 'TRACKBEAR_APP_TOKEN'."
+    expected_msg = "Missing api token. Either provide directly as a keyword arguement or as the environment variable 'TRACKBEAR_API_TOKEN'."
 
     with pytest.raises(ValueError, match=expected_msg):
         TrackBearClient("test")
