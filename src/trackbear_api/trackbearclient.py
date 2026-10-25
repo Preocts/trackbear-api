@@ -44,13 +44,13 @@ class TrackBearClient:
         Initialize the client.
 
         While optional as a parameter, an API token **must** be provided either by
-        parameter or by environment variable (TRACKBEAR_APP_TOKEN)
+        parameter or by environment variable (TRACKBEAR_API_TOKEN)
 
         Args:
             app_name (str): Give your app a name. This can be any value and is appended
                 to the User-Agent header.
             api_token (str): (Optional) The API token for TrackBear. If not provided
-                then the token is looked for in the loaded environment (TRACKBEAR_APP_TOKEN)
+                then the token is looked for in the loaded environment (TRACKBEAR_API_TOKEN)
             api_url (str): (Optional) Defaults to "https://trackbear.app/api/v1/", can
                 also be set in environment (TRACKBEAR_API_URL)
             user_agent (str): (Optional) By default the User-Agent header value points
@@ -65,7 +65,7 @@ class TrackBearClient:
         """
         api_token = self._pick_config_value(api_token, _TOKEN_ENVIRON, "")
         if not api_token:
-            msg = "Missing api token. Either provide directly as a keyword arguement or as the environment variable 'TRACKBEAR_APP_TOKEN'."
+            msg = "Missing api token. Either provide directly as a keyword arguement or as the environment variable 'TRACKBEAR_API_TOKEN'."
             self.logger.error("%s", msg)
             raise ValueError(msg)
 
